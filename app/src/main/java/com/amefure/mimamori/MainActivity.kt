@@ -124,7 +124,7 @@ class FirebaseAuthRepository(context: Context) {
     init {
         mAuth.setLanguageCode("ja")
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("")
+            .requestIdToken(BuildConfig.FIREBASE_CLIENT_ID)
             .requestEmail()
             .build()
 

@@ -4,9 +4,17 @@ plugins {
     id "com.google.gms.google-services"
 }
 
+def secretPropertiesFile = rootProject.file("secret.properties")
+def secretProperties = new Properties()
+secretProperties.load(new FileInputStream(secretPropertiesFile))
+
 android {
     namespace 'com.amefure.mimamori'
     compileSdk 34
+
+    buildFeatures {
+        buildConfig true
+    }
 
     defaultConfig {
         applicationId "com.amefure.mimamori"
@@ -16,7 +24,10 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "FIREBASE_CLIENT_ID", "\"${secretProperties['FIREBASE_CLIENT_ID']}\"")
     }
+
 
     buildTypes {
         release {
