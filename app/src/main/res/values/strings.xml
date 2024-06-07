@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Mimamori</string>
+
+    <!-- FBAuthentication -->
+
+    <string name="auth_input_title"> アカウント情報</string>
+    <string name="auth_input_hint_name">ユーザー名</string>
+    <string name="auth_input_hint_email">メールアドレス</string>
+    <string name="auth_input_hint_pass">パスワード</string>
+    <string name="auth_new_entry">新規登録</string>
+    <string name="auth_sign_in">ログイン</string>
+    <string name="auth_already_registered">登録済みの方はこちら</string>
+    <string name="auth_forget_password">パスワードをお忘れですか？</string>
+    <string name="auth_send">送信</string>
+    <string name="auth_forget_password_desc">パスワードを忘れてしまった場合は登録しているメールアドレスを入力してください。\n入力されたメールアドレスに再設定用のメールが届きますので記載されているURLから再設定を行ってください。</string>
+
 </resources>

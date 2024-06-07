@@ -1,121 +1,19 @@
-package com.amefure.mimamori
+package com.amefure.mimamori.Repository
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
+import com.amefure.mimamori.BuildConfig
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 import io.reactivex.Completable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var repository: FirebaseAuthRepository
-    private var disposable: CompositeDisposable = CompositeDisposable()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-
-        repository = FirebaseAuthRepository(this)
-
-        val createButton: Button = findViewById(R.id.create)
-        createButton.setOnClickListener {
-            repository.createUserWithEmailAndPassword("ame8network@gmail.com", "12345678")
-                .subscribeBy(
-                    onComplete = {
-                        Log.d("Auth", "新規登録成功")
-                    },
-                    onError = { error ->
-                        Log.e("Auth", error.toString())
-                    }
-                )
-                .addTo(disposable)
-        }
-        val signInButton: Button = findViewById(R.id.signIn)
-        signInButton.setOnClickListener {
-            val currentUser = repository.getCurrentUser()
-            if (currentUser == null) {
-                repository.signInWithEmailAndPassword("ame8network@gmail.com", "12345678")
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeBy(
-                        onComplete = {
-                            Log.d("Auth", "サインイン成功")
-                        },
-                        onError = { error ->
-                            Log.e("Auth", error.toString())
-                        }
-                    )
-                    .addTo(disposable)
-
-            } else {
-                Log.d("Auth", "サインインしてるよ")
-                repository.updateProfileName(currentUser, "Test")
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeBy(
-                        onComplete = {
-                            Log.d("Auth", "名前変更")
-                        },
-                        onError = { error ->
-                            Log.e("Auth", error.toString())
-                        }
-                    )
-                    .addTo(disposable)
-
-            }
-
-        }
-
-        val signOutButton: Button = findViewById(R.id.signOut)
-        signOutButton.setOnClickListener {
-            repository.signOut()
-//            val currentUser = repository.getCurrentUser()
-//            currentUser?.let {
-//                repository.withdrawal(it)
-//                    .subscribeBy(
-//                        onComplete = {},
-//                        onError = {}
-//                    )
-//                    .addTo(disposable)
-//            }
-        }
-
-        val googleSignInButton: SignInButton = findViewById(R.id.google_sign_in_button)
-        googleSignInButton.setOnClickListener {
-            val signInIntent = repository.mGoogleSignInClient.signInIntent
-            googleSignInLauncher.launch(signInIntent)
-        }
-    }
-
-    private var googleSignInLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            result.data?.let { repository.googleSignIn(it) }
-        } else {
-            Log.w("Auth", "サインインキャンセルまたは失敗")
-        }
-    }
-}
 
 class FirebaseAuthRepository(context: Context) {
     private val mAuth = FirebaseAuth.getInstance()
@@ -151,11 +49,7 @@ class FirebaseAuthRepository(context: Context) {
     /**
      *  ユーザー情報編集
      */
-    public fun updateProfileName(user: FirebaseUser, name: String): Completable {
-        val profileUpdates = userProfileChangeRequest {
-            displayName = name
-        }
-
+    public fun updateProfile(user: FirebaseUser, profileUpdates: UserProfileChangeRequest): Completable {
         return Completable.create { emitter ->
             user.updateProfile(profileUpdates)
                 .addOnCompleteListener { task ->
