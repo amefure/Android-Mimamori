@@ -2,8 +2,22 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Mimamori" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:windowSplashScreenBackground" tools:targetApi="S">@color/ex_thema</item>
     </style>
 
-    <style name="Theme.Mimamori" parent="Base.Theme.Mimamori" />
+
+    <style name="Theme.Mimamori" parent="Base.Theme.Mimamori">
+        <!-- ActionBarの背景色 -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <!-- ステータスバーの背景色 -->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!-- TabLayoutの下線やRadioButton選択時などの色 -->
+        <item name="colorAccent">@color/colorAccent</item>
+        <!--ActionBarの文字色 -->
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <!-- ウィンドウ背景色 -->
+        <item name="android:windowBackground">@color/windowBackground</item>
+        <!-- ナビゲーションバー（戻るキー・ホームキーなどがあるバー）の背景色 -->
+        <item name="android:navigationBarColor">@color/navigationBarColor</item>
+    </style>
 </resources>

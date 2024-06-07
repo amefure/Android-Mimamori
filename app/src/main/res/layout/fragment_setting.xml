@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ex_foundation"
+    android:clickable="true"
+    tools:context=".View.Setting.SettingFragment">
+
+    <include
+        android:id="@+id/include_header"
+        layout="@layout/layout_header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="120dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include_header">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/app_calendar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_weight="1"
+                    android:text="@string/setting_app_title"
+                    android:textColor="@color/ex_text" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/app_current_mode_row"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/icon_switch_mode" />
+
+                <TextView
+                    android:id="@+id/current_mode_row_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:maxWidth="200dp"
+                    android:maxLines="2"
+                    android:text="@string/setting_app_current_mode_mimamori"
+                    android:textColor="@color/ex_text" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/button_arrow_forward" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/app_mimamori_list_row"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/icon_person_list" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:maxWidth="200dp"
+                    android:maxLines="2"
+                    android:text="@string/setting_app_mimamori_list"
+                    android:textColor="@color/ex_text" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/button_arrow_forward" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/app_mamorare_list_row"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/icon_person_list" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:maxWidth="200dp"
+                    android:maxLines="2"
+                    android:text="@string/setting_app_mamorare_list"
+                    android:textColor="@color/ex_text" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/button_arrow_forward" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/app_mimamori_entry_row"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/icon_hand_shake" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:maxWidth="200dp"
+                    android:maxLines="2"
+                    android:text="@string/setting_app_mimamori_entry"
+                    android:textColor="@color/ex_text" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/button_arrow_forward" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/app_mimamori_id_row"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/icon_message" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:maxWidth="200dp"
+                    android:maxLines="2"
+                    android:text="@string/setting_app_mimamori_id"
+                    android:textColor="@color/ex_text" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/button_arrow_forward" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/app_notify_msg_row"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/icon_message" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:maxWidth="200dp"
+                    android:maxLines="2"
+                    android:text="@string/setting_app_notify_msg"
+                    android:textColor="@color/ex_text" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/button_arrow_forward" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/app_how_to_use_row"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/icon_question" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:maxWidth="200dp"
+                    android:maxLines="2"
+                    android:text="@string/setting_app_how_to_use"
+                    android:textColor="@color/ex_text" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/button_arrow_forward" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/app_setting_layout"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_weight="1"
+                    android:text="@string/setting_auth_title"
+                    android:textColor="@color/ex_text" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/auth_edit_info_row"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/icon_user_edit" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:maxWidth="200dp"
+                    android:maxLines="2"
+                    android:text="@string/setting_auth_edit_info"
+                    android:textColor="@color/ex_text" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/button_arrow_forward" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/auth_sign_out_row"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/icon_sign_out" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:maxWidth="200dp"
+                    android:maxLines="2"
+                    android:text="@string/setting_auth_sign_out"
+                    android:textColor="@color/ex_text" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/auth_withdrawal_row"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/icon_user_delete" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:maxWidth="200dp"
+                    android:maxLines="2"
+                    android:text="@string/setting_auth_withdrawal"
+                    android:textColor="@color/ex_text" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/link_layout"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/include_header">
+
+                <TextView
+                    android:id="@+id/link_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_weight="1"
+                    android:text="LINK"
+                    android:textColor="@color/ex_text" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/link_inquiry_row"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@+id/notify_title_layout">
+
+
+                <ImageView
+                    android:id="@+id/link_inquiry_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/icon_inquiry" />
+
+                <TextView
+                    android:id="@+id/link_inquiry_icon_label"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:text="@string/setting_link_inquiry"
+                    android:textColor="@color/ex_text" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/link_terms_of_service_row"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@+id/ads_setting_1">
+
+
+                <ImageView
+                    android:id="@+id/link_terms_of_service_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/icon_note" />
+
+                <TextView
+                    android:id="@+id/link_terms_of_service_label"
+                    android:layout_width="230dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:text="@string/setting_link_terms_of_service"
+                    android:textColor="@color/ex_text" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/link_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ads_setting_2">
+
+                <TextView
+                    android:id="@+id/link_desc_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_weight="1"
+                    android:text="@string/setting_link_desc"
+                    android:textColor="@color/ex_text"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

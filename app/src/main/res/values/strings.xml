@@ -5,8 +5,28 @@
     <string name="dialog_title_notice">お知らせ</string>
     <string name="dialog_auth_validation_input">入力された内容に不備があります。正しい情報を入力してください。</string>
     <string name="dialog_auth_success_send_email">再設定用のメールを送信しました。</string>
-
     <string name="dialog_auth_failed_send_email">予期せぬエラーが発生し、メールの送信に失敗しました。\n時間を空けてから再度お試しください。</string>
+
+    <!-- Setting -->
+    <string name="setting_app_title">アプリ設定</string>
+    <string name="setting_app_current_mode_mimamori">現在：ミマモリ</string>
+    <string name="setting_app_current_mode_mamorare">現在：マモラレ</string>
+    <string name="setting_app_mimamori_list">ミマモリリスト</string>
+    <string name="setting_app_mamorare_list">マモラレリスト</string>
+    <string name="setting_app_mimamori_id">ミマモリID</string>
+    <string name="setting_app_mimamori_entry">ミマモリ登録</string>
+    <string name="setting_app_notify_msg">通知メッセージ変更</string>
+    <string name="setting_app_how_to_use">アプリの使い方</string>
+
+    <string name="setting_auth_title">アカウント</string>
+    <string name="setting_auth_edit_info">アカウント情報変更</string>
+    <string name="setting_auth_sign_out">ログアウトする</string>
+    <string name="setting_auth_withdrawal">退会する</string>
+
+    <string name="setting_link_title">LINK</string>
+    <string name="setting_link_inquiry">アプリの不具合はこちら</string>
+    <string name="setting_link_terms_of_service">利用規約とプライバシーポリシー</string>
+    <string name="setting_link_desc">・アプリに不具合がございましたら「アプリの不具合はこちら」よりお問い合わせください。</string>
 
 
     <!-- FBAuthentication -->

@@ -25,6 +25,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import java.util.logging.Logger
 
 class AuthRootFragment : Fragment() {
 
@@ -41,9 +42,6 @@ class AuthRootFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // サインイン済みならメイン画面へ遷移
-        if (authViewModel.getCurrentUser() != null) startAppMainView()
 
         val inputName: EditText = view.findViewById(R.id.input_name)
         val inputEmail: EditText = view.findViewById(R.id.input_email)
@@ -144,6 +142,7 @@ class AuthRootFragment : Fragment() {
     private fun startAppMainView() {
         val intent = Intent(this.requireContext(), MainActivity::class.java)
         startActivity(intent)
+        this.requireActivity().finish()
     }
 
     /**

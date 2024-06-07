@@ -7,4 +7,17 @@
     <color name="ex_gray">#E7E7E7</color>
     <color name="ex_text">#545454</color>
     <color name="ex_thema">#F0835A</color>
+
+    <!-- ActionBarの背景色 -->
+    <color name="colorPrimary">@color/ex_thema</color>
+    <!-- ステータスバーの背景色 -->
+    <color name="colorPrimaryDark">@color/ex_thema</color>
+    <!-- TabLayoutの下線やRadioButton選択時などの色 -->
+    <color name="colorAccent">@color/ex_accent</color>
+    <!-- ActionBarの文字色 -->
+    <color name="textColorPrimary">@color/white</color>
+    <!-- ウィンドウ背景色 -->
+    <color name="windowBackground">@color/ex_foundation</color>
+    <!-- ナビゲーションバー（戻るキー・ホームキーなどがあるバー）の背景色 -->
+    <color name="navigationBarColor">@color/ex_thema</color>
 </resources>

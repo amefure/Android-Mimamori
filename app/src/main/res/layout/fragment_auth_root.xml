@@ -113,20 +113,21 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1"
-            android:background="@color/black" />
+            android:background="@color/ex_text" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingHorizontal="30dp"
             android:text="OR"
+            android:textColor="@color/ex_text"
             android:textAlignment="center" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1"
-            android:background="@color/black" />
+            android:background="@color/ex_text" />
     </LinearLayout>
 
     <com.google.android.gms.common.SignInButton

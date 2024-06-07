@@ -12,9 +12,7 @@ class AuthActivity : AppCompatActivity() {
 
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.auth_main_frame, AuthRootFragment())
-            addToBackStack(null)
             commit()
         }
     }
 }
-
