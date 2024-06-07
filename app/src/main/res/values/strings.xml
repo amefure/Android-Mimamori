@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">Mimamori</string>
 
+    <!-- Dialog -->
+    <string name="dialog_title_notice">お知らせ</string>
+    <string name="dialog_auth_validation_input">入力された内容に不備があります。正しい情報を入力してください。</string>
+    <string name="dialog_auth_success_send_email">再設定用のメールを送信しました。</string>
+
+    <string name="dialog_auth_failed_send_email">予期せぬエラーが発生し、メールの送信に失敗しました。\n時間を空けてから再度お試しください。</string>
+
+
     <!-- FBAuthentication -->
 
     <string name="auth_input_title"> アカウント情報</string>

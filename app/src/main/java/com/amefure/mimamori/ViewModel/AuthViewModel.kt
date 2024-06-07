@@ -2,15 +2,23 @@ package com.amefure.mimamori.ViewModel
 
 import android.app.Application
 import android.content.Intent
+import android.util.Log
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 
 class AuthViewModel(app: Application) : RootViewModel(app) {
 
     //　表示しているのが新規登録画面かどうか
     public var isShowEntryViewFlag = true
+
+    private var disposable: CompositeDisposable = CompositeDisposable()
 
     /**
      *  カレントユーザー取得
@@ -25,7 +33,7 @@ class AuthViewModel(app: Application) : RootViewModel(app) {
     /**
      *  カレントユーザー取得
      */
-    private fun getCurrentUser(): FirebaseUser? {
+    public fun getCurrentUser(): FirebaseUser? {
         return authRepository.getCurrentUser()
     }
 
@@ -61,10 +69,36 @@ class AuthViewModel(app: Application) : RootViewModel(app) {
 
     /**
      *  Email/Password
-     *  新規登録
+     *  新規登録 & 名前設定
      */
-    public fun createUserWithEmailAndPassword(email: String, pass: String): Completable {
-        return authRepository.createUserWithEmailAndPassword(email, pass)
+    public fun createUserWithEmailAndPassword(name: String, email: String, pass: String): Completable {
+        return Completable.create { emitter ->
+            authRepository.createUserWithEmailAndPassword(email, pass)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(
+                    onComplete = {
+                        updateProfileName(name)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeBy(
+                                onComplete = {
+                                    emitter.onComplete()
+                                },
+                                onError = { error ->
+                                    // ユーザー情報の編集に失敗しても成功を返す
+                                    Log.e("Auth", "ユーザー情報編集失敗")
+                                    emitter.onComplete()
+                                }
+                            )
+                            .addTo(disposable)
+                    },
+                    onError = { error ->
+                        emitter.onError(Error("作成失敗"))
+                    }
+                )
+                .addTo(disposable)
+        }
     }
 
     /**
@@ -72,7 +106,15 @@ class AuthViewModel(app: Application) : RootViewModel(app) {
      *  サインイン
      */
     public fun signInWithEmailAndPassword(email: String, pass: String): Completable {
-        return signInWithEmailAndPassword(email, pass)
+        return authRepository.signInWithEmailAndPassword(email, pass)
+    }
+
+    /**
+     *  Email/Password
+     *  パスワード忘れのための救済メール送信
+     */
+    public fun sendPasswordReset(email: String): Completable {
+        return authRepository.sendPasswordReset(email)
     }
 
 

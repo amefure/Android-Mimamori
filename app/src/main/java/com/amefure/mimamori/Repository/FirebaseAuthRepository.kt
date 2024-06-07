@@ -118,7 +118,23 @@ class FirebaseAuthRepository(context: Context) {
                 }.addOnFailureListener { exception ->
                     emitter.onError(exception)
                 }
+        }
+    }
 
+    /**
+     *  Email/Password
+     *  パスワード忘れのための救済メール送信
+     */
+    public fun sendPasswordReset(email: String): Completable {
+        return Completable.create { emitter ->
+            mAuth.sendPasswordResetEmail(email)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        emitter.onComplete()
+                    }
+                }.addOnFailureListener { exception ->
+                    emitter.onError(exception)
+                }
         }
     }
 
