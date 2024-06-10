@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import com.amefure.mimamori.Model.Config.AppURL
 import com.amefure.mimamori.R
+import com.amefure.mimamori.View.FBAuthentication.AuthActivity
 import com.amefure.mimamori.ViewModel.AuthViewModel
 
 class SettingFragment : Fragment() {
@@ -78,11 +79,11 @@ class SettingFragment : Fragment() {
 
         // ユーザー情報編集
         authEditInfoRow.setOnClickListener {
-
         }
         // サインアウト
         authSignOutRow.setOnClickListener {
             authViewModel.signOut()
+            startAuthRootView()
         }
         // 退会
         authWithdrawalRow.setOnClickListener {
@@ -119,5 +120,14 @@ class SettingFragment : Fragment() {
 
         val rightButton: ImageButton = headerView.findViewById(R.id.right_button)
         rightButton.visibility = View.GONE
+    }
+
+    /**
+     *  サインイン画面起動
+     */
+    private fun startAuthRootView() {
+        val intent = Intent(this.requireContext(), AuthActivity::class.java)
+        startActivity(intent)
+        this.requireActivity().finish()
     }
 }

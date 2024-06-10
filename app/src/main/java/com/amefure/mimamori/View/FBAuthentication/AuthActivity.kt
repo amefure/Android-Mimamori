@@ -10,6 +10,7 @@ class AuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 
+        // 認証ルート画面を表示
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.auth_main_frame, AuthRootFragment())
             commit()
