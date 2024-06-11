@@ -12,14 +12,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import com.amefure.mimamori.R
 import com.amefure.mimamori.View.FBAuthentication.AuthActivity
-import com.amefure.mimamori.View.MainActivity
 import com.amefure.mimamori.View.Setting.SettingFragment
-import com.amefure.mimamori.ViewModel.AuthViewModel
+import com.amefure.mimamori.ViewModel.AuthEnvironment
 
 
 class MamorareFragment : Fragment() {
 
-    private val authViewModel: AuthViewModel by viewModels()
+    private val authEnvironment: AuthEnvironment by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +34,7 @@ class MamorareFragment : Fragment() {
 
         setUpHeaderAction(view)
         signOutButton.setOnClickListener {
-            authViewModel.signOut()
+            authEnvironment.signOut()
             startAuthRootView()
         }
     }

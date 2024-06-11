@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
+import com.amefure.mimamori.Model.myFcmToken
 import com.amefure.mimamori.R
 import com.amefure.mimamori.Repository.FirebaseAuthRepository
 import com.amefure.mimamori.View.FBAuthentication.AuthActivity
@@ -56,6 +57,7 @@ class MainActivity : AppCompatActivity() {
                 return@OnCompleteListener
             }
             val token = task.result
+            myFcmToken = token
             Log.d("FCM Token", "FCM registration token:${token}")
         })
     }

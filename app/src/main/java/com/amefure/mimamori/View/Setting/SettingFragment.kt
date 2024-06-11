@@ -14,11 +14,11 @@ import androidx.fragment.app.viewModels
 import com.amefure.mimamori.Model.Config.AppURL
 import com.amefure.mimamori.R
 import com.amefure.mimamori.View.FBAuthentication.AuthActivity
-import com.amefure.mimamori.ViewModel.AuthViewModel
+import com.amefure.mimamori.ViewModel.AuthEnvironment
 
 class SettingFragment : Fragment() {
 
-    private val authViewModel: AuthViewModel by viewModels()
+    private val authEnvironment: AuthEnvironment by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -82,12 +82,12 @@ class SettingFragment : Fragment() {
         }
         // サインアウト
         authSignOutRow.setOnClickListener {
-            authViewModel.signOut()
+            authEnvironment.signOut()
             startAuthRootView()
         }
         // 退会
         authWithdrawalRow.setOnClickListener {
-            authViewModel.withdrawal()
+            authEnvironment.withdrawal()
         }
 
         // お問い合わせリンク

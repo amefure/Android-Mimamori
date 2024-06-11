@@ -74,6 +74,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:20.7.0'
     // Firebase Cloud Messaging
     implementation 'com.google.firebase:firebase-messaging-ktx:23.0.6'
+    // Firebase Realtime Database
+    implementation("com.google.firebase:firebase-database-ktx")
 
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:2.9.0"

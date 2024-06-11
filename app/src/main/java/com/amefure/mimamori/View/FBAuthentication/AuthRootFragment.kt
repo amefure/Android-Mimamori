@@ -18,18 +18,20 @@ import com.amefure.mimamori.R
 import com.amefure.mimamori.Utility.ValidationUtility
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.View.MainActivity
-import com.amefure.mimamori.ViewModel.AuthViewModel
+import com.amefure.mimamori.ViewModel.AuthEnvironment
+import com.amefure.mimamori.ViewModel.RootEnvironment
 import com.google.android.gms.common.SignInButton
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import java.util.logging.Logger
 
 class AuthRootFragment : Fragment() {
 
-    private val authViewModel: AuthViewModel by viewModels()
+    private val authEnvironment: AuthEnvironment by viewModels()
+    private val rootEnvironment: RootEnvironment by viewModels()
+
     private var disposable: CompositeDisposable = CompositeDisposable()
 
     override fun onCreateView(
@@ -64,9 +66,9 @@ class AuthRootFragment : Fragment() {
 
         // 新規登録/サインイン画面の切り替え
         switchButton.setOnClickListener {
-            authViewModel.isShowEntryViewFlag = !authViewModel.isShowEntryViewFlag
+            authEnvironment.isShowEntryViewFlag = !authEnvironment.isShowEntryViewFlag
 
-            if (authViewModel.isShowEntryViewFlag) {
+            if (authEnvironment.isShowEntryViewFlag) {
                 inputName.visibility = View.VISIBLE
                 inputNameHiddenSpace.visibility = View.GONE
                 val newEntryStr = this.resources.getString(R.string.auth_new_entry)
@@ -86,13 +88,13 @@ class AuthRootFragment : Fragment() {
             val email = inputEmail.text.toString()
             val pass = inputPass.text.toString()
 
-            if (authViewModel.isShowEntryViewFlag) {
+            if (authEnvironment.isShowEntryViewFlag) {
                 // 新規作成
                 if (name.isEmpty() || !ValidationUtility.validateEmail(email) || pass.isEmpty()) {
                     showFailedValidationDialog()
                     return@setOnClickListener
                 }
-                authViewModel.createUserWithEmailAndPassword(name, email, pass)
+                authEnvironment.createUserWithEmailAndPassword(name, email, pass)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
@@ -112,7 +114,7 @@ class AuthRootFragment : Fragment() {
                     showFailedValidationDialog()
                     return@setOnClickListener
                 }
-                authViewModel.signInWithEmailAndPassword(email,pass)
+                authEnvironment.signInWithEmailAndPassword(email,pass)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
@@ -131,7 +133,7 @@ class AuthRootFragment : Fragment() {
 
         val googleSignInButton: SignInButton = view.findViewById(R.id.google_sign_in_button)
         googleSignInButton.setOnClickListener {
-            val signInIntent = authViewModel.getGoogleSignInClient().signInIntent
+            val signInIntent = authEnvironment.getGoogleSignInClient().signInIntent
             googleSignInLauncher.launch(signInIntent)
         }
     }
@@ -165,7 +167,7 @@ class AuthRootFragment : Fragment() {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            result.data?.let { authViewModel.googleSignIn(it) }
+            result.data?.let { authEnvironment.googleSignIn(it) }
         } else {
             Log.w("Auth", "サインインキャンセルまたは失敗")
         }

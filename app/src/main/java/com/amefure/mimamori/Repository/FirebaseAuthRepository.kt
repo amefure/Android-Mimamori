@@ -14,10 +14,18 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
+import java.lang.Error
 
 class FirebaseAuthRepository(context: Context) {
     private val mAuth = FirebaseAuth.getInstance()
     public val mGoogleSignInClient: GoogleSignInClient
+
+    private var disposable: CompositeDisposable = CompositeDisposable()
 
     init {
         mAuth.setLanguageCode("ja")
@@ -146,31 +154,48 @@ class FirebaseAuthRepository(context: Context) {
      *  IntentからGoogleアカウント情報を取得し
      *  クレデンシャルサインインを実行
      */
-    public fun googleSignIn(data: Intent) {
-        val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-        try {
-            val account = task.getResult(ApiException::class.java)
-            account?.idToken?.let { token ->
-                credentialGoogleSignIn(token)
+    public fun googleSignIn(data: Intent): Completable {
+        return Completable.create { emitter ->
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                account?.idToken?.let { token ->
+                    credentialGoogleSignIn(token)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeBy(
+                            onComplete = {
+                                emitter.onComplete()
+                            },
+                            onError = { error ->
+                                emitter.onError(error)
+                            }
+                        )
+                        .addTo(disposable)
+                }
+            } catch (e: ApiException) {
+                Log.d("Auth", "アカウント情報取得失敗 エラー：", e)
+                emitter.onError(e)
             }
-        } catch (e: ApiException) {
-            Log.d("Auth", "アカウント情報取得失敗 エラー：", e)
         }
     }
 
     /**
      *  クレデンシャル(認証情報)でサインインを試みる
      */
-    private fun credentialGoogleSignIn(idToken: String) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        mAuth.signInWithCredential(credential)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.d("Auth", "Googleサインイン成功")
-                } else {
-                    Log.d("Auth", "Googleサインイン失敗", task.exception)
+    private fun credentialGoogleSignIn(idToken: String): Completable {
+        return Completable.create { emitter ->
+            val credential = GoogleAuthProvider.getCredential(idToken, null)
+            mAuth.signInWithCredential(credential)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d("Auth", "Googleサインイン成功")
+                        emitter.onComplete()
+                    } else {
+                        Log.d("Auth", "Googleサインイン失敗", task.exception)
+                        emitter.onError(Error(task.exception))
+                    }
                 }
-            }
-
+        }
     }
 }

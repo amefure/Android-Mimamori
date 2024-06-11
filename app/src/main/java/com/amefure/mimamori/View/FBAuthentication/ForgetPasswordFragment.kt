@@ -1,19 +1,17 @@
 package com.amefure.mimamori.View.FBAuthentication
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Space
 import androidx.fragment.app.viewModels
 import com.amefure.mimamori.R
 import com.amefure.mimamori.Utility.ValidationUtility
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
-import com.amefure.mimamori.ViewModel.AuthViewModel
+import com.amefure.mimamori.ViewModel.AuthEnvironment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -23,7 +21,7 @@ import io.reactivex.schedulers.Schedulers
 
 class ForgetPasswordFragment : Fragment() {
 
-    private val authViewModel: AuthViewModel by viewModels()
+    private val authEnvironment: AuthEnvironment by viewModels()
 
     private val disposable: CompositeDisposable = CompositeDisposable()
     override fun onCreateView(
@@ -45,7 +43,7 @@ class ForgetPasswordFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            authViewModel.sendPasswordReset(email)
+            authEnvironment.sendPasswordReset(email)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(

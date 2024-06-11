@@ -28,7 +28,7 @@ data class AppUser(
     var mamorareIdList:  List<String>
 ) {
     companion object {
-        public val TABLE_NAME = "users"
+        public val TABLE_NAME = "tests"
         // 共通
         public val ID_KEY = "id"
         public val NAME_KEY = "name"

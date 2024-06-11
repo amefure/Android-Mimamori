@@ -3,6 +3,7 @@ package com.amefure.mimamori.ViewModel
 import android.app.Application
 import android.content.Intent
 import android.util.Log
+import com.amefure.mimamori.Model.myFcmToken
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.userProfileChangeRequest
@@ -13,7 +14,7 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 
-class AuthViewModel(app: Application) : RootViewModel(app) {
+class AuthEnvironment(app: Application) : RootViewModel(app) {
 
     //　表示しているのが新規登録画面かどうか
     public var isShowEntryViewFlag = true
@@ -83,11 +84,13 @@ class AuthViewModel(app: Application) : RootViewModel(app) {
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeBy(
                                 onComplete = {
+                                    createUserForCloud()
                                     emitter.onComplete()
                                 },
                                 onError = { error ->
                                     // ユーザー情報の編集に失敗しても成功を返す
                                     Log.e("Auth", "ユーザー情報編集失敗")
+                                    createUserForCloud()
                                     emitter.onComplete()
                                 }
                             )
@@ -106,7 +109,21 @@ class AuthViewModel(app: Application) : RootViewModel(app) {
      *  サインイン
      */
     public fun signInWithEmailAndPassword(email: String, pass: String): Completable {
-        return authRepository.signInWithEmailAndPassword(email, pass)
+        return Completable.create { emitter ->
+            authRepository.signInWithEmailAndPassword(email, pass)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(
+                    onComplete = {
+                        createUserForCloud()
+                        emitter.onComplete()
+                    },
+                    onError = { error ->
+                        emitter.onError(Error("サインイン失敗"))
+                    }
+                )
+                .addTo(disposable)
+        }
     }
 
     /**
@@ -127,5 +144,31 @@ class AuthViewModel(app: Application) : RootViewModel(app) {
      */
     public fun googleSignIn(data: Intent) {
         authRepository.googleSignIn(data)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy(
+                onComplete = {
+                    createUserForCloud()
+                },
+                onError = { error ->
+                    Log.e("Auth", "ユーザー情報編集失敗${error}")
+                }
+            )
+            .addTo(disposable)
+
     }
+
+
+    /**
+     * クラウドにユーザー初期情報を登録する
+     */
+    private fun createUserForCloud() {
+        val user = getCurrentUser() ?: return
+        databaseRepository.createUser(
+            userId = user.uid,
+            name = user.displayName ?: "",
+            myFcmToken
+        )
+    }
+
 }
