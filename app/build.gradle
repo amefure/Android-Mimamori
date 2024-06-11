@@ -26,6 +26,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "FIREBASE_CLIENT_ID", "\"${secretProperties['FIREBASE_CLIENT_ID']}\"")
+        buildConfigField("String", "NOTIFY_END_POINT", "\"${secretProperties['NOTIFY_END_POINT']}\"")
     }
 
 
@@ -73,4 +74,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:20.7.0'
     // Firebase Cloud Messaging
     implementation 'com.google.firebase:firebase-messaging-ktx:23.0.6'
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
 }
