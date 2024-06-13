@@ -14,11 +14,13 @@ import com.amefure.mimamori.R
 import com.amefure.mimamori.View.FBAuthentication.AuthActivity
 import com.amefure.mimamori.View.Setting.SettingFragment
 import com.amefure.mimamori.ViewModel.AuthEnvironment
+import com.amefure.mimamori.ViewModel.RootEnvironment
 
 
 class MamorareFragment : Fragment() {
 
     private val authEnvironment: AuthEnvironment by viewModels()
+    private val rootEnvironment: RootEnvironment by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,22 +32,13 @@ class MamorareFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var signOutButton: Button = view.findViewById(R.id.sign_out_button)
+        rootEnvironment.observeMyUserData()
+
+        var notifySendButton: Button = view.findViewById(R.id.notify_send_button)
 
         setUpHeaderAction(view)
-        signOutButton.setOnClickListener {
-            authEnvironment.signOut()
-            startAuthRootView()
+        notifySendButton.setOnClickListener {
         }
-    }
-
-    /**
-     *  サインイン画面起動
-     */
-    private fun startAuthRootView() {
-        val intent = Intent(this.requireContext(), AuthActivity::class.java)
-        startActivity(intent)
-        this.requireActivity().finish()
     }
 
 

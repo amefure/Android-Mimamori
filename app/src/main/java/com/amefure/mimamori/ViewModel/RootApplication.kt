@@ -17,7 +17,7 @@ class RootApplication : Application() {
     /**
      * [FirebaseAuthRepository]のインスタンス
      */
-    val databaseRepository: FBDatabaseRepository by lazy { FBDatabaseRepository(this) }
+    val databaseRepository: FBDatabaseRepository by lazy { FBDatabaseRepository() }
     override fun onCreate() {
         super.onCreate()
     }

@@ -54,7 +54,7 @@
             android:layout_marginVertical="20dp"/>
 
         <Button
-            android:id="@+id/sign_out_button"
+            android:id="@+id/notify_send_button"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"

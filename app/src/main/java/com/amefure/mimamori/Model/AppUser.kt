@@ -1,5 +1,7 @@
 package com.amefure.mimamori.Model
 
+import java.util.UUID
+
 
 data class AppUser(
     // 一意のID
@@ -17,13 +19,13 @@ data class AppUser(
     // ミマモリ対象のユーザーIDリスト
     var mimamoriIdList: List<String>,
     // 設定対象のユーザークラス(これはクラウドに格納しない)
-    var currentMimamoriList: List<AppUser>,
+    var currentMimamoriList: List<AppUser> = emptyList(),
 
     // ---- ミマモリ(自分)側が参照 ----
     // 設定対象のユーザーID
     var currentMamorareId: String,
     // 設定対象のユーザークラス(これはクラウドに格納しない)
-    var currentMamorareList: List<AppUser>,
+    var currentMamorareList: List<AppUser> = emptyList(),
     // マモラレ対象のユーザーIDリスト
     var mamorareIdList:  List<String>
 ) {
@@ -42,5 +44,16 @@ data class AppUser(
         // ミマモリ(自分)側が参照
         public val CURRENT_MAMORARE_ID = "current_mamorare_id"
         public val MAMORARE_ID_LIST_KEY = "mamorare_id_list"
+
+        public fun demoUser(): AppUser = AppUser(
+                id = UUID.randomUUID().toString(),
+                name =  "ミマモリユーザー",
+                fcmToken = "",
+                isMamorare = false,
+                notifications = emptyList(),
+                mimamoriIdList = emptyList(),
+                currentMamorareId = "",
+                mamorareIdList = emptyList()
+            )
     }
 }
