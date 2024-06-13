@@ -27,11 +27,16 @@ class SettingFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_setting, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpHeaderAction(view)
+        setOnClickListener(view)
+    }
 
+    /**
+     * ボタンクリックイベント登録
+     */
+    private fun setOnClickListener(view: View) {
         val currentModeRow: LinearLayout = view.findViewById(R.id.app_current_mode_row)
         val mimamoriListRow: LinearLayout = view.findViewById(R.id.app_mimamori_list_row)
         val mimamoriEntryRow: LinearLayout = view.findViewById(R.id.app_mimamori_entry_row)
@@ -49,7 +54,11 @@ class SettingFragment : Fragment() {
 
         // カレントモード
         currentModeRow.setOnClickListener {
-
+            parentFragmentManager.beginTransaction().apply {
+                add(R.id.main_frame, SelectAppMainModeFragment())
+                addToBackStack(null)
+                commit()
+            }
         }
         // ミマモリリスト
         mimamoriListRow.setOnClickListener {
@@ -103,8 +112,8 @@ class SettingFragment : Fragment() {
             val intent = Intent(Intent.ACTION_VIEW, uri)
             startActivity(intent)
         }
-
     }
+
     /**
      * ヘッダーボタンセットアップ
      * [LeftButton]：backButton

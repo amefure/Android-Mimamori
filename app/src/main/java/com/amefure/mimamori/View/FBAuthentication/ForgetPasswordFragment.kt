@@ -82,7 +82,7 @@ class ForgetPasswordFragment : Fragment() {
             showPositive = true,
             showNegative = false
         )
-        dialog.show(parentFragmentManager, "FailedAuthValidationInput")
+        dialog.showNow(parentFragmentManager, "FailedAuthValidationInput")
     }
 
 
@@ -96,7 +96,7 @@ class ForgetPasswordFragment : Fragment() {
             showPositive = true,
             showNegative = false
         )
-        dialog.show(parentFragmentManager, "FailedAuthValidationInput")
+        dialog.showNow(parentFragmentManager, "FailedAuthValidationInput")
     }
 
 }

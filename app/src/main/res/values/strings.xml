@@ -1,11 +1,23 @@
 <resources>
     <string name="app_name">Mimamori</string>
 
+    <string name="mamorare">マモラレ</string>
+    <string name="mimamori">ミマモリ</string>
+    <string name="entry">登録</string>
+    <string name="update">更新</string>
+    <string name="send">送信</string>
+    <string name="notify_history">notify_history</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding2_mamorare_msg">マモラレは「通知を送信する側」です。\n登録しているミマモリユーザーにボタンを押すたびに通知が飛ばすことができます。</string>
+    <string name="onboarding2_mimamori_msg">ミマモリは「通知を受信する側」です。\nマモラレ側にアクションがあった際に通知が届き、確認することができます。</string>
+
     <!-- Dialog -->
     <string name="dialog_title_notice">お知らせ</string>
     <string name="dialog_auth_validation_input">入力された内容に不備があります。正しい情報を入力してください。</string>
     <string name="dialog_auth_success_send_email">再設定用のメールを送信しました。</string>
     <string name="dialog_auth_failed_send_email">予期せぬエラーが発生し、メールの送信に失敗しました。\n時間を空けてから再度お試しください。</string>
+    <string name="dialog_success_mode">「%1$sモード」に変更しました</string>
 
     <!-- Setting -->
     <string name="setting_app_title">アプリ設定</string>
@@ -28,6 +40,8 @@
     <string name="setting_link_terms_of_service">利用規約とプライバシーポリシー</string>
     <string name="setting_link_desc">・アプリに不具合がございましたら「アプリの不具合はこちら」よりお問い合わせください。</string>
 
+    <!-- ミマモリモード/マモラレモード切り替え画面 -->
+    <string name="setting_select_app_mode_desc">アプリのモードを切り替えます。\nミマモリモードからマモラレモードにしても通知は届きます。</string>
 
     <!-- FBAuthentication -->
 
@@ -39,7 +53,6 @@
     <string name="auth_sign_in">ログイン</string>
     <string name="auth_already_registered">登録済みの方はこちら</string>
     <string name="auth_forget_password">パスワードをお忘れですか？</string>
-    <string name="auth_send">送信</string>
     <string name="auth_forget_password_desc">パスワードを忘れてしまった場合は登録しているメールアドレスを入力してください。\n入力されたメールアドレスに再設定用のメールが届きますので記載されているURLから再設定を行ってください。</string>
 
 </resources>

@@ -61,7 +61,7 @@
             android:layout_marginTop="40dp"
             android:background="@drawable/mamorare_notify_button_shape"
             android:foregroundTint="@color/white"
-            android:text="@string/auth_send"
+            android:text="@string/send"
             android:textColor="@color/white"
             android:textStyle="bold"
             app:backgroundTint="@null" />

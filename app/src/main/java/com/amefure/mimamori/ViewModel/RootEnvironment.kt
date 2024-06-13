@@ -14,8 +14,7 @@ import kotlinx.coroutines.launch
 class RootEnvironment(app: Application) : RootViewModel(app) {
 
     // 自分のユーザー情報
-    private val _myAppUser = MutableStateFlow<AppUser>(AppUser.demoUser())
-    val myAppUser: Flow<AppUser> = _myAppUser
+    public var myAppUser: Flow<AppUser> = databaseRepository.myAppUser as Flow<AppUser>
 
     /**
      * クラウドから取得したAppUser情報を観測開始
@@ -25,7 +24,6 @@ class RootEnvironment(app: Application) : RootViewModel(app) {
         viewModelScope.launch(Dispatchers.Main) {
             databaseRepository.myAppUser.collect { user ->
                 Log.d("Realtime Database", "USER：${user.toString()}")
-                _myAppUser.value = user ?: return@collect
             }
         }
 

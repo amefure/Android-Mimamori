@@ -157,7 +157,7 @@ class AuthRootFragment : Fragment() {
             showPositive = true,
             showNegative = false
         )
-        dialog.show(parentFragmentManager, "FailedAuthValidationInput")
+        dialog.showNow(parentFragmentManager, "FailedAuthValidationInput")
     }
 
     /**
