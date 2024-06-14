@@ -66,11 +66,20 @@ class SettingFragment : Fragment() {
         }
         // ミマモリ登録
         mimamoriEntryRow.setOnClickListener {
+            parentFragmentManager.beginTransaction().apply {
+                add(R.id.main_frame, EntryMimamoreIdFragment())
+                addToBackStack(null)
+                commit()
+            }
 
         }
         // ミマモリID
         mimamoriIdRow.setOnClickListener {
-
+            parentFragmentManager.beginTransaction().apply {
+                add(R.id.main_frame, ConfirmMimamoriIdFragment())
+                addToBackStack(null)
+                commit()
+            }
         }
         // マモラレリスト
         mamorareListRow.setOnClickListener {
