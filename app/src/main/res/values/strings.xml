@@ -9,15 +9,34 @@
     <string name="notify_history">notify_history</string>
 
     <!-- Onboarding -->
+    <string name="onboarding1_msg">「ミマモリ」はミマモリ側とマモラレ側それぞれがこのアプリをインストールすることで利用できます。\nマモラレ側が通知ボタンを押すとミマモリ設定したユーザーに通知が送られ、知らせることができます。</string>
+    <string name="onboarding2_msg">このアプリをどちらで使用しますか？\n(設定よりいつでも切り替えて利用することも可能です。)</string>
     <string name="onboarding2_mamorare_msg">マモラレは「通知を送信する側」です。\n登録しているミマモリユーザーにボタンを押すたびに通知が飛ばすことができます。</string>
     <string name="onboarding2_mimamori_msg">ミマモリは「通知を受信する側」です。\nマモラレ側にアクションがあった際に通知が届き、確認することができます。</string>
+    <string name="onboarding3_mamorare_msg"> 【登録方法】\nミマモリ側を選択している人からミマモリIDを教えてもらって登録してください。\n(ミマモリIDの登録も後から行うことが可能です。</string>
+    <string name="onboarding3_mamorare_input_placeholder">ミマモリID</string>
+    <string name="onboarding3_mamorare_input_desc">↑ ここに「ミマモリID」を入力して、\n「はじめる」をタップしてください。</string>
+    <string name="onboarding3_mimamori_msg">【登録方法】\n表示されているミマモリIDをマモラレ側に共有して、登録してもらってください。</string>
+    <string name="onboarding3_mimamori_copy">コピー</string>
+    <string name="onboarding3_mimamori_share">共有</string>
+    <string name="onboarding3_mimamori_share_text">ミマモリアプリを一緒に利用してね♫\n----------------------------------------\nミマモリID：%1$s\n----------------------------------------\n・このIDをマモラレ側の設定より入力すればマモラレ側が通知ボタンを押すと通知が届くようになります。</string>
+    <string name="onboarding_next">次へ</string>
+    <string name="onboarding_start">はじめる</string>
+
 
     <!-- Dialog -->
     <string name="dialog_title_notice">お知らせ</string>
     <string name="dialog_auth_validation_input">入力された内容に不備があります。正しい情報を入力してください。</string>
     <string name="dialog_auth_success_send_email">再設定用のメールを送信しました。</string>
     <string name="dialog_auth_failed_send_email">予期せぬエラーが発生し、メールの送信に失敗しました。\n時間を空けてから再度お試しください。</string>
-    <string name="dialog_success_mode">「%1$sモード」に変更しました</string>
+    <!-- Dialog > Setting -->
+    <string name="dialog_sign_out">ログアウトしますか</string>
+    <string name="dialog_not_exist_mimamoriid">存在しないミマモリIDです</string>
+    <string name="dialog_success_notify_msg">通知メッセージを変更しました。</string>
+    <string name="dialog_success_mode">「%1$sモード」に変更しました</string>>
+    <string name="dialog_success_entry_mimamori">ミマモリを登録しました。</string>
+    <string name="dialog_confirm_delete_mamorare">「%1$s」さんをミマモリ対象から外しますか？</string>
+    <string name="dialog_success_copy">コピーしました。</string>
 
     <!-- Setting -->
     <string name="setting_app_title">アプリ設定</string>
@@ -42,6 +61,8 @@
 
     <!-- ミマモリモード/マモラレモード切り替え画面 -->
     <string name="setting_select_app_mode_desc">アプリのモードを切り替えます。\nミマモリモードからマモラレモードにしても通知は届きます。</string>
+    <!-- ミマモリ登録画面 -->
+    <string name="setting_entry_mimamori"> ↑ ここに「ミマモリID」を入力して、\n「登録」をタップしてください。</string>
 
     <!-- FBAuthentication -->
 
