@@ -23,13 +23,13 @@ class CustomNotifyDialogFragment : DialogFragment() {
     /**
      * 引数で受け取る処理
      */
-    private var listener: onTappedListner? = null
+    private var listener: setOnTappedListener? = null
 
     /**
      * ポジティブボタンアクション
      * ネガティブボタンアクション
      */
-    interface onTappedListner {
+    interface setOnTappedListener {
         fun onPositiveButtonTapped()
         fun onNegativeButtonTapped()
     }
@@ -38,7 +38,7 @@ class CustomNotifyDialogFragment : DialogFragment() {
      * リスナーのセットは使用するFragmentから呼び出して行う
      * リスナーオブジェクトの中に処理が含まれて渡される
      */
-    public fun setOnTappedListner(listener: onTappedListner? = null) {
+    public fun setOnTappedListener(listener: setOnTappedListener? = null) {
         // 定義した変数listenerに実行したい処理を引数で渡す（CategoryListFragmentで渡している）
         this.listener = listener
     }

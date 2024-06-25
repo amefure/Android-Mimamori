@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/white"
+    android:paddingVertical="10dp">
+
+    <include
+        android:id="@+id/include"
+        layout="@layout/row_background"
+        android:background="@color/white" />
+
+    <LinearLayout
+        android:id="@+id/foregroundKnobLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="20dp"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/icon_person" />
+
+        <TextView
+            android:id="@+id/user_name_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="10dp"
+            android:text="ユーザー名"
+            android:textColor="@color/ex_text"
+            android:textSize="14sp" />
+
+        <Space
+            android:id="@+id/space"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center" />
+
+
+        <ImageView
+            android:id="@+id/icon_watch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/icon_watch_smile"
+            android:visibility="visible" />
+
+    </LinearLayout>
+
+
+
+</com.google.android.material.card.MaterialCardView>

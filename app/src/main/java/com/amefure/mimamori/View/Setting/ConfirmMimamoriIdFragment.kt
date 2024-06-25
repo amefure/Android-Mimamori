@@ -14,12 +14,8 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.ItemTouchHelper
 import com.amefure.mimamori.R
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
-import com.amefure.mimamori.View.Setting.RecycleViewSetting.SwipeToCallback
-import com.amefure.mimamori.View.Setting.RecycleViewSetting.UserListAdapter
 import com.amefure.mimamori.ViewModel.RootEnvironment
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo

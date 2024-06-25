@@ -18,4 +18,15 @@ class SettingViewModel(app: Application) : RootViewModel(app) {
         }
     }
 
+
+
+    /** マモラレ削除 */
+    public fun deleteMamorare(mamorareId: String, completion: (Boolean) -> Unit) {
+        authRepository.getCurrentUser()?.uid?.let { userId ->
+            databaseRepository.deleteMamorareList(userId, mamorareId) {
+                completion(it)
+            }
+        }
+    }
+
 }
