@@ -9,6 +9,8 @@ import com.google.firebase.database.ValueEventListener
 
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -16,8 +18,8 @@ class FBDatabaseRepository() {
     private val ref = Firebase.database.reference
 
     // 自分のユーザー情報
-    private val _myAppUser = MutableStateFlow<AppUser?>(null)
-    val myAppUser: Flow<AppUser?> = _myAppUser
+    private val _myAppUser = BehaviorSubject.createDefault(AppUser.demoUser())
+    val myAppUser: Observable<AppUser> = _myAppUser.hide()
 
     private var oldNotifications: Int = 0
 
@@ -86,9 +88,8 @@ class FBDatabaseRepository() {
         val userRef = ref.child(AppUser.TABLE_NAME).child(userId)
         userRef.get()
             .addOnSuccessListener {
-                val result = it.value ?: completion(false)
-                if (!(result is Map<*, *>)) completion(false)
-                val userDic = result as Map <String, Any>
+                val result = it.value ?: run { completion(false); return@addOnSuccessListener }
+                val userDic = result as? Map <String, Any> ?: run {completion(false); return@addOnSuccessListener }
 
                 var ids = userDic[AppUser.MIMAMORI_ID_LIST_KEY] as? MutableList<String>
                 ids?.let {
@@ -124,9 +125,8 @@ class FBDatabaseRepository() {
         val userRef = ref.child(AppUser.TABLE_NAME).child(userId)
         userRef.get()
             .addOnSuccessListener {
-                val result = it.value ?: completion(false)
-                if (!(result is Map<*, *>)) completion(false)
-                val userDic = result as Map <String, Any>
+                val result = it.value ?: run { completion(false); return@addOnSuccessListener }
+                val userDic = result as? Map <String, Any> ?: run {completion(false); return@addOnSuccessListener }
 
                 var ids = userDic[AppUser.MIMAMORI_ID_LIST_KEY] as? MutableList<String>
                 ids?.let {
@@ -154,15 +154,14 @@ class FBDatabaseRepository() {
         mimamoriId: String,
         completion: (Boolean) -> Unit
     ) {
-        val userRef = ref.child(AppUser.TABLE_NAME).child(mimamoriId)
+        // Firebaseに許可されていないパス文字列を除去
+        var path = sanitizeFirebasePath(mimamoriId)
+        val userRef = ref.child(AppUser.TABLE_NAME).child(path)
         userRef.get()
             .addOnSuccessListener {
-                val result = it.value ?: completion(false)
-                if (!(result is Map<*, *>)) completion(false)
-                val userDic = result as Map <String, Any>
-
+                val result = it.value ?: run { completion(false); return@addOnSuccessListener }
+                val userDic = result as? Map <String, Any> ?: run { completion(false); return@addOnSuccessListener }
                 var ids = userDic[AppUser.MAMORARE_ID_LIST_KEY] as? MutableList<String>
-                Log.d("Realtime Database ids" , ids.toString())
                 ids?.let {
                     it.add(userId)
                     val value = mapOf(
@@ -185,6 +184,12 @@ class FBDatabaseRepository() {
             }
     }
 
+    /**
+     * Firebase Database paths must not contain '.', '#', '$', '[', or ']'
+     */
+    private fun sanitizeFirebasePath(path: String): String {
+        return path.replace(Regex("[.#$\\[\\]]"), "")
+    }
 
     /**
      * 通知送信対象の読み取れるFCM登録トークンとミマモリIDを削除
@@ -198,9 +203,8 @@ class FBDatabaseRepository() {
         val userRef = ref.child(AppUser.TABLE_NAME).child(userId)
         userRef.get()
             .addOnSuccessListener {
-                val result = it.value ?: completion(false)
-                if (!(result is Map<*, *>)) completion(false)
-                val userDic = result as Map <String, Any>
+                val result = it.value ?: run { completion(false); return@addOnSuccessListener }
+                val userDic = result as? Map <String, Any> ?: run { completion(false); return@addOnSuccessListener }
 
                 var ids = userDic[AppUser.MAMORARE_ID_LIST_KEY] as? MutableList<String>
                 ids?.let {
@@ -236,9 +240,8 @@ class FBDatabaseRepository() {
         val userRef =  ref.child(AppUser.TABLE_NAME).child(userId)
         userRef.get()
             .addOnSuccessListener {
-                val result = it.value ?:return@addOnSuccessListener
-                if (!(result is Map<*, *>)) return@addOnSuccessListener
-                val userDic = result as Map<String, Any>
+                val result = it.value ?: return@addOnSuccessListener
+                val userDic = result as? Map <String, Any> ?: return@addOnSuccessListener
 
                 val user = createAppUser(userDic, userId)
                 storeMamorareUser(user)
@@ -312,9 +315,8 @@ class FBDatabaseRepository() {
 
         observeMyUserData = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val result = dataSnapshot.value?:return
-                if (!(result is Map<*, *>)) return
-                val userDic = result as Map<String, Any>
+                val result = dataSnapshot.value ?: return
+                val userDic = result as? Map <String, Any> ?: return
                 val user = createAppUser(userDic, userId)
                 storeMamorareUser(user)
                 Log.d("Realtime Database", "取得した値： $user")
@@ -338,15 +340,14 @@ class FBDatabaseRepository() {
 
         observeMamorareDataListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val result = dataSnapshot.value?:return
-                if (!(result is Map<*, *>)) return
-                val userDic = result as Map<String, Any>
+                val result = dataSnapshot.value ?: return
+                val userDic = result as? Map <String, Any> ?: return
                 var mamorareUser = createAppUser(userDic, mamorareId)
                 val myUser = _myAppUser.value?:return
                 val index =  myUser.currentMamorareList.indexOfFirst { it.id == mamorareId }
                 oldNotifications = myUser.currentMamorareList.firstOrNull { it.id == mamorareId }?.notifications?.size ?: 0
                 myUser.currentMamorareList.toMutableList()[index] = mamorareUser
-                _myAppUser.value = myUser
+                _myAppUser.onNext(myUser)
                 Log.d("Realtime Database", "取得した値： $myUser")
             }
 
@@ -368,40 +369,37 @@ class FBDatabaseRepository() {
         var users = mutableListOf<AppUser>()
         var index = 0
         if (user.isMamorare) {
-            if (user.mimamoriIdList.isEmpty()) { _myAppUser.value = user; return }
+            if (user.mimamoriIdList.isEmpty()) { _myAppUser.onNext(user); return }
             user.mimamoriIdList.forEach { mimamoriId ->
                 userRef.child(mimamoriId).get()
                     .addOnSuccessListener {
                         index += 1
-                        val result = it.value ?: run { _myAppUser.value = user }
-                        if (!(result is Map<*, *>)) { _myAppUser.value = user }
-                        val userDic = result as Map<String, Any>
-
+                        val result = it.value ?: run { _myAppUser.onNext(user); return@addOnSuccessListener }
+                        val userDic = result as? Map <String, Any> ?: run { _myAppUser.onNext(user); return@addOnSuccessListener }
                         val addUser = createAppUser(userDic, mimamoriId)
                         users.add(addUser)
                         if (index == user.mimamoriIdList.size) {
                             user.currentMimamoriList = users
-                            _myAppUser.value = user
+                            _myAppUser.onNext(user)
                         }
                     }.addOnFailureListener {
                         Log.d("Realtime Database", "データ取得エラー${it}")
-                        _myAppUser.value = user
+                        _myAppUser.onNext(user)
                     }
                 }
         } else {
-        if (user.mamorareIdList.isEmpty()) { _myAppUser.value = user; return }
+        if (user.mamorareIdList.isEmpty()) { _myAppUser.onNext(user); return }
             user.mamorareIdList.forEach { mamorareId ->
                 userRef.child(mamorareId).get()
                     .addOnSuccessListener {
                         index += 1
-                        val result = it.value ?: run { _myAppUser.value = user }
-                        if (!(result is Map<*, *>))  { _myAppUser.value = user }
-                        val userDic = result as Map<String, Any>
+                        val result = it.value ?: run { _myAppUser.onNext(user); return@addOnSuccessListener }
+                        val userDic = result as? Map <String, Any> ?: run { _myAppUser.onNext(user); return@addOnSuccessListener }
                         val addUser = createAppUser(userDic, mamorareId)
                         users.add(addUser)
                         if (index == user.mamorareIdList.size) {
                             user.currentMamorareList = users
-                            _myAppUser.value = user
+                            _myAppUser.onNext(user)
                         }
                     }.addOnFailureListener {
 

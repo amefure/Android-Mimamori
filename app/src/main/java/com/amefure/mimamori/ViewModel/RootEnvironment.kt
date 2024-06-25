@@ -2,27 +2,26 @@ package com.amefure.mimamori.ViewModel
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.viewModelScope
 import com.amefure.mimamori.Model.AppUser
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 
 class RootEnvironment(app: Application) : RootViewModel(app) {
 
     // 自分のユーザー情報
-    public var myAppUser: Flow<AppUser> = databaseRepository.myAppUser as Flow<AppUser>
+    public var myAppUser: Observable<AppUser> = databaseRepository.myAppUser
+
+    private var compositeDisposable = CompositeDisposable()
 
     /**
      * クラウドから取得したAppUser情報を観測開始
      */
     public fun observeMyUserData() {
         // クラウドから取得したAppUser情報を観測
-        viewModelScope.launch(Dispatchers.Main) {
-            databaseRepository.myAppUser.collect { user ->
-                Log.d("Realtime Database", "USER：${user.toString()}")
-            }
-        }
+        databaseRepository.myAppUser.subscribe { user ->
+            Log.d("Realtime Database", "USER：${user}")
+        }.addTo(compositeDisposable)
 
         // ローカルにあるユーザーIDを使用してクラウドを観測開始
         authRepository.getCurrentUser()?.uid?.let { userId ->

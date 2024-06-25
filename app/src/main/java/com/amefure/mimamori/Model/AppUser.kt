@@ -47,7 +47,7 @@ data class AppUser(
 
         public fun demoUser(): AppUser = AppUser(
                 id = UUID.randomUUID().toString(),
-                name =  "ミマモリユーザー",
+                name =  "ミマモリデモユーザー",
                 fcmToken = "",
                 isMamorare = false,
                 notifications = emptyList(),

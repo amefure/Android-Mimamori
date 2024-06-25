@@ -15,13 +15,16 @@ import androidx.lifecycle.lifecycleScope
 import com.amefure.mimamori.R
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.ViewModel.RootEnvironment
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.launch
 
 class EntryMimamoreIdFragment : Fragment() {
 
 
     private val rootEnvironment: RootEnvironment by viewModels()
-
+    private var compositeDisposable = CompositeDisposable()
     private var userId = ""
 
     override fun onCreateView(
@@ -31,6 +34,11 @@ class EntryMimamoreIdFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_entry_mimamore_id, container, false)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.clear()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpHeaderAction(view)
@@ -38,11 +46,9 @@ class EntryMimamoreIdFragment : Fragment() {
         var inputMimamoriId: EditText = view.findViewById(R.id.input_mimamori_id)
         var entryIdButton: Button = view.findViewById(R.id.entry_id_button)
 
-        lifecycleScope.launch {
-            rootEnvironment.myAppUser.collect {
-                userId = it.id
-            }
-        }
+        rootEnvironment.myAppUser.subscribeBy { user ->
+            userId = user.id
+        }.addTo(compositeDisposable)
 
         // ミマモリID登録
         entryIdButton.setOnClickListener {

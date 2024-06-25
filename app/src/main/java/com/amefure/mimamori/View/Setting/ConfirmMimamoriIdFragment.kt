@@ -15,20 +15,31 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.amefure.mimamori.R
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
+import com.amefure.mimamori.View.Setting.RecycleViewSetting.SwipeToCallback
+import com.amefure.mimamori.View.Setting.RecycleViewSetting.UserListAdapter
 import com.amefure.mimamori.ViewModel.RootEnvironment
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.launch
 
 class ConfirmMimamoriIdFragment : Fragment() {
 
     private val rootEnvironment: RootEnvironment by viewModels()
-
+    private var compositeDisposable = CompositeDisposable()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_confirm_mimamori_id, container, false)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.clear()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,11 +50,9 @@ class ConfirmMimamoriIdFragment : Fragment() {
         var copyButton: Button = view.findViewById(R.id.copy_button)
         var shareButton: Button = view.findViewById(R.id.share_button)
 
-        lifecycleScope.launch {
-            rootEnvironment.myAppUser.collect {
-                id.text = it.id
-            }
-        }
+        rootEnvironment.myAppUser.subscribeBy { user ->
+            id.text = user.id
+        }.addTo(compositeDisposable)
 
         copyButton.setOnClickListener {
             copyIdToClipboard(this.requireContext(), id.text.toString())

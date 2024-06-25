@@ -62,7 +62,11 @@ class SettingFragment : Fragment() {
         }
         // ミマモリリスト
         mimamoriListRow.setOnClickListener {
-
+            parentFragmentManager.beginTransaction().apply {
+                add(R.id.main_frame, AlignmentUserListFragment())
+                addToBackStack(null)
+                commit()
+            }
         }
         // ミマモリ登録
         mimamoriEntryRow.setOnClickListener {
@@ -71,7 +75,6 @@ class SettingFragment : Fragment() {
                 addToBackStack(null)
                 commit()
             }
-
         }
         // ミマモリID
         mimamoriIdRow.setOnClickListener {
@@ -83,7 +86,11 @@ class SettingFragment : Fragment() {
         }
         // マモラレリスト
         mamorareListRow.setOnClickListener {
-
+            parentFragmentManager.beginTransaction().apply {
+                add(R.id.main_frame, AlignmentUserListFragment())
+                addToBackStack(null)
+                commit()
+            }
         }
         // 通知メッセージ変更
         notifyMsgRow.setOnClickListener {

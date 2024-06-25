@@ -1,7 +1,6 @@
 package com.amefure.mimamori.View.Setting
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,19 +12,19 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.amefure.mimamori.R
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
-import com.amefure.mimamori.ViewModel.AuthEnvironment
 import com.amefure.mimamori.ViewModel.RootEnvironment
 import com.amefure.mimamori.ViewModel.SettingViewModel
-import kotlinx.coroutines.launch
-import org.w3c.dom.Text
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 
 class SelectAppMainModeFragment : Fragment() {
 
     private val rootEnvironment: RootEnvironment by viewModels()
     private val viewModel: SettingViewModel by viewModels()
+    private var compositeDisposable = CompositeDisposable()
     private var isMamorare = true
 
     override fun onCreateView(
@@ -33,6 +32,11 @@ class SelectAppMainModeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_select_app_main_mode, container, false)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.clear()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -82,16 +86,14 @@ class SelectAppMainModeFragment : Fragment() {
             showSuccessUpdateModeDialog()
         }
 
-        lifecycleScope.launch {
-            rootEnvironment.myAppUser.collect {
-                isMamorare = it.isMamorare
-                if (isMamorare) {
-                    selectMamorareButton.performClick()
-                } else {
-                    selectMimamoriButton.performClick()
-                }
+        rootEnvironment.myAppUser.subscribeBy { user ->
+            isMamorare = user.isMamorare
+            if (isMamorare) {
+                selectMamorareButton.performClick()
+            } else {
+                selectMimamoriButton.performClick()
             }
-        }
+        }.addTo(compositeDisposable)
     }
 
     /**
