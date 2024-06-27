@@ -15,10 +15,23 @@ import com.amefure.mimamori.Model.Config.AppURL
 import com.amefure.mimamori.R
 import com.amefure.mimamori.View.FBAuthentication.AuthActivity
 import com.amefure.mimamori.ViewModel.AuthEnvironment
+import com.amefure.mimamori.ViewModel.RootEnvironment
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 
 class SettingFragment : Fragment() {
 
+    private val rootEnvironment: RootEnvironment by viewModels()
     private val authEnvironment: AuthEnvironment by viewModels()
+
+    private var compositeDisposable = CompositeDisposable()
+
+    private lateinit var mimamoriListRow: LinearLayout
+    private lateinit var mimamoriEntryRow: LinearLayout
+    private lateinit var mimamoriIdRow: LinearLayout
+    private lateinit var mamorareListRow: LinearLayout
+    private lateinit var notifyMsgRow: LinearLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,22 +40,53 @@ class SettingFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_setting, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setUpHeaderAction(view)
-        setOnClickListener(view)
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.clear()
     }
 
-    /**
-     * ボタンクリックイベント登録
-     */
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setUpView(view)
+        setUpHeaderAction(view)
+        setOnClickListener(view)
+
+        rootEnvironment.myAppUser.subscribeBy { user ->
+            showSwitchIsMamorareRow(user.isMamorare)
+        }.addTo(compositeDisposable)
+    }
+
+
+    /** マモラレフラグによる設定行の表示/非表示切り替え */
+    private fun setUpView(view: View) {
+        mimamoriListRow = view.findViewById(R.id.app_mimamori_list_row)
+        mimamoriEntryRow = view.findViewById(R.id.app_mimamori_entry_row)
+        mimamoriIdRow = view.findViewById(R.id.app_mimamori_id_row)
+        mamorareListRow = view.findViewById(R.id.app_mamorare_list_row)
+        notifyMsgRow = view.findViewById(R.id.app_notify_msg_row)
+    }
+
+    /** マモラレフラグによる設定行の表示/非表示切り替え */
+    private fun showSwitchIsMamorareRow(isMamorare: Boolean) {
+        if (isMamorare) {
+            mimamoriListRow.visibility = View.VISIBLE
+            mimamoriEntryRow.visibility = View.VISIBLE
+            mimamoriIdRow.visibility = View.GONE
+            mamorareListRow.visibility = View.GONE
+            notifyMsgRow.visibility = View.VISIBLE
+        } else {
+            mimamoriListRow.visibility = View.GONE
+            mimamoriEntryRow.visibility = View.GONE
+            mimamoriIdRow.visibility = View.VISIBLE
+            mamorareListRow.visibility = View.VISIBLE
+            notifyMsgRow.visibility = View.GONE
+        }
+    }
+
+    /**　ボタンクリックイベント登録　*/
     private fun setOnClickListener(view: View) {
         val currentModeRow: LinearLayout = view.findViewById(R.id.app_current_mode_row)
-        val mimamoriListRow: LinearLayout = view.findViewById(R.id.app_mimamori_list_row)
-        val mimamoriEntryRow: LinearLayout = view.findViewById(R.id.app_mimamori_entry_row)
-        val mimamoriIdRow: LinearLayout = view.findViewById(R.id.app_mimamori_id_row)
-        val mamorareListRow: LinearLayout = view.findViewById(R.id.app_mamorare_list_row)
-        val notifyMsgRow: LinearLayout = view.findViewById(R.id.app_notify_msg_row)
         val howToUseRow: LinearLayout = view.findViewById(R.id.app_how_to_use_row)
 
         val authEditInfoRow: LinearLayout = view.findViewById(R.id.auth_edit_info_row)
