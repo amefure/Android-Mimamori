@@ -142,7 +142,11 @@ class SettingFragment : Fragment() {
         }
         // アプリの使い方
         howToUseRow.setOnClickListener {
-
+            parentFragmentManager.beginTransaction().apply {
+                add(R.id.main_frame, HowToUseFragment())
+                addToBackStack(null)
+                commit()
+            }
         }
 
 

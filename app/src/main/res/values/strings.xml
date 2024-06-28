@@ -72,7 +72,7 @@
 
     <!-- FBAuthentication -->
 
-    <string name="auth_input_title"> アカウント情報</string>
+    <string name="auth_input_title">アカウント情報</string>
     <string name="auth_input_hint_name">ユーザー名</string>
     <string name="auth_input_hint_email">メールアドレス</string>
     <string name="auth_input_hint_pass">パスワード</string>
@@ -81,5 +81,16 @@
     <string name="auth_already_registered">登録済みの方はこちら</string>
     <string name="auth_forget_password">パスワードをお忘れですか？</string>
     <string name="auth_forget_password_desc">パスワードを忘れてしまった場合は登録しているメールアドレスを入力してください。\n入力されたメールアドレスに再設定用のメールが届きますので記載されているURLから再設定を行ってください。</string>
+
+    <!-- HowToUse -->
+    <string name="how_to_use_title">Question</string>
+    <string name="how_to_use_q1">アプリの使い方を教えて</string>
+    <string name="how_to_use_a1">アプリを活用するためには以下の4STEPを実行してください。\n※またそのためにはミマモリ側とマモラレ側の2人ともがアカウントを作成する必要があります。\n\n・STEP1：ミマモリ側がアプリをインストールしてアカウント作成\n\n・STEP2：マモラレ側もアプリをインストールしてアカウント作成\n\n・STEP3：ミマモリ側の設定から確認できる「ミマモリID」をマモラレ側に登録\n\n・STEP4：完了\n\n\nこれでマモラレ側がボタンをクリックしたタイミングでミマモリ側に通知を送ることができるようになります。</string>
+    <string name="how_to_use_q2">通知履歴に表示される通知の数はいくつですか？</string>
+    <string name="how_to_use_a2">通知履歴に表示される通知は1週間分のみになります。\n1週間前の通知データは削除されていきますのでご注意ください。</string>
+    <string name="how_to_use_q3">通知が届かなくなった</string>
+    <string name="how_to_use_a3">通知が届かなくなった場合は携帯を変えてアカウントに入り直した時などが考えられます。\nその際はミマモリ対象のマモラレユーザーを一度削除して、再度登録してもらってください。それでも届かない場合は通知設定がOFFになっていないことを確認してみてください。\nご不明点は「アプリの不具合はこちら」よりお問い合わせください。</string>
+    <string name="how_to_use_q4">⚪︎⚪︎な機能を追加してほしい</string>
+    <string name="how_to_use_a4">アプリのレビューもしくは「アプリの不具合はこちら」のWebサイトのお問い合わせフォームからフィードバックをいただけるとできる限り対処いたします。\nしかしご要望に添えない可能性があることをご了承ください。</string>
 
 </resources>
