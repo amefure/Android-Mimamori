@@ -96,7 +96,14 @@
             android:layout_gravity="right"
             android:text="@string/auth_forget_password"
             android:textColor="@color/ex_accent"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+        <Space
+            android:id="@+id/forget_password_button_hidden_space"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:visibility="visible" />
 
     </LinearLayout>
 

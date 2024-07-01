@@ -31,6 +31,11 @@ class ForgetPasswordFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_forget_password, container, false)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        disposable.clear()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val inputEmail: EditText = view.findViewById(R.id.input_email)

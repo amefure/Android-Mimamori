@@ -74,7 +74,7 @@
             android:backgroundTint="#00000000"
             android:textColor="@color/ex_text"
             style="?android:attr/borderlessButtonStyle"
-            android:text="キャンセル" />
+            android:text="@string/dialog_base_negative_text" />
 
         <View
             android:id="@+id/button_vertical_divider"
@@ -90,7 +90,7 @@
             android:backgroundTint="#00000000"
             android:textColor="@color/ex_text"
             style="?android:attr/borderlessButtonStyle"
-            android:text="OK" />
+            android:text="@string/dialog_base_positive_text" />
 
 
         <Space

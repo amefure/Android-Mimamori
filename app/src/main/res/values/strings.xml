@@ -30,13 +30,17 @@
     <string name="dialog_auth_success_send_email">再設定用のメールを送信しました。</string>
     <string name="dialog_auth_failed_send_email">予期せぬエラーが発生し、メールの送信に失敗しました。\n時間を空けてから再度お試しください。</string>
     <!-- Dialog > Setting -->
-    <string name="dialog_sign_out">ログアウトしますか</string>
+    <string name="dialog_sign_out">ログアウトしますか？</string>
+    <string name="dialog_sign_out_positive_text">ログアウト</string>
     <string name="dialog_not_exist_mimamoriid">存在しないミマモリIDです</string>
     <string name="dialog_success_notify_msg">通知メッセージを変更しました。</string>
     <string name="dialog_success_mode">「%1$sモード」に変更しました</string>>
     <string name="dialog_success_entry_mimamori">ミマモリを登録しました。</string>
     <string name="dialog_confirm_delete_mamorare">「%1$s」さんをミマモリ対象から外しますか？</string>
     <string name="dialog_success_copy">コピーしました。</string>
+
+    <string name="dialog_base_positive_text">OK</string>
+    <string name="dialog_base_negative_text">キャンセル</string>
 
     <!-- Setting -->
     <string name="setting_app_title">アプリ設定</string>

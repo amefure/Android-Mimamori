@@ -19,6 +19,8 @@ class CustomNotifyDialogFragment : DialogFragment() {
     private var msg: String = ""
     private var showPositive: Boolean = true
     private var showNegative: Boolean = true
+    private var positionText: String = ""
+    private var negativeText: String = ""
 
     /**
      * 引数で受け取る処理
@@ -48,13 +50,22 @@ class CustomNotifyDialogFragment : DialogFragment() {
      */
     companion object {
         @JvmStatic
-        public fun newInstance(title: String, msg: String, showPositive: Boolean = true, showNegative: Boolean = true) =
+        public fun newInstance(
+            title: String,
+            msg: String,
+            showPositive: Boolean = true,
+            showNegative: Boolean = true,
+            positionText: String = "",
+            negativeText: String = "",
+        ) =
             CustomNotifyDialogFragment().apply {
                 arguments = Bundle().apply {
                     putString(AppArgKey.ARG_DIALOG_TITLE_KEY, title)
                     putString(AppArgKey.ARG_DIALOG_MSG_KEY, msg)
                     putBoolean(AppArgKey.ARG_DIALOG_SHOW_POSITIVE_KEY, showPositive)
                     putBoolean(AppArgKey.ARG_DIALOG_SHOW_NEGATIVE_KEY, showNegative)
+                    putString(AppArgKey.ARG_DIALOG_POSITIVE_TEXT_KEY, positionText)
+                    putString(AppArgKey.ARG_DIALOG_NEGATIVE_TEXT_KEY, negativeText)
                 }
             }
     }
@@ -66,6 +77,8 @@ class CustomNotifyDialogFragment : DialogFragment() {
             msg = it.getString(AppArgKey.ARG_DIALOG_MSG_KEY).toString()
             showPositive = it.getBoolean(AppArgKey.ARG_DIALOG_SHOW_POSITIVE_KEY)
             showNegative = it.getBoolean(AppArgKey.ARG_DIALOG_SHOW_NEGATIVE_KEY)
+            positionText = it.getString(AppArgKey.ARG_DIALOG_POSITIVE_TEXT_KEY).toString()
+            negativeText = it.getString(AppArgKey.ARG_DIALOG_NEGATIVE_TEXT_KEY).toString()
         }
     }
 
@@ -81,12 +94,19 @@ class CustomNotifyDialogFragment : DialogFragment() {
         val negativeButton: Button = dialog.findViewById(R.id.negative_button)
         val divider: View = dialog.findViewById(R.id.button_vertical_divider)
 
+        // ポシティブボタンテキストをセット
+        positiveButton.text = if (positionText.isEmpty()) getString(R.string.dialog_base_positive_text) else positionText
+        // ネガティブボタンテキストをセット
+        negativeButton.text = if (negativeText.isEmpty()) getString(R.string.dialog_base_negative_text) else negativeText
+
         if (!showPositive) {
+            // ポシティブボタンを非表示
             positiveButton.visibility = View.GONE
             divider.visibility = View.GONE
         }
 
         if (!showNegative) {
+            // ネガティブボタンを非表示
             negativeButton.visibility = View.GONE
             divider.visibility = View.GONE
         }

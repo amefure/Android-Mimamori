@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import com.amefure.mimamori.Model.Config.AppURL
 import com.amefure.mimamori.R
+import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.View.FBAuthentication.AuthActivity
 import com.amefure.mimamori.ViewModel.AuthEnvironment
 import com.amefure.mimamori.ViewModel.RootEnvironment
@@ -155,12 +156,11 @@ class SettingFragment : Fragment() {
         }
         // サインアウト
         authSignOutRow.setOnClickListener {
-            authEnvironment.signOut()
-            startAuthRootView()
+            showConfirmSignOutDialog()
         }
         // 退会
         authWithdrawalRow.setOnClickListener {
-            authEnvironment.withdrawal()
+            // authEnvironment.withdrawal()
         }
 
         // お問い合わせリンク
@@ -176,6 +176,27 @@ class SettingFragment : Fragment() {
             val intent = Intent(Intent.ACTION_VIEW, uri)
             startActivity(intent)
         }
+    }
+
+    /** ログアウトダイアログ表示 */
+    private fun showConfirmSignOutDialog() {
+        val dialog = CustomNotifyDialogFragment.newInstance(
+            title = getString(R.string.dialog_title_notice),
+            msg = getString(R.string.dialog_sign_out),
+            showPositive = true,
+            showNegative = true,
+            positionText = getString(R.string.dialog_sign_out_positive_text),
+        )
+        dialog.setOnTappedListener(
+            object : CustomNotifyDialogFragment.setOnTappedListener {
+                override fun onPositiveButtonTapped() {
+                    authEnvironment.signOut()
+                    startAuthRootView()
+                }
+                override fun onNegativeButtonTapped() { }
+            }
+        )
+        dialog.showNow(parentFragmentManager, "showConfirmSignOutDialog")
     }
 
     /**

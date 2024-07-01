@@ -42,6 +42,11 @@ class AuthRootFragment : Fragment() {
     }
 
 
+    override fun onDestroy() {
+        super.onDestroy()
+        disposable.clear()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -50,6 +55,8 @@ class AuthRootFragment : Fragment() {
         val inputPass: EditText = view.findViewById(R.id.input_password)
 
         val inputNameHiddenSpace: Space = view.findViewById(R.id.input_name_hidden_space)
+        val forgetPasswordButtonHiddenSpace: Space = view.findViewById(R.id.forget_password_button_hidden_space)
+
 
         val createButton: Button = view.findViewById(R.id.email_sign_in_button)
         val forgetPasswordButton: Button = view.findViewById(R.id.forget_password_button)
@@ -71,11 +78,15 @@ class AuthRootFragment : Fragment() {
             if (authEnvironment.isShowEntryViewFlag) {
                 inputName.visibility = View.VISIBLE
                 inputNameHiddenSpace.visibility = View.GONE
+                forgetPasswordButton.visibility = View.GONE
+                forgetPasswordButtonHiddenSpace.visibility = View.VISIBLE
                 val newEntryStr = this.resources.getString(R.string.auth_new_entry)
                 createButton.setText(newEntryStr)
             } else {
                 inputName.visibility = View.GONE
                 inputNameHiddenSpace.visibility = View.VISIBLE
+                forgetPasswordButton.visibility = View.VISIBLE
+                forgetPasswordButtonHiddenSpace.visibility = View.GONE
                 val signInStr = this.resources.getString(R.string.auth_sign_in)
                 createButton.setText(signInStr)
             }
