@@ -1,5 +1,6 @@
 package com.amefure.mimamori.View.Setting
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -13,6 +14,8 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
@@ -26,6 +29,7 @@ import com.amefure.mimamori.View.FBAuthentication.AuthActivity
 import com.amefure.mimamori.ViewModel.AuthEnvironment
 import com.amefure.mimamori.ViewModel.RootEnvironment
 import com.amefure.mimamori.ViewModel.SettingViewModel
+import com.google.android.gms.common.SignInButton
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -88,6 +92,12 @@ class WithdrawalFragment : Fragment() {
         rootEnvironment.myAppUser.subscribeBy { user ->
             myAppUser = user
         }.addTo(disposable)
+
+        val googleSignInButton: SignInButton = view.findViewById(R.id.google_sign_in_button)
+        googleSignInButton.setOnClickListener {
+            val signInIntent = authEnvironment.getGoogleSignInClient().signInIntent
+            googleSignInLauncher.launch(signInIntent)
+        }
     }
     /**
      * ボタンクリックイベント登録
@@ -110,7 +120,7 @@ class WithdrawalFragment : Fragment() {
                             .subscribeBy(
                                 onComplete = {
                                     // 退会処理
-                                    withdrawal()
+                                    // withdrawal()
                                 },
                                 onError = { error ->
                                     Log.e("Auth", error.toString())
@@ -170,6 +180,24 @@ class WithdrawalFragment : Fragment() {
                     }
                 )
                 .addTo(disposable)
+        }
+    }
+
+    /** Googleサインインランチャー */
+    private var googleSignInLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.let {
+                authEnvironment.googleReAuthUser(it) {
+                    if (it) {
+                        // 退会
+                        withdrawal()
+                    }
+                }
+            }
+        } else {
+            Log.w("Auth", "再認証キャンセルまたは失敗")
         }
     }
 

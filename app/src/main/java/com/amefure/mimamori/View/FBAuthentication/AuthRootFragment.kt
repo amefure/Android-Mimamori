@@ -178,7 +178,14 @@ class AuthRootFragment : Fragment() {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            result.data?.let { authEnvironment.googleSignIn(it) }
+            result.data?.let {
+                authEnvironment.googleSignIn(it) {
+                    if (it) {
+                        // アプリメイン画面起動
+                        startAppMainView()
+                    }
+                }
+            }
         } else {
             Log.w("Auth", "サインインキャンセルまたは失敗")
         }

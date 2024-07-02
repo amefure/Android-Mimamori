@@ -150,7 +150,7 @@ class AuthEnvironment(app: Application) : RootViewModel(app) {
      *  IntentからGoogleアカウント情報を取得し
      *  クレデンシャルサインインを実行
      */
-    public fun googleSignIn(data: Intent) {
+    public fun googleSignIn(data: Intent, completion: (Boolean) -> Unit) {
         authRepository.googleSignIn(data)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -158,13 +158,30 @@ class AuthEnvironment(app: Application) : RootViewModel(app) {
                 onComplete = {
                     createUserForCloud()
                     createUserForLocal(AuthProviderModel.GOOGLE)
+                    completion(true)
                 },
                 onError = { error ->
-                    Log.e("Auth", "ユーザー情報編集失敗${error}")
+                    completion(false)
                 }
             )
             .addTo(disposable)
+    }
 
+    /** Google再認証 */
+    public fun googleReAuthUser(data: Intent, completion: (Boolean) -> Unit) {
+        val user = getCurrentUser() ?: return completion(false)
+        authRepository.googleReAuthUser(user, data)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy(
+                onComplete = {
+                    completion(true)
+                },
+                onError = { error ->
+                    completion(false)
+                }
+            )
+            .addTo(disposable)
     }
 
 

@@ -87,6 +87,22 @@ class FirebaseAuthRepository(context: Context) {
         }
     }
 
+    /**　クレデンシャル(認証情報)で再認証　*/
+    private fun reAuthUser(user: FirebaseUser, credential: AuthCredential): Completable {
+        return Completable.create { emitter ->
+            user.reauthenticate(credential)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d("Auth", "再認証成功")
+                        emitter.onComplete()
+                    } else {
+                        Log.e("Auth", "再認証失敗", task.exception)
+                        emitter.onError(Error(task.exception))
+                    }
+                }
+        }
+    }
+
     // ------ Email/Password ------
 
     /**
@@ -137,16 +153,21 @@ class FirebaseAuthRepository(context: Context) {
         // emailアカウント再認証
         val credential = getCredential(user, pass)
         return Completable.create { emitter ->
-            user.reauthenticate(credential)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
+            reAuthUser(user, credential)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(
+                    onComplete = {
                         emitter.onComplete()
+                    },
+                    onError = { error ->
+                        emitter.onError(error)
                     }
-                }.addOnFailureListener { exception ->
-                    emitter.onError(exception)
-                }
+                )
+                .addTo(disposable)
         }
     }
+
 
     /**
      *  Email/Password
@@ -201,13 +222,46 @@ class FirebaseAuthRepository(context: Context) {
                         .addTo(disposable)
                 }
             } catch (e: ApiException) {
-                Log.d("Auth", "アカウント情報取得失敗 エラー：", e)
+                Log.e("Auth", "アカウント情報取得失敗 エラー：", e)
                 emitter.onError(e)
             }
         }
     }
 
     /**
+     *  Google再認証
+     *  IntentからGoogleアカウント情報を取得し
+     *  クレデンシャルサインインを実行
+     */
+    public fun googleReAuthUser(user: FirebaseUser, data: Intent): Completable {
+        return Completable.create { emitter ->
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                account?.idToken?.let { token ->
+                    val credential = GoogleAuthProvider.getCredential(token, null)
+                    reAuthUser(user, credential)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeBy(
+                            onComplete = {
+                                emitter.onComplete()
+                            },
+                            onError = { error ->
+                                emitter.onError(error)
+                            }
+                        )
+                        .addTo(disposable)
+                }
+            } catch (e: ApiException) {
+                Log.e("Auth", "アカウント情報取得失敗 エラー：", e)
+                emitter.onError(e)
+            }
+        }
+    }
+
+    /**
+     *  Google
      *  クレデンシャル(認証情報)でサインインを試みる
      */
     private fun credentialGoogleSignIn(idToken: String): Completable {
@@ -219,7 +273,7 @@ class FirebaseAuthRepository(context: Context) {
                         Log.d("Auth", "Googleサインイン成功")
                         emitter.onComplete()
                     } else {
-                        Log.d("Auth", "Googleサインイン失敗", task.exception)
+                        Log.e("Auth", "Googleサインイン失敗", task.exception)
                         emitter.onError(Error(task.exception))
                     }
                 }
