@@ -160,7 +160,11 @@ class SettingFragment : Fragment() {
         }
         // 退会
         authWithdrawalRow.setOnClickListener {
-            // authEnvironment.withdrawal()
+            parentFragmentManager.beginTransaction().apply {
+                add(R.id.main_frame, WithdrawalFragment())
+                addToBackStack(null)
+                commit()
+            }
         }
 
         // お問い合わせリンク

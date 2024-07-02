@@ -71,9 +71,7 @@ class FirebaseAuthRepository(context: Context) {
 
     }
 
-    /**
-     *  退会 & Appleアカウントは直呼び出し
-     */
+    /** 退会 */
     public fun withdrawal(user: FirebaseUser): Completable {
         return Completable.create { emitter ->
             user.delete()

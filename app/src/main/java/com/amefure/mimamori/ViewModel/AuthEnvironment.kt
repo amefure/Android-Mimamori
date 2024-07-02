@@ -57,9 +57,7 @@ class AuthEnvironment(app: Application) : RootViewModel(app) {
         return authRepository.updateProfile(user, profileUpdates)
     }
 
-    /**
-     *  退会 & Appleアカウントは直呼び出し
-     */
+    /** 退会 */
     public fun withdrawal(): Completable {
         val user = getCurrentUser() ?: return Completable.error(Error("User NotFound"))
         return authRepository.withdrawal(user)

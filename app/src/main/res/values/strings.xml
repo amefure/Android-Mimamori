@@ -31,6 +31,7 @@
     <string name="dialog_auth_failed_send_email">予期せぬエラーが発生し、メールの送信に失敗しました。\n時間を空けてから再度お試しください。</string>
     <!-- Dialog > Setting -->
     <string name="dialog_sign_out">ログアウトしますか？</string>
+    <string name="dialog_confirm_withdrawal">本当に退会しますか？</string>
     <string name="dialog_sign_out_positive_text">ログアウト</string>
     <string name="dialog_not_exist_mimamoriid">存在しないミマモリIDです</string>
     <string name="dialog_success_notify_msg">通知メッセージを変更しました。</string>
@@ -63,19 +64,25 @@
     <string name="setting_link_terms_of_service">利用規約とプライバシーポリシー</string>
     <string name="setting_link_desc">・アプリに不具合がございましたら「アプリの不具合はこちら」よりお問い合わせください。</string>
 
-    <!-- ミマモリモード/マモラレモード切り替え画面 -->
+    <!-- Setting　→　ミマモリモード/マモラレモード切り替え画面 -->
     <string name="setting_select_app_mode_desc">アプリのモードを切り替えます。\nミマモリモードからマモラレモードにしても通知は届きます。</string>
-    <!-- ミマモリ登録画面 -->
+
+    <!-- Setting　→　ミマモリ登録画面 -->
     <string name="setting_entry_mimamori"> ↑ ここに「ミマモリID」を入力して、\n「登録」をタップしてください。</string>
 
-    <!-- ミマモリ/マモラレリスト画面 -->
+    <!-- Setting　→　ミマモリ/マモラレリスト画面 -->
     <string name="setting_user_list_desc_mamorare">登録されているミマモリ対象リストです。\nこの画面から対象を解除することはできません。通知を届ける人を変更したい場合はミマモリ側の人にマモラレ対象リストから削除してもらってください。</string>
     <string name="setting_user_list_desc_mimamori">ミマモリ対象を変更するとトップ画面に表示されるマモラレ情報が切り替わります。\n切り替えても通知はマモラレ対象全員分届きますので安心してください。</string>
     <string name="setting_no_user_mamorare">マモラレ登録しているユーザーがいません。</string>
     <string name="setting_no_user_mimamori">ミマモリ登録しているユーザーがいません。</string>
 
-    <!-- FBAuthentication -->
+    <!-- Setting　→　退会画面 -->
+    <string name="setting_withdrawal_button">退会する</string>
+    <string name="setting_withdrawal_desc">アカウントを削除すると対象のデータはすべて削除されます。\n連携していたユーザーも解除されますのでご注意ください。</string>
+    <string name="setting_withdrawal_email_input_desc">ログインパスワードを入力してください。</string>
+    <string name="setting_withdrawal_reauth">アカウントを削除するには再認証してください。</string>
 
+    <!-- FBAuthentication -->
     <string name="auth_input_title">アカウント情報</string>
     <string name="auth_input_hint_name">ユーザー名</string>
     <string name="auth_input_hint_email">メールアドレス</string>

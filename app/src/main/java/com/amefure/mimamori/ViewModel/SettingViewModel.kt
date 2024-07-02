@@ -1,6 +1,7 @@
 package com.amefure.mimamori.ViewModel
 
 import android.app.Application
+import com.amefure.mimamori.Model.AppUser
 
 class SettingViewModel(app: Application) : RootViewModel(app) {
 
@@ -29,4 +30,8 @@ class SettingViewModel(app: Application) : RootViewModel(app) {
         }
     }
 
+    /** ユーザー削除 */
+    public fun deleteMyUser(myAppUser: AppUser) {
+        databaseRepository.deleteMyUser(myAppUser)
+    }
 }

@@ -23,7 +23,7 @@ class ForgetPasswordFragment : Fragment() {
 
     private val authEnvironment: AuthEnvironment by viewModels()
 
-    private val disposable: CompositeDisposable = CompositeDisposable()
+    private val disposable = CompositeDisposable()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

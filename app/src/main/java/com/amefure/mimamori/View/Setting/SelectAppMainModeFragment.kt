@@ -96,9 +96,7 @@ class SelectAppMainModeFragment : Fragment() {
         }.addTo(compositeDisposable)
     }
 
-    /**
-     *  モード変更ダイアログ表示
-     */
+    /** モード変更ダイアログ表示 */
     private fun showSuccessUpdateModeDialog() {
         var mode = if (isMamorare) getString(R.string.mamorare) else getString(R.string.mimamori)
         val dialog = CustomNotifyDialogFragment.newInstance(
