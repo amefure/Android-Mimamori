@@ -2,6 +2,7 @@ package com.amefure.mimamori.ViewModel
 
 import android.app.Application
 import com.amefure.mimamori.Model.AppUser
+import kotlinx.coroutines.flow.Flow
 
 class SettingViewModel(app: Application) : RootViewModel(app) {
 
@@ -33,5 +34,11 @@ class SettingViewModel(app: Application) : RootViewModel(app) {
     /** ユーザー削除 */
     public fun deleteMyUser(myAppUser: AppUser) {
         databaseRepository.deleteMyUser(myAppUser)
+    }
+
+
+    /** サインインプロバイダ観測 */
+    public fun observeSignInProvider(): Flow<String?> {
+        return dataStoreRepository.observeSignInProvider()
     }
 }

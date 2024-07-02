@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,56 +9,127 @@
     android:clickable="true"
     tools:context=".View.Setting.WithdrawalFragment">
 
-    <include
-        android:id="@+id/include_header"
-        layout="@layout/layout_header"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/include_header"
+            layout="@layout/layout_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="20dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/include_header">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"/>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/setting_withdrawal_desc"
+                android:padding="10dp"
+                android:background="@drawable/thema_msg_shape"
+                android:textColor="@color/ex_text"
+                android:textStyle="bold"/>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"/>
+
+            <TextView
+                android:id="@+id/input_password_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ログインパスワードを入力してください。"
+                android:padding="10dp"
+                android:textColor="@color/ex_text"
+                android:textStyle="bold"
+                android:visibility="gone"/>
+
+            <EditText
+                android:id="@+id/input_password"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginVertical="4dp"
+                android:background="@drawable/thema_input_shape"
+                android:ems="10"
+                android:hint="@string/auth_input_hint_pass"
+                android:inputType="textPassword"
+                android:paddingHorizontal="8dp"
+                android:textSize="14sp"
+                android:textColor="@color/ex_text"
+                app:backgroundTint="@null"
+                android:visibility="gone"/>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"/>
+
+            <Button
+                android:id="@+id/withdrawal_button"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:background="@drawable/thema_button_shape"
+                android:foregroundTint="@color/white"
+                android:text="@string/setting_withdrawal_button"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:backgroundTint="@null" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
+        android:id="@+id/bottom_sheet_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginHorizontal="20dp"
+        android:layout_height="match_parent"
+        android:background="@color/ex_foundation"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/include_header">
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="300dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.4"/>
-
+            android:layout_weight="0.1" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/setting_withdrawal_desc"
-            android:padding="10dp"
-            android:background="@drawable/thema_msg_shape"
-            android:textColor="@color/ex_text"
-            android:textStyle="bold"/>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.4"/>
-
-        <Button
-            android:id="@+id/withdrawal_button"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
             android:layout_gravity="center"
-            android:background="@drawable/thema_button_shape"
-            android:foregroundTint="@color/white"
-            android:text="@string/setting_withdrawal_button"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            app:backgroundTint="@null" />
+            android:layout_marginVertical="20dp"
+            android:text="@string/setting_withdrawal_reauth" />
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/google_sign_in_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp" />
 
         <Space
             android:layout_width="match_parent"
@@ -66,4 +137,6 @@
             android:layout_weight="1" />
 
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

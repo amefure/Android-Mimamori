@@ -428,6 +428,18 @@
                     android:text="@string/setting_auth_withdrawal"
                     android:textColor="@color/ex_text" />
 
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/button_arrow_forward" />
+
             </LinearLayout>
 
             <LinearLayout

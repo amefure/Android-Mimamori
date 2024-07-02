@@ -1,6 +1,7 @@
 package com.amefure.mimamori.ViewModel
 
 import android.app.Application
+import com.amefure.mimamori.Repository.DataStore.DataStoreRepository
 import com.amefure.mimamori.Repository.FBDatabaseRepository
 import com.amefure.mimamori.Repository.FirebaseAuthRepository
 
@@ -9,15 +10,16 @@ import com.amefure.mimamori.Repository.FirebaseAuthRepository
  *   [android:name=".ViewModel.RootApplication"]を追加
  */
 class RootApplication : Application() {
-    /**
-     * [FirebaseAuthRepository]のインスタンス
-     */
+
+    /** [FirebaseAuthRepository]のインスタンス */
     val authRepository: FirebaseAuthRepository by lazy { FirebaseAuthRepository(this) }
 
-    /**
-     * [FirebaseAuthRepository]のインスタンス
-     */
+    /** [FirebaseAuthRepository]のインスタンス */
     val databaseRepository: FBDatabaseRepository by lazy { FBDatabaseRepository() }
+
+    /** [DataStoreRepository]のインスタンス */
+    val dataStoreRepository: DataStoreRepository by lazy { DataStoreRepository(this) }
+
     override fun onCreate() {
         super.onCreate()
     }

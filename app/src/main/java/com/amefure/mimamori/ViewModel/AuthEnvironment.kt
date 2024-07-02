@@ -3,6 +3,8 @@ package com.amefure.mimamori.ViewModel
 import android.app.Application
 import android.content.Intent
 import android.util.Log
+import androidx.lifecycle.viewModelScope
+import com.amefure.mimamori.Model.AuthProviderModel
 import com.amefure.mimamori.Model.myFcmToken
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseUser
@@ -13,6 +15,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class AuthEnvironment(app: Application) : RootViewModel(app) {
 
@@ -21,9 +25,7 @@ class AuthEnvironment(app: Application) : RootViewModel(app) {
 
     private var disposable: CompositeDisposable = CompositeDisposable()
 
-    /**
-     *  カレントユーザー取得
-     */
+    /** Googleサインイン用クライアント取得 */
     public fun getGoogleSignInClient(): GoogleSignInClient {
         return authRepository.mGoogleSignInClient
     }
@@ -31,9 +33,7 @@ class AuthEnvironment(app: Application) : RootViewModel(app) {
 
     // ------ Common ------
 
-    /**
-     *  カレントユーザー取得
-     */
+    /**　カレントユーザー取得　*/
     public fun getCurrentUser(): FirebaseUser? {
         return authRepository.getCurrentUser()
     }
@@ -114,6 +114,7 @@ class AuthEnvironment(app: Application) : RootViewModel(app) {
                 .subscribeBy(
                     onComplete = {
                         createUserForCloud()
+                        createUserForLocal(AuthProviderModel.EMAIL)
                         emitter.onComplete()
                     },
                     onError = { error ->
@@ -132,6 +133,15 @@ class AuthEnvironment(app: Application) : RootViewModel(app) {
         return authRepository.sendPasswordReset(email)
     }
 
+    /**
+     *  Email/Password
+     *  パスワード忘れのための救済メール送信
+     */
+    public fun reAuthUser(pass: String): Completable {
+        val user = getCurrentUser() ?: return Completable.error(Error("User NotFound"))
+        return authRepository.reAuthUser(user, pass)
+    }
+
 
     // ------ Google ------
 
@@ -147,6 +157,7 @@ class AuthEnvironment(app: Application) : RootViewModel(app) {
             .subscribeBy(
                 onComplete = {
                     createUserForCloud()
+                    createUserForLocal(AuthProviderModel.GOOGLE)
                 },
                 onError = { error ->
                     Log.e("Auth", "ユーザー情報編集失敗${error}")
@@ -157,9 +168,7 @@ class AuthEnvironment(app: Application) : RootViewModel(app) {
     }
 
 
-    /**
-     * クラウドにユーザー初期情報を登録する
-     */
+    /**　クラウドにユーザー初期情報を登録する　*/
     private fun createUserForCloud() {
         val user = getCurrentUser() ?: return
         databaseRepository.createUser(
@@ -167,6 +176,13 @@ class AuthEnvironment(app: Application) : RootViewModel(app) {
             name = user.displayName ?: "",
             myFcmToken
         )
+    }
+
+    /**　ローカルにユーザー情報を登録する　*/
+    private fun createUserForLocal(provider: AuthProviderModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.saveSignInProvider(provider)
+        }
     }
 
 }

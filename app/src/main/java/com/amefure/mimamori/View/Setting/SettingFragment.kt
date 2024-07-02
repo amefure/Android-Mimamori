@@ -11,22 +11,29 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import com.amefure.mimamori.Model.AuthProviderModel
 import com.amefure.mimamori.Model.Config.AppURL
 import com.amefure.mimamori.R
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.View.FBAuthentication.AuthActivity
 import com.amefure.mimamori.ViewModel.AuthEnvironment
 import com.amefure.mimamori.ViewModel.RootEnvironment
+import com.amefure.mimamori.ViewModel.SettingViewModel
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SettingFragment : Fragment() {
 
+    private val viewModel: SettingViewModel by viewModels()
     private val rootEnvironment: RootEnvironment by viewModels()
     private val authEnvironment: AuthEnvironment by viewModels()
 
-    private var compositeDisposable = CompositeDisposable()
+    private var disposable = CompositeDisposable()
+    private var provider: String = AuthProviderModel.NONE.name
 
     private lateinit var mimamoriListRow: LinearLayout
     private lateinit var mimamoriEntryRow: LinearLayout
@@ -43,7 +50,7 @@ class SettingFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        compositeDisposable.clear()
+        disposable.clear()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,7 +62,13 @@ class SettingFragment : Fragment() {
 
         rootEnvironment.myAppUser.subscribeBy { user ->
             showSwitchIsMamorareRow(user.isMamorare)
-        }.addTo(compositeDisposable)
+        }.addTo(disposable)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            viewModel.observeSignInProvider().collect {
+                provider = it ?: AuthProviderModel.NONE.name
+            }
+        }
     }
 
 
@@ -161,7 +174,7 @@ class SettingFragment : Fragment() {
         // 退会
         authWithdrawalRow.setOnClickListener {
             parentFragmentManager.beginTransaction().apply {
-                add(R.id.main_frame, WithdrawalFragment())
+                add(R.id.main_frame, WithdrawalFragment.newInstance(provider))
                 addToBackStack(null)
                 commit()
             }

@@ -7,25 +7,34 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.amefure.mimamori.Model.AppUser
+import com.amefure.mimamori.Model.AuthProviderModel
+import com.amefure.mimamori.Model.Key.AppArgKey
 import com.amefure.mimamori.R
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.View.FBAuthentication.AuthActivity
 import com.amefure.mimamori.ViewModel.AuthEnvironment
 import com.amefure.mimamori.ViewModel.RootEnvironment
 import com.amefure.mimamori.ViewModel.SettingViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.util.Date
 
 class WithdrawalFragment : Fragment() {
 
@@ -34,7 +43,22 @@ class WithdrawalFragment : Fragment() {
     private val authEnvironment: AuthEnvironment by viewModels()
 
     private var myAppUser: AppUser? = null
+    private var provider: AuthProviderModel = AuthProviderModel.NONE
     private val disposable = CompositeDisposable()
+
+    private lateinit var inputPassword: EditText
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            val name = it.getString(AppArgKey.ARG_SIGN_IN_PROVIDER_KEY) ?: AuthProviderModel.NONE.name
+            try {
+                provider = AuthProviderModel.valueOf(name)
+            } catch (e: IllegalArgumentException) {
+
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +72,19 @@ class WithdrawalFragment : Fragment() {
         setUpHeaderAction(view)
         setOnClickListener(view)
 
+        inputPassword = view.findViewById(R.id.input_password)
+
+        when(provider) {
+            AuthProviderModel.NONE -> { }
+            AuthProviderModel.EMAIL -> {
+                val inputPasswordDesc: TextView = view.findViewById(R.id.input_password_desc)
+                inputPasswordDesc.visibility = View.VISIBLE
+                inputPassword.visibility = View.VISIBLE
+            }
+            AuthProviderModel.APPLE -> { }
+            AuthProviderModel.GOOGLE -> { }
+        }
+
         rootEnvironment.myAppUser.subscribeBy { user ->
             myAppUser = user
         }.addTo(disposable)
@@ -58,9 +95,41 @@ class WithdrawalFragment : Fragment() {
      */
     private fun setOnClickListener(view: View) {
         val withdrawalButton: Button = view.findViewById(R.id.withdrawal_button)
+        val bottomSheetLayout: LinearLayout = view.findViewById(R.id.bottom_sheet_layout)
+        val behavior = BottomSheetBehavior.from(bottomSheetLayout)
+
         withdrawalButton.setOnClickListener {
-            showConfirmWithdrawalDialog()
+            // showConfirmWithdrawalDialog()
+            when(provider) {
+                AuthProviderModel.NONE -> { }
+                AuthProviderModel.EMAIL -> {
+                    if (!inputPassword.text.isEmpty()) {
+                        authEnvironment.reAuthUser(inputPassword.text.toString())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeBy(
+                                onComplete = {
+                                    // 退会処理
+                                    withdrawal()
+                                },
+                                onError = { error ->
+                                    Log.e("Auth", error.toString())
+                                }
+                            )
+                            .addTo(disposable)
+                    }
+                }
+                AuthProviderModel.APPLE -> {
+                    behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                }
+                AuthProviderModel.GOOGLE -> {
+                    behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                }
+            }
         }
+
+        // 最初は非表示に設定する
+        behavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
 
@@ -76,27 +145,32 @@ class WithdrawalFragment : Fragment() {
         dialog.setOnTappedListener(
             object : CustomNotifyDialogFragment.setOnTappedListener {
                 override fun onPositiveButtonTapped() {
-                    myAppUser?.let {
-                        authEnvironment.withdrawal()
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeBy(
-                                onComplete = {
-                                    // アプリメイン画面起動
-                                    viewModel.deleteMyUser(it)
-                                    startAuthRootView()
-                                },
-                                onError = { error ->
-                                    Log.e("Auth", error.toString())
-                                }
-                            )
-                            .addTo(disposable)
-                    }
+                    withdrawal()
                 }
                 override fun onNegativeButtonTapped() { }
             }
         )
         dialog.showNow(parentFragmentManager, "ConfirmWithdrawalDialog")
+    }
+
+    /** 退会処理 */
+    private fun withdrawal() {
+        myAppUser?.let {
+            authEnvironment.withdrawal()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(
+                    onComplete = {
+                        // アプリメイン画面起動
+                        viewModel.deleteMyUser(it)
+                        startAuthRootView()
+                    },
+                    onError = { error ->
+                        Log.e("Auth", error.toString())
+                    }
+                )
+                .addTo(disposable)
+        }
     }
 
     /**
@@ -123,6 +197,20 @@ class WithdrawalFragment : Fragment() {
 
         val rightButton: ImageButton = headerView.findViewById(R.id.right_button)
         rightButton.visibility = View.GONE
+    }
+
+    /**
+     * 引数を渡すため
+     * シングルトンインスタンス生成
+     */
+    companion object {
+        @JvmStatic
+        fun newInstance(provider: String) =
+            WithdrawalFragment().apply {
+                arguments = Bundle().apply {
+                    putString(AppArgKey.ARG_SIGN_IN_PROVIDER_KEY, provider)
+                }
+            }
     }
 }
 

@@ -8,6 +8,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -125,6 +127,33 @@ class FirebaseAuthRepository(context: Context) {
                     emitter.onError(exception)
                 }
         }
+    }
+
+    /**
+     *  Email/Password
+     *  再認証
+     */
+    public fun reAuthUser(user: FirebaseUser, pass: String): Completable {
+        // emailアカウント再認証
+        val credential = getCredential(user, pass)
+        return Completable.create { emitter ->
+            user.reauthenticate(credential)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        emitter.onComplete()
+                    }
+                }.addOnFailureListener { exception ->
+                    emitter.onError(exception)
+                }
+        }
+    }
+
+    /**
+     *  Email/Password
+     *  再認証用クレデンシャル
+     */
+    private fun getCredential(user: FirebaseUser, pass: String): AuthCredential {
+        return EmailAuthProvider.getCredential(user.email ?:"", pass)
     }
 
     /**
