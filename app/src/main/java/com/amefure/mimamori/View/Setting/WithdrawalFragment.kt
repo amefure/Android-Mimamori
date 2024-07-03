@@ -142,27 +142,6 @@ class WithdrawalFragment : Fragment() {
         behavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
-
-    /** 最終退会確認ダイアログ表示 */
-    private fun showConfirmWithdrawalDialog() {
-        val dialog = CustomNotifyDialogFragment.newInstance(
-            title = getString(R.string.dialog_title_notice),
-            msg = getString(R.string.dialog_confirm_withdrawal),
-            showPositive = true,
-            showNegative = false,
-            positionText = getString(R.string.setting_withdrawal_button)
-        )
-        dialog.setOnTappedListener(
-            object : CustomNotifyDialogFragment.setOnTappedListener {
-                override fun onPositiveButtonTapped() {
-                    withdrawal()
-                }
-                override fun onNegativeButtonTapped() { }
-            }
-        )
-        dialog.showNow(parentFragmentManager, "ConfirmWithdrawalDialog")
-    }
-
     /** 退会処理 */
     private fun withdrawal() {
         myAppUser?.let {
