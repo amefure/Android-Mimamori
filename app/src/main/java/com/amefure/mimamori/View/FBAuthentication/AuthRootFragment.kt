@@ -16,6 +16,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import com.amefure.mimamori.R
 import com.amefure.mimamori.Utility.ValidationUtility
+import com.amefure.mimamori.View.BaseFragment.BaseAuthFragment
+import com.amefure.mimamori.View.BaseFragment.BaseInputFragment
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.View.MainActivity
 import com.amefure.mimamori.ViewModel.AuthEnvironment
@@ -27,7 +29,7 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 
-class AuthRootFragment : Fragment() {
+class AuthRootFragment : BaseAuthFragment() {
 
     private val authEnvironment: AuthEnvironment by viewModels()
     private val rootEnvironment: RootEnvironment by viewModels()
@@ -95,6 +97,7 @@ class AuthRootFragment : Fragment() {
 
 
         createButton.setOnClickListener {
+            closedKeyBoard()
             val name = inputName.text.toString()
             val email = inputEmail.text.toString()
             val pass = inputPass.text.toString()
@@ -158,18 +161,6 @@ class AuthRootFragment : Fragment() {
         this.requireActivity().finish()
     }
 
-    /**
-     *  入力バリデーションダイアログ表示
-     */
-    private fun showFailedValidationDialog() {
-        val dialog = CustomNotifyDialogFragment.newInstance(
-            title = getString(R.string.dialog_title_notice),
-            msg = getString(R.string.dialog_auth_validation_input),
-            showPositive = true,
-            showNegative = false
-        )
-        dialog.showNow(parentFragmentManager, "FailedAuthValidationInput")
-    }
 
     /**
      *  Googleサインインランチャー

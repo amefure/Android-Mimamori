@@ -3,6 +3,10 @@ package com.amefure.mimamori.Model.Key
 class AppArgKey {
     companion object {
 
+        // EditUserNameFragment
+        public const val ARG_SIGN_IN_USER_ID_KEY = "ARG_SIGN_IN_USER_ID_KEY"
+        public const val ARG_SIGN_IN_USER_NAME_KEY = "ARG_SIGN_IN_USER_NAME_KEY"
+
         // WithdrawalFragment
         public const val ARG_SIGN_IN_PROVIDER_KEY = "ARG_SIGN_IN_PROVIDER_KEY"
 

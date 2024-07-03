@@ -1,5 +1,6 @@
 package com.amefure.mimamori.View.Setting
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -7,11 +8,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.amefure.mimamori.Model.AppUser
 import com.amefure.mimamori.Model.AuthProviderModel
 import com.amefure.mimamori.Model.Config.AppURL
 import com.amefure.mimamori.R
@@ -33,6 +36,7 @@ class SettingFragment : Fragment() {
     private val authEnvironment: AuthEnvironment by viewModels()
 
     private var disposable = CompositeDisposable()
+    private var myUser: AppUser? = null
     private var provider: String = AuthProviderModel.NONE.name
 
     private lateinit var mimamoriListRow: LinearLayout
@@ -61,6 +65,7 @@ class SettingFragment : Fragment() {
         setOnClickListener(view)
 
         rootEnvironment.myAppUser.subscribeBy { user ->
+            myUser = user
             showSwitchIsMamorareRow(user.isMamorare)
         }.addTo(disposable)
 
@@ -166,6 +171,13 @@ class SettingFragment : Fragment() {
 
         // ユーザー情報編集
         authEditInfoRow.setOnClickListener {
+            myUser?.let {
+                parentFragmentManager.beginTransaction().apply {
+                    add(R.id.main_frame, EditUserNameFragment.newInstance(it.id, it.name))
+                    addToBackStack(null)
+                    commit()
+                }
+            }
         }
         // サインアウト
         authSignOutRow.setOnClickListener {

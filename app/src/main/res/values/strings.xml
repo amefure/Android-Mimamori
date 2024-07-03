@@ -26,9 +26,16 @@
 
     <!-- Dialog -->
     <string name="dialog_title_notice">お知らせ</string>
+
+    <!-- Dialog > Auth -->
     <string name="dialog_auth_validation_input">入力された内容に不備があります。正しい情報を入力してください。</string>
     <string name="dialog_auth_success_send_email">再設定用のメールを送信しました。</string>
     <string name="dialog_auth_failed_send_email">予期せぬエラーが発生し、メールの送信に失敗しました。\n時間を空けてから再度お試しください。</string>
+    <string name="dialog_auth_success_update_user_info">ユーザー情報を変更しました。</string>
+    <string name="dialog_auth_failed_update_user_info">ユーザー情報の更新に失敗しました。\n時間を空けてから再度お試しください。</string>
+    <string name="dialog_auth_failed_unknown">予期せぬエラーが発生しました。\nしばらく時間を置いてから再度お試しください。</string>
+
+
     <!-- Dialog > Setting -->
     <string name="dialog_sign_out">ログアウトしますか？</string>
     <string name="dialog_confirm_withdrawal">本当に退会しますか？</string>
@@ -39,6 +46,7 @@
     <string name="dialog_success_entry_mimamori">ミマモリを登録しました。</string>
     <string name="dialog_confirm_delete_mamorare">「%1$s」さんをミマモリ対象から外しますか？</string>
     <string name="dialog_success_copy">コピーしました。</string>
+    <string name="dialog_edit_user_name_validation_input">ユーザー名を入力してください。</string>
 
     <string name="dialog_base_positive_text">OK</string>
     <string name="dialog_base_negative_text">キャンセル</string>
@@ -75,6 +83,10 @@
     <string name="setting_user_list_desc_mimamori">ミマモリ対象を変更するとトップ画面に表示されるマモラレ情報が切り替わります。\n切り替えても通知はマモラレ対象全員分届きますので安心してください。</string>
     <string name="setting_no_user_mamorare">マモラレ登録しているユーザーがいません。</string>
     <string name="setting_no_user_mimamori">ミマモリ登録しているユーザーがいません。</string>
+
+    <!-- Setting　→　アカウント情報変更 -->
+    <string name="setting_edit_user_info_desc">ユーザー名を変更することができます。</string>
+    <string name="setting_edit_user_info_input_hint">ユーザー名</string>
 
     <!-- Setting　→　退会画面 -->
     <string name="setting_withdrawal_button">退会する</string>

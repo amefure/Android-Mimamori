@@ -41,4 +41,9 @@ class SettingViewModel(app: Application) : RootViewModel(app) {
     public fun observeSignInProvider(): Flow<String?> {
         return dataStoreRepository.observeSignInProvider()
     }
+
+    /** ユーザー名変更 */
+    public fun updateUserName(id: String, name: String) {
+        databaseRepository.updateUserInfo(id, name)
+    }
 }

@@ -57,7 +57,7 @@ class FBDatabaseRepository() {
     ) {
         var usersInfo: MutableMap<String, Any> = mutableMapOf()
         if (!name.isEmpty()) {
-            usersInfo.put(AppUser.ID_KEY, name)
+            usersInfo.put(AppUser.NAME_KEY, name)
         }
         if (!token.isEmpty()) {
             usersInfo.put(AppUser.FCM_TOKEN_KEY, token)

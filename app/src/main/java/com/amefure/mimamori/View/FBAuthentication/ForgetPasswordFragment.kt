@@ -10,6 +10,8 @@ import android.widget.EditText
 import androidx.fragment.app.viewModels
 import com.amefure.mimamori.R
 import com.amefure.mimamori.Utility.ValidationUtility
+import com.amefure.mimamori.View.BaseFragment.BaseAuthFragment
+import com.amefure.mimamori.View.BaseFragment.BaseInputFragment
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.ViewModel.AuthEnvironment
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -19,7 +21,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 
 
-class ForgetPasswordFragment : Fragment() {
+class ForgetPasswordFragment : BaseAuthFragment() {
 
     private val authEnvironment: AuthEnvironment by viewModels()
 
@@ -42,6 +44,7 @@ class ForgetPasswordFragment : Fragment() {
         val sendButton: Button = view.findViewById(R.id.send_mail_button)
 
         sendButton.setOnClickListener {
+            closedKeyBoard()
             val email = inputEmail.text.toString()
             if (!ValidationUtility.validateEmail(email)) {
                 showFailedValidationDialog()
@@ -64,22 +67,9 @@ class ForgetPasswordFragment : Fragment() {
         }
     }
 
-    /**
-     *  入力バリデーションダイアログ表示
-     */
-    private fun showFailedValidationDialog() {
-        val dialog = CustomNotifyDialogFragment.newInstance(
-            title = getString(R.string.dialog_title_notice),
-            msg = getString(R.string.dialog_auth_validation_input),
-            showPositive = true,
-            showNegative = false
-        )
-        dialog.show(parentFragmentManager, "FailedAuthValidationInput")
-    }
 
-    /**
-     *  メール送信成功ダイアログ表示
-     */
+
+    /** メール送信成功ダイアログ表示 */
     private fun showSuccessSendEmailDialog() {
         val dialog = CustomNotifyDialogFragment.newInstance(
             title = getString(R.string.dialog_title_notice),
@@ -91,9 +81,7 @@ class ForgetPasswordFragment : Fragment() {
     }
 
 
-    /**
-     *  メール送信失敗ダイアログ表示
-     */
+    /** メール送信失敗ダイアログ表示 */
     private fun showFailedSendEmailDialog() {
         val dialog = CustomNotifyDialogFragment.newInstance(
             title = getString(R.string.dialog_title_notice),

@@ -24,6 +24,7 @@ import com.amefure.mimamori.Model.AppUser
 import com.amefure.mimamori.Model.AuthProviderModel
 import com.amefure.mimamori.Model.Key.AppArgKey
 import com.amefure.mimamori.R
+import com.amefure.mimamori.View.BaseFragment.BaseAuthFragment
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.View.FBAuthentication.AuthActivity
 import com.amefure.mimamori.ViewModel.AuthEnvironment
@@ -40,7 +41,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Date
 
-class WithdrawalFragment : Fragment() {
+class WithdrawalFragment : BaseAuthFragment() {
 
     private val rootEnvironment: RootEnvironment by viewModels()
     private val viewModel: SettingViewModel by viewModels()
@@ -109,10 +110,10 @@ class WithdrawalFragment : Fragment() {
         val behavior = BottomSheetBehavior.from(bottomSheetLayout)
 
         withdrawalButton.setOnClickListener {
-            // showConfirmWithdrawalDialog()
             when(provider) {
                 AuthProviderModel.NONE -> { }
                 AuthProviderModel.EMAIL -> {
+                    // メールアドレスユーザー
                     if (!inputPassword.text.isEmpty()) {
                         authEnvironment.reAuthUser(inputPassword.text.toString())
                             .subscribeOn(Schedulers.io())
@@ -120,10 +121,11 @@ class WithdrawalFragment : Fragment() {
                             .subscribeBy(
                                 onComplete = {
                                     // 退会処理
-                                    // withdrawal()
+                                    withdrawal()
                                 },
                                 onError = { error ->
                                     Log.e("Auth", error.toString())
+                                    showFailedAuthDialog(getString(R.string.dialog_auth_failed_unknown))
                                 }
                             )
                             .addTo(disposable)
@@ -156,6 +158,7 @@ class WithdrawalFragment : Fragment() {
                     },
                     onError = { error ->
                         Log.e("Auth", error.toString())
+                        showFailedAuthDialog(getString(R.string.dialog_auth_failed_unknown))
                     }
                 )
                 .addTo(disposable)
@@ -177,6 +180,7 @@ class WithdrawalFragment : Fragment() {
             }
         } else {
             Log.w("Auth", "再認証キャンセルまたは失敗")
+            showFailedAuthDialog(getString(R.string.dialog_auth_failed_unknown))
         }
     }
 
