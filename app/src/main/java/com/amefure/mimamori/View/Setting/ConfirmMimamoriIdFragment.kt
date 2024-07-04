@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import com.amefure.mimamori.R
+import com.amefure.mimamori.Repository.AppEnvironmentStore
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.ViewModel.RootEnvironment
 import io.reactivex.disposables.CompositeDisposable
@@ -46,7 +47,7 @@ class ConfirmMimamoriIdFragment : Fragment() {
         var copyButton: Button = view.findViewById(R.id.copy_button)
         var shareButton: Button = view.findViewById(R.id.share_button)
 
-        rootEnvironment.myAppUser.subscribeBy { user ->
+        AppEnvironmentStore.instance.myAppUser.subscribeBy { user ->
             id.text = user.id
         }.addTo(compositeDisposable)
 

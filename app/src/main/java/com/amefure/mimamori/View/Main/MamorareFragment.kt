@@ -1,6 +1,5 @@
 package com.amefure.mimamori.View.Main
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,10 +9,13 @@ import android.widget.Button
 import android.widget.ImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
+import com.amefure.mimamori.Managers.AppNotifyManager
 import com.amefure.mimamori.R
-import com.amefure.mimamori.View.FBAuthentication.AuthActivity
+import com.amefure.mimamori.Repository.AppEnvironmentStore
+import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.View.Setting.SettingFragment
 import com.amefure.mimamori.ViewModel.AuthEnvironment
+import com.amefure.mimamori.ViewModel.MamorareMainViewModel
 import com.amefure.mimamori.ViewModel.RootEnvironment
 
 
@@ -21,6 +23,7 @@ class MamorareFragment : Fragment() {
 
     private val authEnvironment: AuthEnvironment by viewModels()
     private val rootEnvironment: RootEnvironment by viewModels()
+    private val viewModel: MamorareMainViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,7 +41,24 @@ class MamorareFragment : Fragment() {
 
         setUpHeaderAction(view)
         notifySendButton.setOnClickListener {
+            viewModel.sendNotification { result ->
+                activity?.runOnUiThread {
+                    showNotifyResultDialog(result)
+                }
+            }
         }
+    }
+
+    /** プッシュ通知結果ダイアログ表示 */
+    private fun showNotifyResultDialog(success: Boolean) {
+        val msg = if (success) getString(R.string.dialog_success_send_notify) else getString(R.string.dialog_failed_send_notify)
+        val dialog = CustomNotifyDialogFragment.newInstance(
+            title = getString(R.string.dialog_title_notice),
+            msg = msg,
+            showPositive = true,
+            showNegative = false,
+        )
+        dialog.showNow(parentFragmentManager, "NotifyResultDialog")
     }
 
 

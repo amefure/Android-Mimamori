@@ -24,6 +24,7 @@ import com.amefure.mimamori.Model.AppUser
 import com.amefure.mimamori.Model.AuthProviderModel
 import com.amefure.mimamori.Model.Key.AppArgKey
 import com.amefure.mimamori.R
+import com.amefure.mimamori.Repository.AppEnvironmentStore
 import com.amefure.mimamori.View.BaseFragment.BaseAuthFragment
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.View.FBAuthentication.AuthActivity
@@ -43,11 +44,10 @@ import java.util.Date
 
 class WithdrawalFragment : BaseAuthFragment() {
 
-    private val rootEnvironment: RootEnvironment by viewModels()
     private val viewModel: SettingViewModel by viewModels()
     private val authEnvironment: AuthEnvironment by viewModels()
 
-    private var myAppUser: AppUser? = null
+    private var myAppUser: AppUser? = AppEnvironmentStore.instance.myAppUser.value
     private var provider: AuthProviderModel = AuthProviderModel.NONE
     private val disposable = CompositeDisposable()
 
@@ -89,10 +89,6 @@ class WithdrawalFragment : BaseAuthFragment() {
             AuthProviderModel.APPLE -> { }
             AuthProviderModel.GOOGLE -> { }
         }
-
-        rootEnvironment.myAppUser.subscribeBy { user ->
-            myAppUser = user
-        }.addTo(disposable)
 
         val googleSignInButton: SignInButton = view.findViewById(R.id.google_sign_in_button)
         googleSignInButton.setOnClickListener {

@@ -18,6 +18,7 @@ import com.amefure.mimamori.Model.AppUser
 import com.amefure.mimamori.Model.AuthProviderModel
 import com.amefure.mimamori.Model.Config.AppURL
 import com.amefure.mimamori.R
+import com.amefure.mimamori.Repository.AppEnvironmentStore
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.View.FBAuthentication.AuthActivity
 import com.amefure.mimamori.ViewModel.AuthEnvironment
@@ -36,7 +37,7 @@ class SettingFragment : Fragment() {
     private val authEnvironment: AuthEnvironment by viewModels()
 
     private var disposable = CompositeDisposable()
-    private var myUser: AppUser? = null
+    private var myAppUser: AppUser? = AppEnvironmentStore.instance.myAppUser.value
     private var provider: String = AuthProviderModel.NONE.name
 
     private lateinit var mimamoriListRow: LinearLayout
@@ -64,8 +65,8 @@ class SettingFragment : Fragment() {
         setUpHeaderAction(view)
         setOnClickListener(view)
 
-        rootEnvironment.myAppUser.subscribeBy { user ->
-            myUser = user
+        AppEnvironmentStore.instance.myAppUser.subscribeBy { user ->
+            myAppUser = user
             showSwitchIsMamorareRow(user.isMamorare)
         }.addTo(disposable)
 
@@ -171,7 +172,7 @@ class SettingFragment : Fragment() {
 
         // ユーザー情報編集
         authEditInfoRow.setOnClickListener {
-            myUser?.let {
+            myAppUser?.let {
                 parentFragmentManager.beginTransaction().apply {
                     add(R.id.main_frame, EditUserNameFragment.newInstance(it.id, it.name))
                     addToBackStack(null)

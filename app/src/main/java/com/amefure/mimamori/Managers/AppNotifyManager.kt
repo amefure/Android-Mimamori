@@ -12,10 +12,12 @@ class AppNotifyManager {
 
     companion object {
 
-        /**
-         * FCMリモートプッシュ通知発火
-         */
-        public fun sendNotification(token: String, title: String, msg: String) {
+        /** FCMリモートプッシュ通知発火 */
+        public fun sendNotification(
+            token: String,
+            title: String,
+            msg: String,
+            completion:(Boolean) -> Unit) {
 
             val retrofit = Retrofit.Builder()
                 .baseUrl(AppURL.MASTER_URL)
@@ -28,11 +30,14 @@ class AppNotifyManager {
                     val response = apiService.sendNotification(token, title, msg)
                     if (response.isSuccessful) {
                         Log.d("FCM Notify", "プッシュ通知リクエスト成功")
+                        completion(true)
                     } else {
-                        Log.d("FCM Notify", "Failed to send notification: ${response.code()}")
+                        Log.e("FCM Notify", "Failed to send notification: ${response.code()}")
+                        completion(false)
                     }
                 } catch (e: Exception) {
                     Log.d("FCM Notify", "Error: ${e.message}")
+                    completion(false)
                 }
             }
         }

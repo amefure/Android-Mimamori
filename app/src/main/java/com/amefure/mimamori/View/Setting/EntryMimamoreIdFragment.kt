@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import com.amefure.mimamori.R
+import com.amefure.mimamori.Repository.AppEnvironmentStore
 import com.amefure.mimamori.View.BaseFragment.BaseInputFragment
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.ViewModel.RootEnvironment
@@ -42,7 +43,7 @@ class EntryMimamoreIdFragment : BaseInputFragment() {
         var inputMimamoriId: EditText = view.findViewById(R.id.input_mimamori_id)
         var entryIdButton: Button = view.findViewById(R.id.entry_id_button)
 
-        rootEnvironment.myAppUser.subscribeBy { user ->
+        AppEnvironmentStore.instance.myAppUser.subscribeBy { user ->
             userId = user.id
         }.addTo(compositeDisposable)
 

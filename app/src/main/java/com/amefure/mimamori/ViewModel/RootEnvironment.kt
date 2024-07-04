@@ -2,17 +2,13 @@ package com.amefure.mimamori.ViewModel
 
 import android.app.Application
 import android.util.Log
-import com.amefure.mimamori.Model.AppUser
-import io.reactivex.Observable
+import com.amefure.mimamori.Repository.AppEnvironmentStore
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 
 class RootEnvironment(app: Application) : RootViewModel(app) {
 
-    // 自分のユーザー情報
-    public var myAppUser: Observable<AppUser> = databaseRepository.myAppUser
-
-    private var compositeDisposable = CompositeDisposable()
+    private var disposable = CompositeDisposable()
 
     /**
      * クラウドから取得したAppUser情報を観測開始
@@ -21,7 +17,9 @@ class RootEnvironment(app: Application) : RootViewModel(app) {
         // クラウドから取得したAppUser情報を観測
         databaseRepository.myAppUser.subscribe { user ->
             Log.d("Realtime Database", "USER：${user}")
-        }.addTo(compositeDisposable)
+            // 全体参照できるユーザー情報を公開
+            AppEnvironmentStore.instance.myAppUser.onNext(user)
+        }.addTo(disposable)
 
         // ローカルにあるユーザーIDを使用してクラウドを観測開始
         authRepository.getCurrentUser()?.uid?.let { userId ->

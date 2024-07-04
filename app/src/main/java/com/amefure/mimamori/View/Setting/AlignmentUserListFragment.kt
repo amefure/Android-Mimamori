@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amefure.mimamori.Model.AppUser
 import com.amefure.mimamori.R
+import com.amefure.mimamori.Repository.AppEnvironmentStore
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.View.Setting.RecycleViewSetting.UserListAdapter
 import com.amefure.mimamori.View.Utility.OneTouchHelperCallback
@@ -58,7 +59,7 @@ class AlignmentUserListFragment : Fragment() {
             DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL)
         )
 
-        rootEnvironment.myAppUser.subscribeBy { user ->
+        AppEnvironmentStore.instance.myAppUser.subscribeBy { user ->
             if (user.isMamorare) {
                 var adapter = UserListAdapter(user.currentMimamoriList, user.currentMamorareId)
                 recyclerView.adapter = adapter

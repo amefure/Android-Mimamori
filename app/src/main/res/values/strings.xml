@@ -35,7 +35,6 @@
     <string name="dialog_auth_failed_update_user_info">ユーザー情報の更新に失敗しました。\n時間を空けてから再度お試しください。</string>
     <string name="dialog_auth_failed_unknown">予期せぬエラーが発生しました。\nしばらく時間を置いてから再度お試しください。</string>
 
-
     <!-- Dialog > Setting -->
     <string name="dialog_sign_out">ログアウトしますか？</string>
     <string name="dialog_confirm_withdrawal">本当に退会しますか？</string>
@@ -50,6 +49,13 @@
 
     <string name="dialog_base_positive_text">OK</string>
     <string name="dialog_base_negative_text">キャンセル</string>
+
+    <!-- Dialog > Notify -->
+    <string name="dialog_success_send_notify">通知を送信しました。</string>
+    <string name="dialog_failed_send_notify">通知の送信に失敗しました。\nしばらく時間を置いてから再度お試しください。</string>
+
+
+
 
     <!-- Setting -->
     <string name="setting_app_title">アプリ設定</string>

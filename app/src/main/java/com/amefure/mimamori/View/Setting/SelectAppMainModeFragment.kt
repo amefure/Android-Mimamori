@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import com.amefure.mimamori.R
+import com.amefure.mimamori.Repository.AppEnvironmentStore
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.ViewModel.RootEnvironment
 import com.amefure.mimamori.ViewModel.SettingViewModel
@@ -86,7 +87,7 @@ class SelectAppMainModeFragment : Fragment() {
             showSuccessUpdateModeDialog()
         }
 
-        rootEnvironment.myAppUser.subscribeBy { user ->
+        AppEnvironmentStore.instance.myAppUser.subscribeBy { user ->
             isMamorare = user.isMamorare
             if (isMamorare) {
                 selectMamorareButton.performClick()
