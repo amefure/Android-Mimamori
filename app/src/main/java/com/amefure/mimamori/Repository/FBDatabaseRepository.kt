@@ -3,12 +3,15 @@ package com.amefure.mimamori.Repository
 import android.util.Log
 import com.amefure.mimamori.Model.AppNotify
 import com.amefure.mimamori.Model.AppUser
+import com.amefure.mimamori.Utility.JsonFormatterUtility
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.flow.Flow
@@ -68,6 +71,9 @@ class FBDatabaseRepository() {
         if (!notifications.isEmpty()) {
             // val json = jsonFormatUtility.encode(notifications)
             // usersInfo.put(AppUser.NOTIFICATIONS_KEY, json)
+            var json = JsonFormatterUtility.toJson(notifications)
+            usersInfo.put(AppUser.NOTIFICATIONS_KEY, json)
+            Log.d("0000", json)
         }
         if (!currentMamorareId.isEmpty()) {
             usersInfo.put(AppUser.CURRENT_MAMORARE_ID, currentMamorareId)
@@ -257,16 +263,20 @@ class FBDatabaseRepository() {
      */
     private fun createAppUser(dic: Map<String, Any>, userId: String): AppUser {
 
-//        if let notifications: [AppNotify] = jsonFormatUtility.decode(dic[AppUser.NOTIFICATIONS_KEY] as? String ?? "") {
-//            user.notifications = notifications.sorted(by: { $0.time > $1.time })
-//        }
+        val json = dic[AppUser.NOTIFICATIONS_KEY] as? String ?: ""
+        // JSONをList<AppNotify>に変換
+        val notifications = JsonFormatterUtility.fromJson(json).sortedBy { it.time }
+
+         // .sorted(by: { $0.time > $1.time })
+        Log.d("GSON", notifications.toString())
+
 
         val user = AppUser(
             id = userId,
             name = dic[AppUser.NAME_KEY] as? String ?: "",
             fcmToken = dic[AppUser.FCM_TOKEN_KEY] as? String ?: "",
             isMamorare = dic[AppUser.IS_MAMORARE_KEY] as? Boolean ?: false,
-            notifications = emptyList(),
+            notifications = notifications,
             mimamoriIdList = dic[AppUser.MIMAMORI_ID_LIST_KEY] as? List<String> ?: emptyList(),
             currentMamorareId = dic[AppUser.CURRENT_MAMORARE_ID] as? String ?: "",
             mamorareIdList = dic[AppUser.MAMORARE_ID_LIST_KEY] as? List<String> ?: emptyList()

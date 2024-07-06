@@ -40,12 +40,14 @@ class MamorareMainViewModel(app: Application) : RootViewModel(app) {
         val notifications = myAppUser.notifications.toMutableList()
         val notify = AppNotify(title = "title", msg = "msg")
         notifications.add(notify)
+        // 現在時刻を取得
         val today = Calendar.getInstance()
-        today.add(Calendar.DATE, -7)
-        /// クラウドにあげるのは1週間分のデータのみとする
-        val oneWeekAgo = today.time
-        val filtering = notifications.filter( { it.time <= today.time && it.time >= oneWeekAgo })
-        databaseRepository.updateUserInfo(myAppUser.id, notifications = filtering)
+        // 1週間前の時刻を取得
+        val oneWeekAgo = Calendar.getInstance().apply { add(Calendar.DATE, -7) }.time
+        // 直近1週間分だけにフィルタリング
+        val filtering = notifications.filter { it.time <= today.time && it.time >= oneWeekAgo }
+        Log.d("000000sss", filtering.toString())
+        // databaseRepository.updateUserInfo(myAppUser.id, notifications = notifications)
     }
 
 }
