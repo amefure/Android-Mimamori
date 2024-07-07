@@ -85,4 +85,7 @@ dependencies {
 
     // GSON(JSONパース)
     implementation 'com.google.code.gson:gson:2.8.6'
+
+    // LeakCanary(メモリリーク検出アプリ)
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
 }
