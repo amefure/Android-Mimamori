@@ -9,14 +9,23 @@ import android.widget.Button
 import android.widget.ImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.amefure.mimamori.Managers.AppNotifyManager
+import com.amefure.mimamori.Model.AppUser
 import com.amefure.mimamori.R
 import com.amefure.mimamori.Repository.AppEnvironmentStore
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
+import com.amefure.mimamori.View.Setting.RecycleViewSetting.UserListAdapter
 import com.amefure.mimamori.View.Setting.SettingFragment
+import com.amefure.mimamori.View.Utility.OneTouchHelperCallback
 import com.amefure.mimamori.ViewModel.AuthEnvironment
 import com.amefure.mimamori.ViewModel.MamorareMainViewModel
 import com.amefure.mimamori.ViewModel.RootEnvironment
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 
 
 class MamorareFragment : Fragment() {
@@ -25,11 +34,18 @@ class MamorareFragment : Fragment() {
     private val rootEnvironment: RootEnvironment by viewModels()
     private val viewModel: MamorareMainViewModel by viewModels()
 
+    private var disposable = CompositeDisposable()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_mamorare, container, false)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        disposable.clear()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,6 +56,7 @@ class MamorareFragment : Fragment() {
         var notifySendButton: Button = view.findViewById(R.id.notify_send_button)
 
         setUpHeaderAction(view)
+        setUpRecycleView(view)
         notifySendButton.setOnClickListener {
             viewModel.sendNotification { result ->
                 activity?.runOnUiThread {
@@ -47,6 +64,21 @@ class MamorareFragment : Fragment() {
                 }
             }
         }
+    }
+
+    /**
+     * 通知リスト
+     * リサイクルビューセットアップ
+     */
+    private fun setUpRecycleView(view: View) {
+        var recyclerView: RecyclerView = view.findViewById(R.id.notify_list_view)
+        recyclerView.layoutManager = LinearLayoutManager(this.requireContext())
+
+        AppEnvironmentStore.instance.myAppUser.subscribeBy { user ->
+            var adapter = NotifyListAdapter(user.notifications)
+            OneTouchHelperCallback(recyclerView).build()
+            recyclerView.adapter = adapter
+        }.addTo(disposable)
     }
 
     /** プッシュ通知結果ダイアログ表示 */

@@ -28,7 +28,7 @@ class AlignmentUserListFragment : Fragment() {
     private val rootEnvironment: RootEnvironment by viewModels()
     private val viewModel: SettingViewModel by viewModels()
 
-    private var compositeDisposable = CompositeDisposable()
+    private var disposable = CompositeDisposable()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +39,7 @@ class AlignmentUserListFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        compositeDisposable.clear()
+        disposable.clear()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,7 +75,7 @@ class AlignmentUserListFragment : Fragment() {
                 OneTouchHelperCallback(recyclerView).build()
                 recyclerView.adapter = adapter
             }
-        }.addTo(compositeDisposable)
+        }.addTo(disposable)
 
     }
 
