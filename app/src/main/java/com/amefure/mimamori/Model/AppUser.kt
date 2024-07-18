@@ -1,5 +1,6 @@
 package com.amefure.mimamori.Model
 
+import com.amefure.mimamori.Utility.DateFormatUtility
 import java.util.UUID
 
 
@@ -28,6 +29,7 @@ data class AppUser(
     var currentMamorareList: List<AppUser> = emptyList(),
     // マモラレ対象のユーザーIDリスト
     var mamorareIdList:  List<String>
+
 ) {
     companion object {
         public val TABLE_NAME = "tests"
@@ -55,5 +57,19 @@ data class AppUser(
                 currentMamorareId = "",
                 mamorareIdList = emptyList()
             )
+
+        public fun sectionNotifications(notifications: List<AppNotify>): List<AppNotifyBase> {
+            val sectionNotify = notifications.map { notify ->
+                AppNotifySection(
+                    dayStr = notify.getTimeString("yyyy年M月d日"),
+                    time = DateFormatUtility.resetEndTime(notify.time)
+                )
+            }.distinctBy { it.dayStr }
+            val list = mutableListOf<AppNotifyBase>()
+            list.addAll(0, notifications)
+            list.addAll(0, sectionNotify)
+            return list.sortedBy { it.time }.reversed()
+        }
+
     }
 }

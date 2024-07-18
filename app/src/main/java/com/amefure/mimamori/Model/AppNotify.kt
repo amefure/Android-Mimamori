@@ -12,10 +12,19 @@ data class AppNotify(
     // 通知メッセージ
     var msg: String,
     // 通知時間
-    var time: Date = Date(),
-) {
+    override var time: Date = Date(),
+): AppNotifyBase {
     /** 通知時間を[HH:mm:ss]形式で取得 */
-    public fun getTimeString(): String {
-        return DateFormatUtility("HH:mm:ss").getString(time)
+    public fun getTimeString(format: String): String {
+        return DateFormatUtility(format).getString(time)
     }
+}
+
+data class AppNotifySection(
+    val dayStr: String,
+    override var time: Date
+): AppNotifyBase
+
+interface AppNotifyBase {
+     abstract var time: Date
 }

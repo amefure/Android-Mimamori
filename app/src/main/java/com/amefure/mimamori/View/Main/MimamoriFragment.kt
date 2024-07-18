@@ -9,6 +9,7 @@ import android.widget.ImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.amefure.mimamori.Model.AppUser
 import com.amefure.mimamori.R
 import com.amefure.mimamori.Repository.AppEnvironmentStore
 import com.amefure.mimamori.View.Setting.SettingFragment
@@ -21,7 +22,6 @@ import io.reactivex.rxkotlin.subscribeBy
 class MimamoriFragment : Fragment() {
 
     private var disposable = CompositeDisposable()
-    
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,7 +50,7 @@ class MimamoriFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(this.requireContext())
 
         AppEnvironmentStore.instance.myAppUser.subscribeBy { user ->
-            var adapter = NotifyListAdapter(user.notifications)
+            val adapter = NotifyListAdapter(AppUser.sectionNotifications(user.notifications))
             OneTouchHelperCallback(recyclerView).build()
             recyclerView.adapter = adapter
         }.addTo(disposable)

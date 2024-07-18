@@ -265,7 +265,7 @@ class FBDatabaseRepository() {
 
         val json = dic[AppUser.NOTIFICATIONS_KEY] as? String ?: ""
         // JSONをList<AppNotify>に変換
-        val notifications = JsonFormatterUtility.fromJson(json).sortedBy { it.time }
+        val notifications = JsonFormatterUtility.fromJson(json).sortedBy { it.time }.reversed()
 
          // .sorted(by: { $0.time > $1.time })
         Log.d("GSON", notifications.toString())

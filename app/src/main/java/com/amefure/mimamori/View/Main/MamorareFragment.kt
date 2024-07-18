@@ -75,7 +75,7 @@ class MamorareFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(this.requireContext())
 
         AppEnvironmentStore.instance.myAppUser.subscribeBy { user ->
-            var adapter = NotifyListAdapter(user.notifications)
+            val adapter = NotifyListAdapter(AppUser.sectionNotifications(user.notifications))
             OneTouchHelperCallback(recyclerView).build()
             recyclerView.adapter = adapter
         }.addTo(disposable)
