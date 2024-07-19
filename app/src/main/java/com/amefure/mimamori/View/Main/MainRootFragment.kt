@@ -1,6 +1,7 @@
 package com.amefure.mimamori.View.Main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +12,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amefure.mimamori.Model.AppUser
+import com.amefure.mimamori.Model.AuthProviderModel
 import com.amefure.mimamori.R
 import com.amefure.mimamori.Repository.AppEnvironmentStore
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
@@ -24,6 +27,10 @@ import com.amefure.mimamori.ViewModel.RootEnvironment
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import org.w3c.dom.Text
 
 
 /**
@@ -63,6 +70,7 @@ class MainRootFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         rootEnvironment.observeMyUserData()
+
         setUpHeaderAction(view)
         setUpMimamoriView(view)
         setUpMamorareView(view)
@@ -95,6 +103,9 @@ class MainRootFragment : Fragment() {
     /** 【ミマモリ】Viewセットアップ */
     private fun setUpMimamoriView(view: View) {
         mimamoriNameLabel = view.findViewById(R.id.mimamori_name_label)
+
+        mimamoriNameLabel.text = getString(R.string.main_root_mimamori_name, "未設定")
+
         // 通知リストビュー
         recyclerView_mima = view.findViewById(R.id.notify_list_view_mima)
         recyclerView_mima.layoutManager = LinearLayoutManager(this.requireContext())
@@ -112,10 +123,10 @@ class MainRootFragment : Fragment() {
         val mamorareLayout: LinearLayout = view.findViewById(R.id.mamorare_layout)
         val mimamoriLayout: LinearLayout = view.findViewById(R.id.mimamori_layout)
 
-
         AppEnvironmentStore.instance.myAppUser
             .subscribeBy { user ->
-                if (user.isMamorare) {
+                val isMamorare = rootEnvironment.getIsMamorare()
+                if (isMamorare) {
                     // マモラレ側を表示
                     mamorareLayout.visibility = View.VISIBLE
                     mimamoriLayout.visibility = View.GONE
@@ -128,7 +139,7 @@ class MainRootFragment : Fragment() {
                     notifyCountLabel.text = AppUser.getTodayNotifyCount(user.notifications).toString()
                     mimamoriCountLabel.text = user.mamorareIdList.size.toString()
                 } else {
-                    // マモラレ側を表示
+                    // ミマモリ側を表示
                     mamorareLayout.visibility = View.GONE
                     mimamoriLayout.visibility = View.VISIBLE
 
@@ -171,6 +182,15 @@ class MainRootFragment : Fragment() {
      */
     private fun setUpHeaderAction(view: View) {
         val headerView: ConstraintLayout = view.findViewById(R.id.include_header)
+
+        lifecycleScope.launch(Dispatchers.Main) {
+            rootEnvironment.observeIsMamorare().collect { isMamorare ->
+                isMamorare ?: return@collect
+                val headerTitle: TextView = view.findViewById(R.id.header_title)
+                headerTitle.text = if (isMamorare) getString(R.string.mamorare) else getString(R.string.mimamori)
+            }
+        }
+
         val leftButton: ImageButton = headerView.findViewById(R.id.left_button)
         leftButton.visibility = View.GONE
 

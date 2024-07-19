@@ -39,7 +39,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingRight="5dp"
-                    android:text="3"
+                    android:text="-"
                     android:textColor="@color/ex_accent"
                     android:textSize="22sp"
                     android:textStyle="bold" />
@@ -85,7 +85,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingRight="5dp"
-                    android:text="1"
+                    android:text="-"
                     android:textColor="@color/ex_accent"
                     android:textSize="22sp"
                     android:textStyle="bold" />

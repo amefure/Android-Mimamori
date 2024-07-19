@@ -7,15 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ExpandableListView
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.viewModels
 import com.amefure.mimamori.R
 import com.amefure.mimamori.View.Setting.RecycleViewSetting.HowToUseAdapter
 import com.amefure.mimamori.View.Utility.RoundedCornerOutlineProvider
+import com.amefure.mimamori.ViewModel.RootEnvironment
 
 class HowToUseFragment : Fragment() {
 
-    private lateinit var adapter: HowToUseAdapter
-
+    private val rootEnvironment: RootEnvironment by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,7 +44,7 @@ class HowToUseFragment : Fragment() {
         expandableList.clipToOutline = true
 
         // アダプターセット
-        adapter = HowToUseAdapter(this.requireContext())
+        val adapter = HowToUseAdapter(this.requireContext())
         expandableList.setAdapter(adapter)
 
         // 親要素をタップした際にアコーディオンアイコン切り替え
@@ -59,6 +61,10 @@ class HowToUseFragment : Fragment() {
      */
     private fun setUpHeaderAction(view: View) {
         val headerView: ConstraintLayout = view.findViewById(R.id.include_header)
+
+        val isMamorare = rootEnvironment.getIsMamorare()
+        val headerTitle: TextView = view.findViewById(R.id.header_title)
+        headerTitle.text = if (isMamorare) getString(R.string.mamorare) else getString(R.string.mimamori)
 
         val leftButton: ImageButton = headerView.findViewById(R.id.left_button)
         leftButton.setOnClickListener {

@@ -103,6 +103,9 @@
                 android:layout_marginTop="20dp"
                 android:background="@drawable/thema_msg_shape"
                 android:padding="10dp"
+                android:lines="1"
+                android:ellipsize="end"
+                android:gravity="center"
                 android:text="@string/main_root_mimamori_name"
                 android:textColor="@color/ex_text"
                 android:textStyle="bold" />

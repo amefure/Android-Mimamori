@@ -46,6 +46,7 @@ class WithdrawalFragment : BaseAuthFragment() {
 
     private val viewModel: SettingViewModel by viewModels()
     private val authEnvironment: AuthEnvironment by viewModels()
+    private val rootEnvironment: RootEnvironment by viewModels()
 
     private var myAppUser: AppUser? = AppEnvironmentStore.instance.myAppUser.value
     private var provider: AuthProviderModel = AuthProviderModel.NONE
@@ -196,6 +197,10 @@ class WithdrawalFragment : BaseAuthFragment() {
      */
     private fun setUpHeaderAction(view: View) {
         val headerView: ConstraintLayout = view.findViewById(R.id.include_header)
+
+        val isMamorare = rootEnvironment.getIsMamorare()
+        val headerTitle: TextView = view.findViewById(R.id.header_title)
+        headerTitle.text = if (isMamorare) getString(R.string.mamorare) else getString(R.string.mimamori)
 
         val leftButton: ImageButton = headerView.findViewById(R.id.left_button)
         leftButton.setOnClickListener {

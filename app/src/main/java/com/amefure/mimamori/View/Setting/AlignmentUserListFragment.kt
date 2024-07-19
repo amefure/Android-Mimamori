@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amefure.mimamori.Model.AppUser
@@ -53,18 +53,15 @@ class AlignmentUserListFragment : Fragment() {
      * リサイクルビューセットアップ
      */
     private fun setUpRecycleView(view: View) {
-        var recyclerView: RecyclerView = view.findViewById(R.id.user_list)
+        val recyclerView: RecyclerView = view.findViewById(R.id.user_list)
         recyclerView.layoutManager = LinearLayoutManager(this.requireContext())
-        recyclerView.addItemDecoration(
-            DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL)
-        )
 
         AppEnvironmentStore.instance.myAppUser.subscribeBy { user ->
             if (user.isMamorare) {
-                var adapter = UserListAdapter(user.currentMimamoriList, user.currentMamorareId)
+                val adapter = UserListAdapter(user.currentMimamoriList, user.currentMamorareId)
                 recyclerView.adapter = adapter
             } else {
-                var adapter = UserListAdapter(user.currentMamorareList,"")
+                val adapter = UserListAdapter(user.currentMamorareList,"")
                 adapter.setOnTappedListener(
                     object : UserListAdapter.onTappedListener {
                         override fun onDeleteTapped(user: AppUser) {
@@ -109,6 +106,10 @@ class AlignmentUserListFragment : Fragment() {
      */
     private fun setUpHeaderAction(view: View) {
         val headerView: ConstraintLayout = view.findViewById(R.id.include_header)
+
+        val isMamorare = rootEnvironment.getIsMamorare()
+        val headerTitle: TextView = view.findViewById(R.id.header_title)
+        headerTitle.text = if (isMamorare) getString(R.string.mamorare) else getString(R.string.mimamori)
 
         val leftButton: ImageButton = headerView.findViewById(R.id.left_button)
         leftButton.setOnClickListener {

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import com.amefure.mimamori.R
@@ -99,6 +100,10 @@ class EntryMimamoreIdFragment : BaseInputFragment() {
      */
     private fun setUpHeaderAction(view: View) {
         val headerView: ConstraintLayout = view.findViewById(R.id.include_header)
+
+        val isMamorare = rootEnvironment.getIsMamorare()
+        val headerTitle: TextView = view.findViewById(R.id.header_title)
+        headerTitle.text = if (isMamorare) getString(R.string.mamorare) else getString(R.string.mimamori)
 
         val leftButton: ImageButton = headerView.findViewById(R.id.left_button)
         leftButton.setOnClickListener {

@@ -5,6 +5,7 @@ import android.util.Log
 import com.amefure.mimamori.Repository.AppEnvironmentStore
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.flow.Flow
 
 class RootEnvironment(app: Application) : RootViewModel(app) {
 
@@ -51,4 +52,10 @@ class RootEnvironment(app: Application) : RootViewModel(app) {
             }
         }
     }
+
+    /** ローカルに保存しているマモラレかどうかを取得 */
+    public fun getIsMamorare(): Boolean = dataStoreRepository.getIsMamorare()
+
+    /** ローカルに保存しているマモラレかどうかを取得 */
+    public fun observeIsMamorare(): Flow<Boolean?> = dataStoreRepository.observeIsMamorare()
 }

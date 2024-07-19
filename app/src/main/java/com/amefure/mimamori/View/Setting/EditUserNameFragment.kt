@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import com.amefure.mimamori.Model.AuthProviderModel
@@ -18,6 +19,7 @@ import com.amefure.mimamori.View.BaseFragment.BaseAuthFragment
 import com.amefure.mimamori.View.BaseFragment.BaseInputFragment
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.ViewModel.AuthEnvironment
+import com.amefure.mimamori.ViewModel.RootEnvironment
 import com.amefure.mimamori.ViewModel.SettingViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -27,6 +29,7 @@ import io.reactivex.schedulers.Schedulers
 
 class EditUserNameFragment : BaseAuthFragment() {
 
+    private val rootEnvironment: RootEnvironment by viewModels()
     private val authEnvironment: AuthEnvironment by viewModels()
     private val viewModel: SettingViewModel by viewModels()
     private val disposable = CompositeDisposable()
@@ -118,6 +121,10 @@ class EditUserNameFragment : BaseAuthFragment() {
      */
     private fun setUpHeaderAction(view: View) {
         val headerView: ConstraintLayout = view.findViewById(R.id.include_header)
+
+        val isMamorare = rootEnvironment.getIsMamorare()
+        val headerTitle: TextView = view.findViewById(R.id.header_title)
+        headerTitle.text = if (isMamorare) getString(R.string.mamorare) else getString(R.string.mimamori)
 
         val leftButton: ImageButton = headerView.findViewById(R.id.left_button)
         leftButton.setOnClickListener {

@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -236,6 +237,19 @@ class SettingFragment : Fragment() {
      */
     private fun setUpHeaderAction(view: View) {
         val headerView: ConstraintLayout = view.findViewById(R.id.include_header)
+
+        // 一瞬デフォルト値が表示されてしまうため
+        // 明示的にここで更新しておく
+        val isMamorare = rootEnvironment.getIsMamorare()
+        val headerTitle: TextView = view.findViewById(R.id.header_title)
+        headerTitle.text = if (isMamorare) getString(R.string.mamorare) else getString(R.string.mimamori)
+
+        lifecycleScope.launch(Dispatchers.Main) {
+            rootEnvironment.observeIsMamorare().collect { isMamorare ->
+                isMamorare ?: return@collect
+                headerTitle.text = if (isMamorare) getString(R.string.mamorare) else getString(R.string.mimamori)
+            }
+        }
 
         val leftButton: ImageButton = headerView.findViewById(R.id.left_button)
         leftButton.setOnClickListener {

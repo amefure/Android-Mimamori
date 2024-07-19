@@ -199,7 +199,8 @@ class AuthEnvironment(app: Application) : RootViewModel(app) {
     private fun createUserForLocal(provider: AuthProviderModel) {
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreRepository.saveSignInProvider(provider)
+            // マモラレかどうかのフラグも追加
+            dataStoreRepository.saveIsMamorare(true)
         }
     }
-
 }

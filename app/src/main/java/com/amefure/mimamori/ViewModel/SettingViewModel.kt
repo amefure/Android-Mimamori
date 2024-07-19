@@ -1,8 +1,10 @@
 package com.amefure.mimamori.ViewModel
 
 import android.app.Application
+import androidx.lifecycle.viewModelScope
 import com.amefure.mimamori.Model.AppUser
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 class SettingViewModel(app: Application) : RootViewModel(app) {
 
@@ -10,6 +12,9 @@ class SettingViewModel(app: Application) : RootViewModel(app) {
     public fun selectMamorare() {
         authRepository.getCurrentUser()?.uid?.let { userId ->
             databaseRepository.updateUserInfo(userId, isMamorare = true)
+            viewModelScope.launch {
+                dataStoreRepository.saveIsMamorare(true)
+            }
         }
     }
 
@@ -17,6 +22,9 @@ class SettingViewModel(app: Application) : RootViewModel(app) {
     public fun selectMimamori() {
         authRepository.getCurrentUser()?.uid?.let { userId ->
             databaseRepository.updateUserInfo(userId, isMamorare = false)
+            viewModelScope.launch {
+                dataStoreRepository.saveIsMamorare(false)
+            }
         }
     }
 

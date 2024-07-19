@@ -106,6 +106,14 @@ class SelectAppMainModeFragment : Fragment() {
             showPositive = true,
             showNegative = false
         )
+        dialog.setOnTappedListener(
+            object : CustomNotifyDialogFragment.setOnTappedListener {
+                override fun onPositiveButtonTapped() {
+                    parentFragmentManager.popBackStack()
+                }
+                override fun onNegativeButtonTapped() { }
+            }
+        )
         dialog.showNow(parentFragmentManager, "SuccessUpdateModeDialog")
     }
 
@@ -117,6 +125,10 @@ class SelectAppMainModeFragment : Fragment() {
      */
     private fun setUpHeaderAction(view: View) {
         val headerView: ConstraintLayout = view.findViewById(R.id.include_header)
+
+        val isMamorare = rootEnvironment.getIsMamorare()
+        val headerTitle: TextView = view.findViewById(R.id.header_title)
+        headerTitle.text = if (isMamorare) getString(R.string.mamorare) else getString(R.string.mimamori)
 
         val leftButton: ImageButton = headerView.findViewById(R.id.left_button)
         leftButton.setOnClickListener {
