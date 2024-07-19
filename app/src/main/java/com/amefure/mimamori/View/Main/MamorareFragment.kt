@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -30,11 +31,14 @@ import io.reactivex.rxkotlin.subscribeBy
 
 class MamorareFragment : Fragment() {
 
-    private val authEnvironment: AuthEnvironment by viewModels()
     private val rootEnvironment: RootEnvironment by viewModels()
     private val viewModel: MamorareMainViewModel by viewModels()
 
     private var disposable = CompositeDisposable()
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var notifyCountLabel: TextView
+    private lateinit var mimamoriCountLabel: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,13 +54,20 @@ class MamorareFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         rootEnvironment.observeMyUserData()
-
-        var notifySendButton: Button = view.findViewById(R.id.notify_send_button)
-
         setUpHeaderAction(view)
-        setUpRecycleView(view)
+        setUpView(view)
+        subscribeMyAppUser()
+    }
+
+    /** Viewセットアップ */
+    private fun setUpView(view: View) {
+        // 通知リストビュー
+        recyclerView = view.findViewById(R.id.notify_list_view)
+        recyclerView.layoutManager = LinearLayoutManager(this.requireContext())
+
+        // 通知送信ボタン
+        val notifySendButton: Button = view.findViewById(R.id.notify_send_button)
         notifySendButton.setOnClickListener {
             viewModel.sendNotification { result ->
                 activity?.runOnUiThread {
@@ -64,22 +75,28 @@ class MamorareFragment : Fragment() {
                 }
             }
         }
+
+        // 通知回数/ミマモリ人数
+        val settingContainer: ConstraintLayout = view.findViewById(R.id.setting_container)
+        notifyCountLabel = settingContainer.findViewById(R.id.notify_count_label)
+        mimamoriCountLabel = settingContainer.findViewById(R.id.mimamori_count_label)
     }
 
-    /**
-     * 通知リスト
-     * リサイクルビューセットアップ
-     */
-    private fun setUpRecycleView(view: View) {
-        var recyclerView: RecyclerView = view.findViewById(R.id.notify_list_view)
-        recyclerView.layoutManager = LinearLayoutManager(this.requireContext())
+    /** ユーザー情報観測 */
+    private fun subscribeMyAppUser() {
+        AppEnvironmentStore.instance.myAppUser
+            .subscribeBy { user ->
+                // 通知リストビュー
+                val adapter = NotifyListAdapter(AppUser.sectionNotifications(user.notifications))
+                OneTouchHelperCallback(recyclerView).build()
+                recyclerView.adapter = adapter
 
-        AppEnvironmentStore.instance.myAppUser.subscribeBy { user ->
-            val adapter = NotifyListAdapter(AppUser.sectionNotifications(user.notifications))
-            OneTouchHelperCallback(recyclerView).build()
-            recyclerView.adapter = adapter
-        }.addTo(disposable)
+                // 通知回数/ミマモリ人数
+                notifyCountLabel.text = AppUser.getTodayNotifyCount(user.notifications).toString()
+                mimamoriCountLabel.text = user.mimamoriIdList.size.toString()
+            }.addTo(disposable)
     }
+
 
     /** プッシュ通知結果ダイアログ表示 */
     private fun showNotifyResultDialog(success: Boolean) {

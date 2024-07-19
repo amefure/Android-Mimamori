@@ -9,22 +9,27 @@ import io.reactivex.rxkotlin.addTo
 class RootEnvironment(app: Application) : RootViewModel(app) {
 
     private var disposable = CompositeDisposable()
+    private var isObserve = false
 
     /**
      * クラウドから取得したAppUser情報を観測開始
      */
     public fun observeMyUserData() {
-        // クラウドから取得したAppUser情報を観測
-        databaseRepository.myAppUser.subscribe { user ->
-            Log.d("Realtime Database", "USER：${user}")
-            // 全体参照できるユーザー情報を公開
-            AppEnvironmentStore.instance.myAppUser.onNext(user)
-        }.addTo(disposable)
+        if (!isObserve) {
+            // クラウドから取得したAppUser情報を観測
+            databaseRepository.myAppUser.subscribe { user ->
+                Log.d("Realtime Database", "USER：${user}")
+                // 全体参照できるユーザー情報を公開
+                AppEnvironmentStore.instance.myAppUser.onNext(user)
+            }.addTo(disposable)
 
-        // ローカルにあるユーザーIDを使用してクラウドを観測開始
-        authRepository.getCurrentUser()?.uid?.let { userId ->
-            Log.d("Realtime Database", "USERID：${userId}")
-            databaseRepository.observeMyUserData(userId)
+            // ローカルにあるユーザーIDを使用してクラウドを観測開始
+            authRepository.getCurrentUser()?.uid?.let { userId ->
+                Log.d("Realtime Database", "USERID：${userId}")
+                databaseRepository.observeMyUserData(userId)
+            }
+
+            isObserve = true
         }
     }
 

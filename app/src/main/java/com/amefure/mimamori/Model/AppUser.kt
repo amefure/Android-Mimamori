@@ -1,6 +1,7 @@
 package com.amefure.mimamori.Model
 
 import com.amefure.mimamori.Utility.DateFormatUtility
+import java.util.Calendar
 import java.util.UUID
 
 
@@ -58,6 +59,7 @@ data class AppUser(
                 mamorareIdList = emptyList()
             )
 
+        /** 通知に年月日のセクションヘッダーを追加 */
         public fun sectionNotifications(notifications: List<AppNotify>): List<AppNotifyBase> {
             val sectionNotify = notifications.map { notify ->
                 AppNotifySection(
@@ -69,6 +71,14 @@ data class AppUser(
             list.addAll(0, notifications)
             list.addAll(0, sectionNotify)
             return list.sortedBy { it.time }.reversed()
+        }
+
+        /** 本日の通知の個数 */
+        public fun getTodayNotifyCount(notifications: List<AppNotify>): Int {
+            val count = notifications.filter { notify ->
+                DateFormatUtility.isSameDate(notify.time, Calendar.getInstance().time)
+            }.size
+            return count
         }
 
     }

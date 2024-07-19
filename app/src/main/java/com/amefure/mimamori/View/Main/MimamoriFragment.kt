@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amefure.mimamori.Model.AppUser
@@ -14,6 +16,7 @@ import com.amefure.mimamori.R
 import com.amefure.mimamori.Repository.AppEnvironmentStore
 import com.amefure.mimamori.View.Setting.SettingFragment
 import com.amefure.mimamori.View.Utility.OneTouchHelperCallback
+import com.amefure.mimamori.ViewModel.RootEnvironment
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -21,7 +24,14 @@ import io.reactivex.rxkotlin.subscribeBy
 
 class MimamoriFragment : Fragment() {
 
+    private val rootEnvironment: RootEnvironment by viewModels()
+
     private var disposable = CompositeDisposable()
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var notifyCountLabel: TextView
+    private lateinit var mimamoriCountLabel: TextView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,25 +47,39 @@ class MimamoriFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        rootEnvironment.observeMyUserData()
         setUpHeaderAction(view)
-        setUpRecycleView(view)
+        setUpView(view)
+        subscribeMyAppUser()
     }
 
-    /**
-     * 通知リスト
-     * リサイクルビューセットアップ
-     */
-    private fun setUpRecycleView(view: View) {
-        var recyclerView: RecyclerView = view.findViewById(R.id.notify_list_view)
+
+    /** Viewセットアップ */
+    private fun setUpView(view: View) {
+        // 通知リストビュー
+        recyclerView = view.findViewById(R.id.notify_list_view)
         recyclerView.layoutManager = LinearLayoutManager(this.requireContext())
 
-        AppEnvironmentStore.instance.myAppUser.subscribeBy { user ->
-            val adapter = NotifyListAdapter(AppUser.sectionNotifications(user.notifications))
-            OneTouchHelperCallback(recyclerView).build()
-            recyclerView.adapter = adapter
-        }.addTo(disposable)
+        // 通知回数/ミマモリ人数
+        val settingContainer: ConstraintLayout = view.findViewById(R.id.setting_container)
+        notifyCountLabel = settingContainer.findViewById(R.id.notify_count_label)
+        mimamoriCountLabel = settingContainer.findViewById(R.id.mimamori_count_label)
     }
 
+    /** ユーザー情報観測 */
+    private fun subscribeMyAppUser() {
+        AppEnvironmentStore.instance.myAppUser
+            .subscribeBy { user ->
+                // 通知リストビュー
+                val adapter = NotifyListAdapter(AppUser.sectionNotifications(user.notifications))
+                OneTouchHelperCallback(recyclerView).build()
+                recyclerView.adapter = adapter
+
+                // 通知回数/ミマモリ人数
+                notifyCountLabel.text = AppUser.getTodayNotifyCount(user.notifications).toString()
+                mimamoriCountLabel.text = user.mamorareIdList.size.toString()
+            }.addTo(disposable)
+    }
 
     /**
      * ヘッダーボタンセットアップ
