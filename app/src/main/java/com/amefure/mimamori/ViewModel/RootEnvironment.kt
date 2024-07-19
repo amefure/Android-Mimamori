@@ -43,13 +43,8 @@ class RootEnvironment(app: Application) : RootViewModel(app) {
     public fun entryMimamoriUser(mimamoriId: String, userId:String, completion: (Boolean) -> Unit) {
         databaseRepository.updateMamorareIDList(userId, mimamoriId) { result ->
             if (result) {
-                databaseRepository.updateNotifyMimamoriList(userId, mimamoriId) {
-                    result ->
-                    if (result) {
-                        completion(true)
-                    } else {
-                        completion(false)
-                    }
+                databaseRepository.updateNotifyMimamoriList(userId, mimamoriId) { result ->
+                    completion(result)
                 }
             } else {
                 completion(false)

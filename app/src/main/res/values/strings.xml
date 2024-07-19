@@ -6,7 +6,6 @@
     <string name="entry">登録</string>
     <string name="update">更新</string>
     <string name="send">送信</string>
-    <string name="notify_history">notify_history</string>
 
     <!-- Onboarding -->
     <string name="onboarding1_msg">「ミマモリ」はミマモリ側とマモラレ側それぞれがこのアプリをインストールすることで利用できます。\nマモラレ側が通知ボタンを押すとミマモリ設定したユーザーに通知が送られ、知らせることができます。</string>
@@ -23,6 +22,9 @@
     <string name="onboarding_next">次へ</string>
     <string name="onboarding_start">はじめる</string>
 
+    <!-- MainRootView(マモラレ/ミマモ画面) -->
+    <string name="main_root_notify_history">通知履歴</string>
+    <string name="main_root_mimamori_name">ミマモリ対象：%1$s</string>
 
     <!-- Dialog -->
     <string name="dialog_title_notice">お知らせ</string>

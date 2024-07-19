@@ -6,23 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.viewModels
-import com.amefure.mimamori.Model.AppUser
 import com.amefure.mimamori.Model.myFcmToken
 import com.amefure.mimamori.R
-import com.amefure.mimamori.Repository.AppEnvironmentStore
 import com.amefure.mimamori.Repository.FirebaseAuthRepository
 import com.amefure.mimamori.View.FBAuthentication.AuthActivity
-import com.amefure.mimamori.View.Main.MamorareFragment
-import com.amefure.mimamori.View.Main.MimamoriFragment
-import com.amefure.mimamori.View.Main.NotifyListAdapter
-import com.amefure.mimamori.View.Utility.OneTouchHelperCallback
-import com.amefure.mimamori.ViewModel.RootEnvironment
+import com.amefure.mimamori.View.Main.MainRootFragment
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
 
 class MainActivity : AppCompatActivity() {
     private var disposable = CompositeDisposable()
@@ -43,7 +34,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         } else {
-            subscribeMyAppUser()
+            supportFragmentManager.beginTransaction().apply {
+                replace(R.id.main_frame, MainRootFragment())
+                commit()
+            }
         }
     }
 
@@ -51,25 +45,6 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         disposable.dispose()
     }
-
-    /** ユーザー情報観測 */
-    private fun subscribeMyAppUser() {
-        AppEnvironmentStore.instance.myAppUser
-            .distinctUntilChanged()
-            .subscribeBy { user ->
-                Log.d("000000変化しよ","000000変化しよ" )
-                val fragment = if (user.isMamorare) {
-                    MamorareFragment()
-                } else {
-                    MimamoriFragment()
-                }
-                supportFragmentManager.beginTransaction().apply {
-                    replace(R.id.main_frame, fragment)
-                    commit()
-                }
-            }.addTo(disposable)
-    }
-
 
 
     /**

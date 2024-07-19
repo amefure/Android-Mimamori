@@ -267,10 +267,6 @@ class FBDatabaseRepository() {
         // JSONをList<AppNotify>に変換
         val notifications = JsonFormatterUtility.fromJson(json).sortedBy { it.time }.reversed()
 
-         // .sorted(by: { $0.time > $1.time })
-        Log.d("GSON", notifications.toString())
-
-
         val user = AppUser(
             id = userId,
             name = dic[AppUser.NAME_KEY] as? String ?: "",
@@ -412,7 +408,8 @@ class FBDatabaseRepository() {
                             _myAppUser.onNext(user)
                         }
                     }.addOnFailureListener {
-
+                        Log.d("Realtime Database", "データ取得エラー${it}")
+                        _myAppUser.onNext(user)
                     }
             }
         }

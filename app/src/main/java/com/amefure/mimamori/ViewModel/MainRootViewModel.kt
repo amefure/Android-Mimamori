@@ -7,12 +7,11 @@ import com.amefure.mimamori.Model.AppNotify
 import com.amefure.mimamori.Model.AppUser
 import com.amefure.mimamori.Repository.AppEnvironmentStore
 import java.util.Calendar
-import java.util.Date
 
-class MamorareMainViewModel(app: Application) : RootViewModel(app) {
+class MainRootViewModel(app: Application) : RootViewModel(app) {
 
 
-    // 登録済みのミマモリユーザーに向けて発火する
+    /** 登録済みのミマモリユーザーに向けて発火する */
     public fun sendNotification(completion:(Boolean) -> Unit) {
         var index = 0
         val myAppUser = AppEnvironmentStore.instance.myAppUser.value ?: return
@@ -36,6 +35,7 @@ class MamorareMainViewModel(app: Application) : RootViewModel(app) {
         }
     }
 
+    /** 登録済みのミマモリユーザーに向けて発火する */
     private fun entryNotifyAPI(myAppUser: AppUser) {
         val notifications = myAppUser.notifications.toMutableList()
         val notify = AppNotify(title = "title", msg = "msg")
@@ -46,8 +46,7 @@ class MamorareMainViewModel(app: Application) : RootViewModel(app) {
         val oneWeekAgo = Calendar.getInstance().apply { add(Calendar.DATE, -7) }.time
         // 直近1週間分だけにフィルタリング
         val filtering = notifications.filter { it.time <= today.time && it.time >= oneWeekAgo }
-        Log.d("000000sss", filtering.toString())
-        // databaseRepository.updateUserInfo(myAppUser.id, notifications = notifications)
+        databaseRepository.updateUserInfo(myAppUser.id, notifications = filtering)
     }
 
 }

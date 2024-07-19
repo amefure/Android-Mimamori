@@ -33,20 +33,20 @@ data class AppUser(
 
 ) {
     companion object {
-        public val TABLE_NAME = "tests"
+        public const val TABLE_NAME = "tests"
         // 共通
-        public val ID_KEY = "id"
-        public val NAME_KEY = "name"
-        public val FCM_TOKEN_KEY = "fcm_token"
-        public val IS_MAMORARE_KEY = "is_mamorare"
-        public val NOTIFICATIONS_KEY = "notifications"
+        public const val ID_KEY = "id"
+        public const val NAME_KEY = "name"
+        public const val FCM_TOKEN_KEY = "fcm_token"
+        public const val IS_MAMORARE_KEY = "is_mamorare"
+        public const val NOTIFICATIONS_KEY = "notifications"
 
         // マモラレ(自分)側が参照
-        public val MIMAMORI_ID_LIST_KEY = "mimamori_id_list"
+        public const val MIMAMORI_ID_LIST_KEY = "mimamori_id_list"
 
         // ミマモリ(自分)側が参照
-        public val CURRENT_MAMORARE_ID = "current_mamorare_id"
-        public val MAMORARE_ID_LIST_KEY = "mamorare_id_list"
+        public const val CURRENT_MAMORARE_ID = "current_mamorare_id"
+        public const val MAMORARE_ID_LIST_KEY = "mamorare_id_list"
 
         public fun demoUser(): AppUser = AppUser(
                 id = UUID.randomUUID().toString(),

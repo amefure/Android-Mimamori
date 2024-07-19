@@ -7,7 +7,7 @@ import io.reactivex.subjects.BehaviorSubject
 class AppEnvironmentStore {
 
     companion object {
-        val instance = AppEnvironmentStore()
+       public val instance = AppEnvironmentStore()
     }
 
     // アプリ全体で参照できる自身のユーザー情報
