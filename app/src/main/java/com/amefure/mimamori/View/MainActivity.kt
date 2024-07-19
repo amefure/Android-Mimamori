@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        disposable.clear()
+        disposable.dispose()
     }
 
     /** ユーザー情報観測 */

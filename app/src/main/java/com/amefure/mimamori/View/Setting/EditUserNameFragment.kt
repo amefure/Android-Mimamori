@@ -51,7 +51,7 @@ class EditUserNameFragment : BaseAuthFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        disposable.clear()
+        disposable.dispose()
     }
 
 

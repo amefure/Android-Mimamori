@@ -33,7 +33,7 @@ class EntryMimamoreIdFragment : BaseInputFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        compositeDisposable.clear()
+        compositeDisposable.dispose()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

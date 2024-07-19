@@ -41,7 +41,7 @@ class MimamoriFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        disposable.clear()
+        disposable.dispose()
     }
 
 

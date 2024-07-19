@@ -35,7 +35,7 @@ class ForgetPasswordFragment : BaseAuthFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        disposable.clear()
+        disposable.dispose()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
