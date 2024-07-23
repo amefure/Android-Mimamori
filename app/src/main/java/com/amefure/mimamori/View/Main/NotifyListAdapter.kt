@@ -36,7 +36,7 @@ class NotifyListAdapter(
             holder.itemLayout.visibility = View.VISIBLE
             holder.title.text = notify.title
             holder.msg.text = notify.msg
-            holder.time.text = notify.getTimeString("MM月dd日 HH:mm:ss")
+            holder.time.text = notify.getTimeString("HH:mm:ss")
         } else if (notify is AppNotifySection) {
             holder.baseLayout.maxHeight = 30
             holder.sectionLayout.visibility = View.VISIBLE

@@ -57,8 +57,6 @@
     <string name="dialog_failed_send_notify">通知の送信に失敗しました。\nしばらく時間を置いてから再度お試しください。</string>
 
 
-
-
     <!-- Setting -->
     <string name="setting_app_title">アプリ設定</string>
     <string name="setting_app_current_mode_mimamori">現在：ミマモリ</string>
@@ -85,6 +83,9 @@
 
     <!-- Setting　→　ミマモリ登録画面 -->
     <string name="setting_entry_mimamori"> ↑ ここに「ミマモリID」を入力して、\n「登録」をタップしてください。</string>
+
+    <!-- Setting　→　通知メッセージ変更画面 -->
+    <string name="setting_notify_text_change_desc">ミマモリ側に届く通知メッセージを自由に変更することができます。\n3つまでメッセージを保管することができますが、実際にメッセージに利用されるのはチェックマークの入っているメッセージのみです。</string>
 
     <!-- Setting　→　ミマモリ/マモラレリスト画面 -->
     <string name="setting_user_list_desc_mamorare">登録されているミマモリ対象リストです。\nこの画面から対象を解除することはできません。通知を届ける人を変更したい場合はミマモリ側の人にマモラレ対象リストから削除してもらってください。</string>
@@ -123,5 +124,9 @@
     <string name="how_to_use_a3">通知が届かなくなった場合は携帯を変えてアカウントに入り直した時などが考えられます。\nその際はミマモリ対象のマモラレユーザーを一度削除して、再度登録してもらってください。それでも届かない場合は通知設定がOFFになっていないことを確認してみてください。\nご不明点は「アプリの不具合はこちら」よりお問い合わせください。</string>
     <string name="how_to_use_q4">⚪︎⚪︎な機能を追加してほしい</string>
     <string name="how_to_use_a4">アプリのレビューもしくは「アプリの不具合はこちら」のWebサイトのお問い合わせフォームからフィードバックをいただけるとできる限り対処いたします。\nしかしご要望に添えない可能性があることをご了承ください。</string>
+
+    <!-- 通知  -->
+    <string name="notify_title">「%1$s」さんから通知が届きました。</string>
+    <string name="notify_button_msg">ボタンを押して通知を送信しました。</string>
 
 </resources>

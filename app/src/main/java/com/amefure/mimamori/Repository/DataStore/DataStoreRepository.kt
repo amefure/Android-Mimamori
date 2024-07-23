@@ -2,12 +2,14 @@ package com.amefure.mimamori.Repository.DataStore
 
 import android.content.Context
 import android.util.Log
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.amefure.mimamori.Model.AuthProviderModel
+import com.amefure.mimamori.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -18,66 +20,61 @@ import java.io.IOException
 class DataStoreRepository(private val context: Context) {
 
     companion object {
-        private val SIGNIN_USER_PROVIDER = stringPreferencesKey("SIGNIN_USER_PROVIDER")
-        private val IS_MAMORARE = booleanPreferencesKey("IS_MAMORARE")
+        public val SIGNIN_USER_NAME = stringPreferencesKey("SIGNIN_USER_NAME")
+        public val SIGNIN_USER_PROVIDER = stringPreferencesKey("SIGNIN_USER_PROVIDER")
+        public val IS_MAMORARE = booleanPreferencesKey("IS_MAMORARE")
+
+        public val NOTIFY_SELECT_NUMBER = stringPreferencesKey("NOTIFY_SELECT_NUMBER")
+        public val NOTIFY_MSG_1 = stringPreferencesKey("NOTIFY_MSG_1")
+        public val NOTIFY_MSG_2 = stringPreferencesKey("NOTIFY_MSG_2")
+        public val NOTIFY_MSG_3 = stringPreferencesKey("NOTIFY_MSG_3")
+
+        /** 通知メッセージナンバー */
+        enum class NotifyMsgNumber {
+            ONE,
+            TWO,
+            THREE
+        }
+
     }
 
-    suspend fun saveSignInProvider(provider: AuthProviderModel) {
+    /** 任意のキーと値のペアを保存 */
+    suspend fun <T> savePreference(key: Preferences.Key<T>, value: T) {
         try {
             context.dataStore.edit { preferences ->
-                preferences[SIGNIN_USER_PROVIDER] = provider.name
+                preferences[key] = value
             }
         } catch (e: IOException) {
             Log.d("DataStore", "例外が発生したよ")
         }
     }
 
-    public fun observeSignInProvider(): Flow<String?> {
-        return context.dataStore.data.catch { exception ->
-            if (exception is IOException) {
-                emit(emptyPreferences())
-            } else {
-                throw exception
-            }
-        }.map { preferences ->
-            preferences[SIGNIN_USER_PROVIDER]
-        }
-    }
-
-    suspend fun saveIsMamorare(isMamorare: Boolean) {
-        try {
-            context.dataStore.edit { preferences ->
-                preferences[IS_MAMORARE] = isMamorare
-            }
-        } catch (e: IOException) {
-            Log.d("DataStore", "例外が発生したよ")
-        }
-    }
-
-    public fun observeIsMamorare(): Flow<Boolean?> {
-        return context.dataStore.data.catch { exception ->
-            if (exception is IOException) {
-                emit(emptyPreferences())
-            } else {
-                throw exception
-            }
-        }.map { preferences ->
-            preferences[IS_MAMORARE]
-        }
-    }
-
-    public fun getIsMamorare(): Boolean {
+    /** 任意のキーから値を取得 */
+    public fun <T> getPreference(key: Preferences.Key<T>, defaultValue: T): T {
         return runBlocking {
             try {
                 val preferences = context.dataStore.data.first()
-                preferences[IS_MAMORARE] ?: false
+                preferences[key] ?: defaultValue
             } catch (e: IOException) {
-                Log.d("DataStore", "Failed to read preferences", e)
-                false
-            } catch (e: Exception) {
-                Log.d("DataStore", "Unexpected error", e)
-                false
+                Log.d("DataStore", "例外が発生したよ")
+                defaultValue
             }
         }
     }
+
+    /** 任意のキーの値を監視 */
+    public fun <T> observePreference(key: Preferences.Key<T>): Flow<T?> {
+        return context.dataStore.data
+            .catch { exception ->
+                if (exception is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }
+            .map { preferences ->
+                preferences[key]
+            }
+    }
+
 }

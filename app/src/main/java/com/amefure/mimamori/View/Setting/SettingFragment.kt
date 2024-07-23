@@ -159,7 +159,11 @@ class SettingFragment : Fragment() {
         }
         // 通知メッセージ変更
         notifyMsgRow.setOnClickListener {
-
+            parentFragmentManager.beginTransaction().apply {
+                add(R.id.main_frame, EditNotifyMessageFragment())
+                addToBackStack(null)
+                commit()
+            }
         }
         // アプリの使い方
         howToUseRow.setOnClickListener {

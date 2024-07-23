@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.amefure.mimamori.Model.AuthProviderModel
 import com.amefure.mimamori.Model.myFcmToken
+import com.amefure.mimamori.Repository.DataStore.DataStoreRepository
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.userProfileChangeRequest
@@ -198,9 +199,9 @@ class AuthEnvironment(app: Application) : RootViewModel(app) {
     /**　ローカルにユーザー情報を登録する　*/
     private fun createUserForLocal(provider: AuthProviderModel) {
         viewModelScope.launch(Dispatchers.IO) {
-            dataStoreRepository.saveSignInProvider(provider)
+            dataStoreRepository.savePreference(DataStoreRepository.SIGNIN_USER_PROVIDER, provider.name)
             // マモラレかどうかのフラグも追加
-            dataStoreRepository.saveIsMamorare(true)
+            dataStoreRepository.savePreference(DataStoreRepository.IS_MAMORARE, true)
         }
     }
 }
