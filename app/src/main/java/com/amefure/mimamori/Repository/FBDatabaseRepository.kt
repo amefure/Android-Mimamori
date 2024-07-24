@@ -69,11 +69,8 @@ class FBDatabaseRepository() {
             usersInfo.put(AppUser.IS_MAMORARE_KEY, isMamorare)
         }
         if (!notifications.isEmpty()) {
-            // val json = jsonFormatUtility.encode(notifications)
-            // usersInfo.put(AppUser.NOTIFICATIONS_KEY, json)
-            var json = JsonFormatterUtility.toJson(notifications)
+            val json = JsonFormatterUtility.toJson(notifications)
             usersInfo.put(AppUser.NOTIFICATIONS_KEY, json)
-            Log.d("0000", json)
         }
         if (!currentMamorareId.isEmpty()) {
             usersInfo.put(AppUser.CURRENT_MAMORARE_ID, currentMamorareId)

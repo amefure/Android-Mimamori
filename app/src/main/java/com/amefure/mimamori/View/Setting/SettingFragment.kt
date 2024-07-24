@@ -71,11 +71,7 @@ class SettingFragment : Fragment() {
             showSwitchIsMamorareRow(user.isMamorare)
         }.addTo(disposable)
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            viewModel.observeSignInProvider().collect {
-                provider = it ?: AuthProviderModel.NONE.name
-            }
-        }
+        provider = viewModel.getSignInProvider()
     }
 
 

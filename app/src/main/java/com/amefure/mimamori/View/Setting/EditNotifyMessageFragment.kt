@@ -81,13 +81,12 @@ class EditNotifyMessageFragment : Fragment() {
             checkButtons.add(layout.findViewById(R.id.notify_item_check_icon))
         }
 
-        val defaultMsg = requireContext().getString(R.string.notify_button_msg)
         val selectNumber = viewModel.getNotifySelectNumber()
-        val title = getString(R.string.notify_title, "MIMAMORI")
+        val title = getString(R.string.notify_title, viewModel.getSignInUserName())
         val msgList: List<String> = listOf(
-            viewModel.getNotifyMsg(NotifyMsgNumber.ONE, defaultMsg),
-            viewModel.getNotifyMsg(NotifyMsgNumber.TWO, defaultMsg),
-            viewModel.getNotifyMsg(NotifyMsgNumber.THREE, defaultMsg)
+            viewModel.getNotifyMsg(NotifyMsgNumber.ONE),
+            viewModel.getNotifyMsg(NotifyMsgNumber.TWO),
+            viewModel.getNotifyMsg(NotifyMsgNumber.THREE)
         )
         notifyLayouts.forEachIndexed { index, layout ->
             // 通知タイトル/メッセージ/時間をセット

@@ -198,7 +198,9 @@ class AuthEnvironment(app: Application) : RootViewModel(app) {
 
     /**　ローカルにユーザー情報を登録する　*/
     private fun createUserForLocal(provider: AuthProviderModel) {
+        val user = getCurrentUser() ?: return
         viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.savePreference(DataStoreRepository.SIGNIN_USER_NAME, user.displayName ?: "")
             dataStoreRepository.savePreference(DataStoreRepository.SIGNIN_USER_PROVIDER, provider.name)
             // マモラレかどうかのフラグも追加
             dataStoreRepository.savePreference(DataStoreRepository.IS_MAMORARE, true)

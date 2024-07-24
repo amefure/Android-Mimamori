@@ -3,6 +3,7 @@ package com.amefure.mimamori.ViewModel
 import android.app.Application
 import androidx.lifecycle.viewModelScope
 import com.amefure.mimamori.Model.AppUser
+import com.amefure.mimamori.Model.AuthProviderModel
 import com.amefure.mimamori.R
 import com.amefure.mimamori.Repository.DataStore.DataStoreRepository
 import com.amefure.mimamori.Repository.DataStore.DataStoreRepository.Companion.NotifyMsgNumber
@@ -10,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SettingViewModel(app: Application) : RootViewModel(app) {
+class SettingViewModel(val app: Application) : RootViewModel(app) {
 
     /** マモラレに設定 */
     public fun selectMamorare() {
@@ -50,16 +51,25 @@ class SettingViewModel(app: Application) : RootViewModel(app) {
         databaseRepository.deleteMyUser(myAppUser)
     }
 
-
-    /** サインインプロバイダ観測 */
-    public fun observeSignInProvider(): Flow<String?> {
-        return dataStoreRepository.observePreference(DataStoreRepository.SIGNIN_USER_PROVIDER)
+    /** サインインプロバイダ取得 */
+    public fun getSignInProvider(): String {
+        return dataStoreRepository.getPreference(DataStoreRepository.SIGNIN_USER_PROVIDER, AuthProviderModel.NONE.name)
     }
 
     /** ユーザー名変更 */
     public fun updateUserName(id: String, name: String) {
         databaseRepository.updateUserInfo(id, name)
+        viewModelScope.launch {
+            dataStoreRepository.savePreference(DataStoreRepository.SIGNIN_USER_NAME, name)
+        }
     }
+
+
+    /** ユーザー名取得 */
+    public fun getSignInUserName(): String {
+        return dataStoreRepository.getPreference(DataStoreRepository.SIGNIN_USER_NAME, "未設定")
+    }
+
 
 
     /** 通知メッセージ選択ナンバー保存 */
@@ -100,12 +110,12 @@ class SettingViewModel(app: Application) : RootViewModel(app) {
     }
 
     /** 通知メッセージ取得 */
-    public fun getNotifyMsg(number: NotifyMsgNumber, defaultMsg: String): String {
+    public fun getNotifyMsg(number: NotifyMsgNumber): String {
         val key = when(number) {
             NotifyMsgNumber.ONE -> DataStoreRepository.NOTIFY_MSG_1
             NotifyMsgNumber.TWO -> DataStoreRepository.NOTIFY_MSG_2
             NotifyMsgNumber.THREE -> DataStoreRepository.NOTIFY_MSG_3
         }
-        return dataStoreRepository.getPreference(key, defaultMsg)
+        return dataStoreRepository.getPreference(key, app.getString(R.string.notify_button_msg))
     }
 }

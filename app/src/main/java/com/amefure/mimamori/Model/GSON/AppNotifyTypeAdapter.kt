@@ -20,8 +20,13 @@ class AppNotifyTypeAdapter : TypeAdapter<AppNotify>() {
         out.beginObject()
         out.name("id").value(value.id)
         out.name("title").value(value.title)
-        out.name("msg").value(value.title)
-        out.name("time").value(dateFormat.format(value.time))
+        out.name("msg").value(value.msg)
+        // KotlinのDateオブジェクトはタイムゾーンに依存した
+        // 9時間をミリ秒に変換
+        val nineHoursInMillis = 9 * 60 * 60 * 1000L
+        // Date.timeから9時間分のミリ秒を引く
+        val newDate = Date(value.time.time - nineHoursInMillis)
+        out.name("time").value(dateFormat.format(newDate))
         // オブジェクトのエンコード終了
         out.endObject()
     }
