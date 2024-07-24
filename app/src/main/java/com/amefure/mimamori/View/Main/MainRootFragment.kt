@@ -1,5 +1,8 @@
 package com.amefure.mimamori.View.Main
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -43,6 +46,8 @@ class MainRootFragment : Fragment() {
     private val viewModel: MainRootViewModel by viewModels()
 
     private var disposable = CompositeDisposable()
+
+    private var isOffline = false
 
     /** マモラレ　*/
     private lateinit var recyclerView: RecyclerView
@@ -117,7 +122,10 @@ class MainRootFragment : Fragment() {
     }
 
 
-    /** ユーザー情報観測 */
+    /**
+     * ユーザー情報観測してメイン画面を切り替え
+     * ネットワーク状態も取得してオフラインならオフラインViewに切り替える
+     */
     private fun subscribeMyAppUser(view: View) {
         // マモラレ/ミマモリレイアウト
         val mamorareLayout: LinearLayout = view.findViewById(R.id.mamorare_layout)
@@ -159,6 +167,28 @@ class MainRootFragment : Fragment() {
                     mimamoriCountLabel_mima.text = currentMamorareUser.mimamoriIdList.size.toString()
                 }
             }.addTo(disposable)
+
+        val offlineView: LinearLayout = view.findViewById(R.id.offline_layout)
+
+        val connectivityManager = this.requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkCapabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (networkCapabilities != null) {
+            val state = when {
+                networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ->
+                    "Wi-Fiに接続中"
+                networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ->
+                    "キャリア通信に接続中"
+                else -> "その他のネットワークに接続中"
+            }
+            Log.e("NetWork", state)
+            offlineView.visibility = View.GONE
+        } else {
+            isOffline = true
+            Log.e("NetWork", "オフライン状態")
+            offlineView.visibility = View.VISIBLE
+            mamorareLayout.visibility = View.GONE
+            mimamoriLayout.visibility = View.GONE
+        }
     }
 
 
@@ -197,10 +227,13 @@ class MainRootFragment : Fragment() {
         val rightButton: ImageButton = headerView.findViewById(R.id.right_button)
         rightButton.setImageResource(R.drawable.button_settings)
         rightButton.setOnClickListener {
-            parentFragmentManager.beginTransaction().apply {
-                add(R.id.main_frame, SettingFragment())
-                addToBackStack(null)
-                commit()
+            // オンラインでのみ遷移可能にする
+            if (!isOffline) {
+                parentFragmentManager.beginTransaction().apply {
+                    add(R.id.main_frame, SettingFragment())
+                    addToBackStack(null)
+                    commit()
+                }
             }
         }
     }

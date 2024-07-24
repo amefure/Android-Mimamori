@@ -22,9 +22,10 @@
     <string name="onboarding_next">次へ</string>
     <string name="onboarding_start">はじめる</string>
 
-    <!-- MainRootView(マモラレ/ミマモ画面) -->
+    <!-- MainRootView(マモラレ/ミマモリ画面) -->
     <string name="main_root_notify_history">通知履歴</string>
     <string name="main_root_mimamori_name">ミマモリ対象：%1$s</string>
+    <string name="main_root_offline_msg">ネットワークに接続されていないため、機能を利用できません。\nネットワークに接続してから再度アプリを起動してください。</string>
 
     <!-- Dialog -->
     <string name="dialog_title_notice">お知らせ</string>
