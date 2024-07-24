@@ -28,6 +28,8 @@
 
     <!-- Dialog -->
     <string name="dialog_title_notice">お知らせ</string>
+    <string name="dialog_base_positive_text">OK</string>
+    <string name="dialog_base_negative_text">キャンセル</string>
 
     <!-- Dialog > Auth -->
     <string name="dialog_auth_validation_input">入力された内容に不備があります。正しい情報を入力してください。</string>
@@ -43,14 +45,12 @@
     <string name="dialog_sign_out_positive_text">ログアウト</string>
     <string name="dialog_not_exist_mimamoriid">存在しないミマモリIDです</string>
     <string name="dialog_success_notify_msg">通知メッセージを変更しました。</string>
+    <string name="dialog_failed_notify_msg">通知メッセージは空では登録できません。</string>
     <string name="dialog_success_mode">「%1$sモード」に変更しました</string>>
     <string name="dialog_success_entry_mimamori">ミマモリを登録しました。</string>
     <string name="dialog_confirm_delete_mamorare">「%1$s」さんをミマモリ対象から外しますか？</string>
     <string name="dialog_success_copy">コピーしました。</string>
     <string name="dialog_edit_user_name_validation_input">ユーザー名を入力してください。</string>
-
-    <string name="dialog_base_positive_text">OK</string>
-    <string name="dialog_base_negative_text">キャンセル</string>
 
     <!-- Dialog > Notify -->
     <string name="dialog_success_send_notify">通知を送信しました。</string>

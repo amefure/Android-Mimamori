@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/notify_item"
+        app:layout_constraintBottom_toTopOf="@+id/notify_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -45,32 +45,37 @@
 
     </LinearLayout>
 
-    <include
-        android:id="@+id/notify_item"
-        layout="@layout/component_notify_row"
+    <LinearLayout
+        android:id="@+id/notify_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/notify_edit_item_header" />
+        app:layout_constraintTop_toBottomOf="@+id/notify_edit_item_header">
 
-    <EditText
-        android:id="@+id/notify_item_input"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/thema_input_shape"
-        android:ems="10"
-        android:hint="@string/setting_edit_user_info_input_hint"
-        android:paddingHorizontal="8dp"
-        android:textColor="@color/ex_text"
-        android:textSize="14sp"
-        android:visibility="gone"
-        app:backgroundTint="@null"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <include
+            android:id="@+id/notify_item"
+            layout="@layout/component_notify_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible" />
+
+        <EditText
+            android:id="@+id/notify_item_input"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/thema_input_shape"
+            android:ems="10"
+            android:maxLines="1"
+            android:inputType="text"
+            android:hint="@string/notify_button_msg"
+            android:paddingHorizontal="8dp"
+            android:textColor="@color/ex_text"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:backgroundTint="@null" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

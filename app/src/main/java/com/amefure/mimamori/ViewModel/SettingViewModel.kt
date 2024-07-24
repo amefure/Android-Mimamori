@@ -87,12 +87,13 @@ class SettingViewModel(app: Application) : RootViewModel(app) {
     }
 
     /** 通知メッセージ保存 */
-    public fun saveNotifyMsg(msg: String, number: NotifyMsgNumber) {
+    public fun saveNotifyMsg(msg: String, number: Int) {
         viewModelScope.launch {
-            val key = when(number) {
-                NotifyMsgNumber.ONE -> DataStoreRepository.NOTIFY_MSG_1
-                NotifyMsgNumber.TWO -> DataStoreRepository.NOTIFY_MSG_2
-                NotifyMsgNumber.THREE -> DataStoreRepository.NOTIFY_MSG_3
+            val key = when (number) {
+                1 -> DataStoreRepository.NOTIFY_MSG_1
+                2 -> DataStoreRepository.NOTIFY_MSG_2
+                3 -> DataStoreRepository.NOTIFY_MSG_3
+                else -> DataStoreRepository.NOTIFY_MSG_1
             }
             dataStoreRepository.savePreference(key, msg)
         }
