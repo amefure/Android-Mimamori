@@ -45,6 +45,7 @@ class AuthEnvironment(app: Application) : RootViewModel(app) {
      */
     public fun signOut() {
         authRepository.signOut()
+        resetUserForLocal()
     }
 
     /**
@@ -200,10 +201,20 @@ class AuthEnvironment(app: Application) : RootViewModel(app) {
     private fun createUserForLocal(provider: AuthProviderModel) {
         val user = getCurrentUser() ?: return
         viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.savePreference(DataStoreRepository.SIGNIN_USER_ID, user.uid)
             dataStoreRepository.savePreference(DataStoreRepository.SIGNIN_USER_NAME, user.displayName ?: "")
             dataStoreRepository.savePreference(DataStoreRepository.SIGNIN_USER_PROVIDER, provider.name)
             // マモラレかどうかのフラグも追加
             dataStoreRepository.savePreference(DataStoreRepository.IS_MAMORARE, true)
+        }
+    }
+
+    /**　ローカルのユーザー情報をリセットする　*/
+    private fun resetUserForLocal() {
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.savePreference(DataStoreRepository.SIGNIN_USER_ID, "")
+            dataStoreRepository.savePreference(DataStoreRepository.SIGNIN_USER_NAME, "")
+            dataStoreRepository.savePreference(DataStoreRepository.SIGNIN_USER_PROVIDER, AuthProviderModel.NONE.name)
         }
     }
 }

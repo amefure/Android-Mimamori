@@ -7,6 +7,7 @@ import com.amefure.mimamori.Model.AuthProviderModel
 import com.amefure.mimamori.R
 import com.amefure.mimamori.Repository.DataStore.DataStoreRepository
 import com.amefure.mimamori.Repository.DataStore.DataStoreRepository.Companion.NotifyMsgNumber
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -49,6 +50,16 @@ class SettingViewModel(val app: Application) : RootViewModel(app) {
     /** ユーザー削除 */
     public fun deleteMyUser(myAppUser: AppUser) {
         databaseRepository.deleteMyUser(myAppUser)
+        resetUserForLocal()
+    }
+
+    /**　ローカルのユーザー情報をリセットする　*/
+    private fun resetUserForLocal() {
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.savePreference(DataStoreRepository.SIGNIN_USER_ID, "")
+            dataStoreRepository.savePreference(DataStoreRepository.SIGNIN_USER_NAME, "")
+            dataStoreRepository.savePreference(DataStoreRepository.SIGNIN_USER_PROVIDER, AuthProviderModel.NONE.name)
+        }
     }
 
     /** サインインプロバイダ取得 */

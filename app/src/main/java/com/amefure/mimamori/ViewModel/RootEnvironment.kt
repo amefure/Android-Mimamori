@@ -2,11 +2,15 @@ package com.amefure.mimamori.ViewModel
 
 import android.app.Application
 import android.util.Log
+import android.view.View
+import androidx.lifecycle.viewModelScope
 import com.amefure.mimamori.Repository.AppEnvironmentStore
 import com.amefure.mimamori.Repository.DataStore.DataStoreRepository
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 class RootEnvironment(app: Application) : RootViewModel(app) {
 
@@ -20,17 +24,38 @@ class RootEnvironment(app: Application) : RootViewModel(app) {
         if (!isObserve) {
             // クラウドから取得したAppUser情報を観測
             databaseRepository.myAppUser.subscribe { user ->
-                Log.d("Realtime Database", "USER：${user}")
+                Log.d("Mimamori", "USER：${user}")
                 // 全体参照できるユーザー情報を公開
                 AppEnvironmentStore.instance.myAppUser.onNext(user)
             }.addTo(disposable)
 
-            // ローカルにあるユーザーIDを使用してクラウドを観測開始
-            authRepository.getCurrentUser()?.uid?.let { userId ->
-                Log.d("Realtime Database", "USERID：${userId}")
-                databaseRepository.observeMyUserData(userId)
-            }
 
+            // ローカルに保持しているユーザーIDを使用してクラウドを観測開始
+            // SIGNIN_USER_IDが変更されたことを検知する
+            // 1. サインアウト時
+            // 2. 別アカウントでサインイン時
+            viewModelScope.launch {
+                dataStoreRepository
+                    .observePreference(DataStoreRepository.SIGNIN_USER_ID)
+                    .collect { userId ->
+                        userId ?: return@collect
+                        Log.d("Mimamori", "ローカルサインインIDが変化：${userId}")
+                        if (!userId.isEmpty()) {
+                            databaseRepository.getUserInfo(userId)
+                            databaseRepository.observeMyUserData(userId)
+                        } else {
+                            databaseRepository.stopObservers()
+
+                            // 空かつログインしているならローカル情報を更新
+                            authRepository.getCurrentUser()?.let { user ->
+                                viewModelScope.launch(Dispatchers.IO) {
+                                    dataStoreRepository.savePreference(DataStoreRepository.SIGNIN_USER_ID, user.uid)
+                                    dataStoreRepository.savePreference(DataStoreRepository.SIGNIN_USER_NAME, user.displayName ?: "")
+                                }
+                            }
+                        }
+                    }
+            }
             isObserve = true
         }
     }

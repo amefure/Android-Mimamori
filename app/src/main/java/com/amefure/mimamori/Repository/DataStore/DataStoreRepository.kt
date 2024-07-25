@@ -21,6 +21,7 @@ class DataStoreRepository(private val context: Context) {
 
     companion object {
         public val SIGNIN_USER_NAME = stringPreferencesKey("SIGNIN_USER_NAME")
+        public val SIGNIN_USER_ID = stringPreferencesKey("SIGNIN_USER_ID")
         public val SIGNIN_USER_PROVIDER = stringPreferencesKey("SIGNIN_USER_PROVIDER")
         public val IS_MAMORARE = booleanPreferencesKey("IS_MAMORARE")
 
