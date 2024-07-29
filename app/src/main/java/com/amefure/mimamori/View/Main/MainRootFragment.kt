@@ -180,11 +180,11 @@ class MainRootFragment : Fragment() {
                     "キャリア通信に接続中"
                 else -> "その他のネットワークに接続中"
             }
-            Log.e("NetWork", state)
+            Log.d("NetWork", state)
             offlineView.visibility = View.GONE
         } else {
             isOffline = true
-            Log.e("NetWork", "オフライン状態")
+            Log.d("NetWork", "オフライン状態")
             offlineView.visibility = View.VISIBLE
             mamorareLayout.visibility = View.GONE
             mimamoriLayout.visibility = View.GONE

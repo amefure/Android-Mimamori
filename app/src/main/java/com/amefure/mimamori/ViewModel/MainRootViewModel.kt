@@ -29,8 +29,10 @@ class MainRootViewModel(val app: Application) : RootViewModel(app) {
                     Log.d("FCM Notify", "通知送信失敗")
                     // FIXME 消す
                     entryNotifyAPI(myAppUser, title, msg)
-                    completion(false)
-                    return@sendNotification
+                    // 最後の送信なら失敗ダイアログ表示
+                    if (count.decrementAndGet() == 0) {
+                        completion(false)
+                    }
                 } else if (count.decrementAndGet() == 0) {
                     Log.d("FCM Notify", "通知送信成功")
                     // 最後まで送信できたらクラウドへ登録して終了

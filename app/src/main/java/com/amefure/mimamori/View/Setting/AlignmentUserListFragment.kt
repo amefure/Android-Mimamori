@@ -1,6 +1,7 @@
 package com.amefure.mimamori.View.Setting
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import com.amefure.mimamori.R
 import com.amefure.mimamori.Repository.AppEnvironmentStore
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.View.Setting.RecycleViewSetting.UserListAdapter
+import com.amefure.mimamori.View.Setting.RecycleViewSetting.UserListItemTouchListener
 import com.amefure.mimamori.View.Utility.OneTouchHelperCallback
 import com.amefure.mimamori.ViewModel.RootEnvironment
 import com.amefure.mimamori.ViewModel.SettingViewModel
@@ -27,6 +29,8 @@ class AlignmentUserListFragment : Fragment() {
 
     private val rootEnvironment: RootEnvironment by viewModels()
     private val viewModel: SettingViewModel by viewModels()
+
+    private var isMamorare = false
 
     private var disposable = CompositeDisposable()
 
@@ -56,12 +60,28 @@ class AlignmentUserListFragment : Fragment() {
         val recyclerView: RecyclerView = view.findViewById(R.id.user_list)
         recyclerView.layoutManager = LinearLayoutManager(this.requireContext())
 
+        // アイテムタップ：対象マモラレIDの変更機能
+        // ミマモリ選択時のみ
+        // myAppUserの観測に含めると複数発火してしまうため
+        val itemTouchListener = UserListItemTouchListener()
+        itemTouchListener.setOnTappedListener(
+            object : UserListItemTouchListener.onTappedListener {
+                override fun onChangedMamorareTapped(user: AppUser) {
+                    changedMamorareUser(user)
+                }
+            }
+        )
+        recyclerView.addOnItemTouchListener(itemTouchListener)
+
         AppEnvironmentStore.instance.myAppUser.subscribeBy { user ->
-            if (user.isMamorare) {
-                val adapter = UserListAdapter(user.currentMimamoriList, user.currentMamorareId)
+            isMamorare = user.isMamorare
+            if (isMamorare) {
+                // マモラレの場合はリスト表示するだけ
+                val adapter = UserListAdapter(user.currentMimamoriList, "")
                 recyclerView.adapter = adapter
             } else {
-                val adapter = UserListAdapter(user.currentMamorareList,"")
+                // ミマモリの場合はスワイプ削除とタップで対象マモラレIDの変更機能を実装
+                val adapter = UserListAdapter(user.currentMamorareList, user.currentMamorareId)
                 adapter.setOnTappedListener(
                     object : UserListAdapter.onTappedListener {
                         override fun onDeleteTapped(user: AppUser) {
@@ -69,6 +89,7 @@ class AlignmentUserListFragment : Fragment() {
                         }
                     }
                 )
+                // アイテムスワイプ：マモラレユーザー削除機能
                 OneTouchHelperCallback(recyclerView).build()
                 recyclerView.adapter = adapter
             }
@@ -76,9 +97,18 @@ class AlignmentUserListFragment : Fragment() {
 
     }
 
-    /**
-     *  マモラレ削除確認ダイアログ表示
-     */
+    /** ミマモリ対象のマモラレユーザーを変更 */
+    private fun changedMamorareUser(user: AppUser) {
+        // ミマモリ選択時のみ
+        if (!isMamorare) {
+            // 現在のマモラレ観測を停止
+            rootEnvironment.resetObserveMamorareId()
+            // 対象マモラレIDを変更
+            viewModel.changeMamorare(user.id)
+        }
+    }
+
+    /** マモラレ削除確認ダイアログ表示 */
     private fun showConfirmDeleteMamorareDialog(user: AppUser) {
         val dialog = CustomNotifyDialogFragment.newInstance(
             title = getString(R.string.dialog_title_notice),

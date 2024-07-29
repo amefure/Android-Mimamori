@@ -12,4 +12,6 @@ class AppEnvironmentStore {
 
     // アプリ全体で参照できる自身のユーザー情報
     public var myAppUser: BehaviorSubject<AppUser> = BehaviorSubject.createDefault(AppUser.demoUser())
+    // ミマモリモード時に観測対象のマモラレIDを保持する
+    public var observeMamorareId: String? = null
 }

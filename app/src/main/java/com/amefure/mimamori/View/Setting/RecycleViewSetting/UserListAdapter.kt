@@ -27,13 +27,13 @@ class UserListAdapter(
 //        notifyItemRemoved(position)
 //    }
 //
-//    public fun getItemAtPosition(position: Int) : AppUser? {
-//        if (position < 0 || position >= _dateList.size) {
-//            return null
-//        }
-//        val item = _dateList[position]
-//        return item
-//    }
+    public fun getItemAtPosition(position: Int) : AppUser? {
+        if (position < 0 || position >= _dateList.size) {
+            return null
+        }
+        val item = _dateList[position]
+        return item
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.component_user_row, parent, false)
@@ -49,6 +49,8 @@ class UserListAdapter(
         holder.userNameLabel.setText(user.name)
         if (user.id == selectUserId) {
             holder.iconWatch.visibility = View.VISIBLE
+        } else {
+            holder.iconWatch.visibility = View.GONE
         }
 
         holder.deleteButton.setOnClickListener {

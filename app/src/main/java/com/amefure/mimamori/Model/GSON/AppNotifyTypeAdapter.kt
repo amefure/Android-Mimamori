@@ -7,6 +7,7 @@ import com.amefure.mimamori.Model.AppNotify
 import com.google.gson.TypeAdapter
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.TimeZone
 
 class AppNotifyTypeAdapter : TypeAdapter<AppNotify>() {
 
@@ -21,7 +22,8 @@ class AppNotifyTypeAdapter : TypeAdapter<AppNotify>() {
         out.name("id").value(value.id)
         out.name("title").value(value.title)
         out.name("msg").value(value.msg)
-        // KotlinのDateオブジェクトはタイムゾーンに依存した
+        // KotlinのDateオブジェクトはタイムゾーンに依存していない
+        // 明示的に日本時間との時差である9時間を引いた日時にする
         // 9時間をミリ秒に変換
         val nineHoursInMillis = 9 * 60 * 60 * 1000L
         // Date.timeから9時間分のミリ秒を引く

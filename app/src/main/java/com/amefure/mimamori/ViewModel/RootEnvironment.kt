@@ -12,18 +12,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
+/** シングルトン設計ではないのでプロパティに保持している値は呼び出している画面ごとに異なる */
 class RootEnvironment(app: Application) : RootViewModel(app) {
 
     private var disposable = CompositeDisposable()
     private var isObserve = false
-    private var observeMamorareId: String? = null
 
     /**
      * マモラレ対象を変更した際にマモラレ新規観測を開始するため
      * 観測を停止して次回の観測対象になるようにnullにする
      */
     public fun resetObserveMamorareId() {
-        observeMamorareId = null
+        AppEnvironmentStore.instance.observeMamorareId = null
         databaseRepository.stopMamorareObservers()
     }
 
@@ -39,9 +39,9 @@ class RootEnvironment(app: Application) : RootViewModel(app) {
                 AppEnvironmentStore.instance.myAppUser.onNext(user)
 
                 // 対象のマモラレIDが存在するならマモラレユーザー情報も観測
-                if (!user.currentMamorareId.isEmpty() && observeMamorareId == null) {
+                if (!user.isMamorare && !user.currentMamorareId.isEmpty() && AppEnvironmentStore.instance.observeMamorareId == null) {
                     Log.d("Mimamori","マモラレ観測ID：${user.currentMamorareId}")
-                    observeMamorareId = user.currentMamorareId
+                    AppEnvironmentStore.instance.observeMamorareId = user.currentMamorareId
                     databaseRepository.observeMamorareData(user.currentMamorareId)
                 }
             }.addTo(disposable)

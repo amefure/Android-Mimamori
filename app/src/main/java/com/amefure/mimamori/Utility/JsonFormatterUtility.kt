@@ -18,8 +18,7 @@ class JsonFormatterUtility {
         fun toJson(notifications: List<AppNotify>): String = gson.toJson(notifications)
 
         /** JSONをオブジェクトにデコード */
-        fun fromJson(json: String):  List<AppNotify> {
-            Log.d("JSON", "$json")
+        fun fromJson(json: String): List<AppNotify> {
             try {
                 // TypeTokenを使用して、List<AppNotify>のタイプを取得
                 val listType = object : TypeToken<List<AppNotify>>() {}.type

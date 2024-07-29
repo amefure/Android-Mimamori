@@ -38,6 +38,14 @@ class SettingViewModel(val app: Application) : RootViewModel(app) {
 
 
 
+    /** マモラレ対象変更 */
+    public fun changeMamorare(mamorareId: String) {
+        authRepository.getCurrentUser()?.uid?.let { userId ->
+            databaseRepository.updateUserInfo(userId, currentMamorareId = mamorareId)
+        }
+    }
+
+
     /** マモラレ削除 */
     public fun deleteMamorare(mamorareId: String, completion: (Boolean) -> Unit) {
         authRepository.getCurrentUser()?.uid?.let { userId ->

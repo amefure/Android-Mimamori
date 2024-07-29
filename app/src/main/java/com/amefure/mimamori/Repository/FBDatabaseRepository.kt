@@ -21,7 +21,7 @@ class FBDatabaseRepository() {
 
     private var oldNotifications: Int = 0
 
-    private var observeMyUserData: ValueEventListener? = null
+    private var observeMyUserDataListener: ValueEventListener? = null
     private var observeMamorareDataListener: ValueEventListener? = null
 
     /**
@@ -309,22 +309,25 @@ class FBDatabaseRepository() {
      * マモラレの場合に自分のユーザー情報を観測する
      */
     public fun observeMyUserData(userId: String) {
+        // 観測前に存在すれば停止
+        stopMyUserObservers()
+
         val userRef = ref.child(AppUser.TABLE_NAME).child(userId)
 
-        observeMyUserData = object : ValueEventListener {
+        observeMyUserDataListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val result = dataSnapshot.value ?: return
                 val userDic = result as? Map <String, Any> ?: return
                 val user = createAppUser(userDic, userId)
                 storeMamorareUser(user)
-                Log.d("Realtime Database", "取得した値： $user")
+                Log.d("Realtime Database", "観測MyUser情報変化： $user")
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 Log.d("Realtime Database", "キャンセル： ${databaseError.toException()}")
             }
         }
-        observeMyUserData?.let {
+        observeMyUserDataListener?.let {
             userRef.addValueEventListener(it)
         }
     }
@@ -334,6 +337,9 @@ class FBDatabaseRepository() {
      * ここで観測するのはマモラレ側のデータだが更新するのは自身のユーザー情報
      */
     public fun observeMamorareData(mamorareId: String) {
+        // 観測前に存在すれば停止
+        stopMamorareObservers()
+
         val userRef = ref.child(AppUser.TABLE_NAME).child(mamorareId)
 
         observeMamorareDataListener = object : ValueEventListener {
@@ -349,7 +355,7 @@ class FBDatabaseRepository() {
                     myUser.currentMamorareList.toMutableList()[index] = mamorareUser
                 }
                 _myAppUser.onNext(myUser)
-                Log.d("Realtime Database", "取得した値： $myUser")
+                Log.d("Realtime Database", "観測Mamorare情報変化： $myUser")
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -416,10 +422,15 @@ class FBDatabaseRepository() {
     public fun stopAllObservers() {
         // マモラレ対象の観測を停止
         stopMamorareObservers()
-
         // 自身の観測を停止
-        observeMyUserData?.let {
+        stopMyUserObservers()
+    }
+
+    /**  自身の観測を停止 */
+    private fun stopMyUserObservers() {
+        observeMyUserDataListener?.let {
             ref.removeEventListener(it)
+            observeMyUserDataListener = null
         }
     }
 
@@ -427,6 +438,7 @@ class FBDatabaseRepository() {
     public fun stopMamorareObservers() {
         observeMamorareDataListener?.let {
             ref.removeEventListener(it)
+            observeMamorareDataListener = null
         }
     }
 }
