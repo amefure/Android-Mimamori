@@ -7,15 +7,10 @@ import com.amefure.mimamori.Utility.JsonFormatterUtility
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 
 class FBDatabaseRepository() {
     private val ref = Firebase.database.reference
@@ -58,7 +53,7 @@ class FBDatabaseRepository() {
         notifications: List<AppNotify> = emptyList(),
         currentMamorareId: String = ""
     ) {
-        var usersInfo: MutableMap<String, Any> = mutableMapOf()
+        val usersInfo: MutableMap<String, Any> = mutableMapOf()
         if (!name.isEmpty()) {
             usersInfo.put(AppUser.NAME_KEY, name)
         }
@@ -94,7 +89,7 @@ class FBDatabaseRepository() {
                 val result = it.value ?: run { completion(false); return@addOnSuccessListener }
                 val userDic = result as? Map <String, Any> ?: run {completion(false); return@addOnSuccessListener }
 
-                var ids = userDic[AppUser.MIMAMORI_ID_LIST_KEY] as? MutableList<String>
+                val ids = userDic[AppUser.MIMAMORI_ID_LIST_KEY] as? MutableList<String>
                 ids?.let {
                     it.add(mimamoriId)
                     val value = mapOf(
@@ -131,7 +126,7 @@ class FBDatabaseRepository() {
                 val result = it.value ?: run { completion(false); return@addOnSuccessListener }
                 val userDic = result as? Map <String, Any> ?: run {completion(false); return@addOnSuccessListener }
 
-                var ids = userDic[AppUser.MIMAMORI_ID_LIST_KEY] as? MutableList<String>
+                val ids = userDic[AppUser.MIMAMORI_ID_LIST_KEY] as? MutableList<String>
                 ids?.let {
                     it.removeAll { it == mimamoriId }
                     val value = mapOf(
@@ -158,13 +153,13 @@ class FBDatabaseRepository() {
         completion: (Boolean) -> Unit
     ) {
         // Firebaseに許可されていないパス文字列を除去
-        var path = sanitizeFirebasePath(mimamoriId)
+        val path = sanitizeFirebasePath(mimamoriId)
         val userRef = ref.child(AppUser.TABLE_NAME).child(path)
         userRef.get()
             .addOnSuccessListener {
                 val result = it.value ?: run { completion(false); return@addOnSuccessListener }
                 val userDic = result as? Map <String, Any> ?: run { completion(false); return@addOnSuccessListener }
-                var ids = userDic[AppUser.MAMORARE_ID_LIST_KEY] as? MutableList<String>
+                val ids = userDic[AppUser.MAMORARE_ID_LIST_KEY] as? MutableList<String>
                 ids?.let {
                     it.add(userId)
                     val value = mapOf(
@@ -209,7 +204,7 @@ class FBDatabaseRepository() {
                 val result = it.value ?: run { completion(false); return@addOnSuccessListener }
                 val userDic = result as? Map <String, Any> ?: run { completion(false); return@addOnSuccessListener }
 
-                var ids = userDic[AppUser.MAMORARE_ID_LIST_KEY] as? MutableList<String>
+                val ids = userDic[AppUser.MAMORARE_ID_LIST_KEY] as? MutableList<String>
                 ids?.let {
                     it.removeAll { it == mamorareId }
                     val value = mapOf(
@@ -284,10 +279,10 @@ class FBDatabaseRepository() {
     public fun deleteMyUser(myUser: AppUser) {
         val userRef = ref.child(AppUser.TABLE_NAME)
         userRef.child(myUser.id).removeValue()
-        var removeItems: MutableMap<String, Any?> = mutableMapOf()
+        val removeItems: MutableMap<String, Any?> = mutableMapOf()
         // マモラレリストから自分のユーザー情報を削除する
         myUser.currentMimamoriList.forEach { user ->
-            var mamorareIdList = user.mamorareIdList.toMutableList()
+            val mamorareIdList = user.mamorareIdList.toMutableList()
             mamorareIdList.removeAll { it == myUser.id  }
             // 自身のIDを観測対象にしている場合は削除
             if (user.currentMamorareId == myUser.id) {
@@ -300,7 +295,7 @@ class FBDatabaseRepository() {
         // ミマモリリストから自分のユーザー情報を削除する
         myUser.currentMamorareList.forEach { user ->
             val index = user.mimamoriIdList.indexOfFirst { it == myUser.id }
-            var mimamoriIdList = user.mimamoriIdList.toMutableList()
+            val mimamoriIdList = user.mimamoriIdList.toMutableList()
             mimamoriIdList.removeAt(index)
             // 自身のIDをリストから削除
             removeItems.put(user.id + "/" + AppUser.MIMAMORI_ID_LIST_KEY, mimamoriIdList)
@@ -314,7 +309,7 @@ class FBDatabaseRepository() {
      * マモラレの場合に自分のユーザー情報を観測する
      */
     public fun observeMyUserData(userId: String) {
-        var userRef = ref.child(AppUser.TABLE_NAME).child(userId)
+        val userRef = ref.child(AppUser.TABLE_NAME).child(userId)
 
         observeMyUserData = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -345,11 +340,14 @@ class FBDatabaseRepository() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val result = dataSnapshot.value ?: return
                 val userDic = result as? Map <String, Any> ?: return
-                var mamorareUser = createAppUser(userDic, mamorareId)
-                val myUser = _myAppUser.value?:return
+                val mamorareUser = createAppUser(userDic, mamorareId)
+                val myUser = _myAppUser.value ?: return
                 val index =  myUser.currentMamorareList.indexOfFirst { it.id == mamorareId }
                 oldNotifications = myUser.currentMamorareList.firstOrNull { it.id == mamorareId }?.notifications?.size ?: 0
-                myUser.currentMamorareList.toMutableList()[index] = mamorareUser
+                // カレントマモラレリストの中に存在するなら上書き格納
+                if (index > -1 && index in myUser.currentMamorareList.indices) {
+                    myUser.currentMamorareList.toMutableList()[index] = mamorareUser
+                }
                 _myAppUser.onNext(myUser)
                 Log.d("Realtime Database", "取得した値： $myUser")
             }
@@ -369,9 +367,10 @@ class FBDatabaseRepository() {
      */
     private fun storeMamorareUser(user: AppUser) {
         val userRef = ref.child(AppUser.TABLE_NAME)
-        var users = mutableListOf<AppUser>()
+        val users = mutableListOf<AppUser>()
         var index = 0
         if (user.isMamorare) {
+            // マモラレならミマモリリストを取得してAppUserに反映
             if (user.mimamoriIdList.isEmpty()) { _myAppUser.onNext(user); return }
             user.mimamoriIdList.forEach { mimamoriId ->
                 userRef.child(mimamoriId).get()
@@ -391,7 +390,8 @@ class FBDatabaseRepository() {
                     }
                 }
         } else {
-        if (user.mamorareIdList.isEmpty()) { _myAppUser.onNext(user); return }
+            // ミマモリならマモラレリストを取得してAppUserに反映
+            if (user.mamorareIdList.isEmpty()) { _myAppUser.onNext(user); return }
             user.mamorareIdList.forEach { mamorareId ->
                 userRef.child(mamorareId).get()
                     .addOnSuccessListener {
@@ -412,15 +412,20 @@ class FBDatabaseRepository() {
         }
     }
 
-    /**
-     * 全ての観測を停止
-     */
-    public fun stopObservers() {
-        observeMamorareDataListener?.let {
+    /** 全ての観測を停止 */
+    public fun stopAllObservers() {
+        // マモラレ対象の観測を停止
+        stopMamorareObservers()
+
+        // 自身の観測を停止
+        observeMyUserData?.let {
             ref.removeEventListener(it)
         }
+    }
 
-        observeMyUserData?.let {
+    /** マモラレ対象の観測を停止 */
+    public fun stopMamorareObservers() {
+        observeMamorareDataListener?.let {
             ref.removeEventListener(it)
         }
     }

@@ -16,6 +16,16 @@ class RootEnvironment(app: Application) : RootViewModel(app) {
 
     private var disposable = CompositeDisposable()
     private var isObserve = false
+    private var observeMamorareId: String? = null
+
+    /**
+     * マモラレ対象を変更した際にマモラレ新規観測を開始するため
+     * 観測を停止して次回の観測対象になるようにnullにする
+     */
+    public fun resetObserveMamorareId() {
+        observeMamorareId = null
+        databaseRepository.stopMamorareObservers()
+    }
 
     /**
      * クラウドから取得したAppUser情報を観測開始
@@ -27,6 +37,13 @@ class RootEnvironment(app: Application) : RootViewModel(app) {
                 Log.d("Mimamori", "USER：${user}")
                 // 全体参照できるユーザー情報を公開
                 AppEnvironmentStore.instance.myAppUser.onNext(user)
+
+                // 対象のマモラレIDが存在するならマモラレユーザー情報も観測
+                if (!user.currentMamorareId.isEmpty() && observeMamorareId == null) {
+                    Log.d("Mimamori","マモラレ観測ID：${user.currentMamorareId}")
+                    observeMamorareId = user.currentMamorareId
+                    databaseRepository.observeMamorareData(user.currentMamorareId)
+                }
             }.addTo(disposable)
 
 
@@ -38,14 +55,7 @@ class RootEnvironment(app: Application) : RootViewModel(app) {
                 dataStoreRepository
                     .observePreference(DataStoreRepository.SIGNIN_USER_ID)
                     .collect { userId ->
-                        userId ?: return@collect
-                        Log.d("Mimamori", "ローカルサインインIDが変化：${userId}")
-                        if (!userId.isEmpty()) {
-                            databaseRepository.getUserInfo(userId)
-                            databaseRepository.observeMyUserData(userId)
-                        } else {
-                            databaseRepository.stopObservers()
-
+                        userId ?: run {
                             // 空かつログインしているならローカル情報を更新
                             authRepository.getCurrentUser()?.let { user ->
                                 viewModelScope.launch(Dispatchers.IO) {
@@ -53,6 +63,14 @@ class RootEnvironment(app: Application) : RootViewModel(app) {
                                     dataStoreRepository.savePreference(DataStoreRepository.SIGNIN_USER_NAME, user.displayName ?: "")
                                 }
                             }
+                            return@collect
+                        }
+                        Log.d("Mimamori", "ローカルサインインIDが変化：${userId}")
+                        if (!userId.isEmpty()) {
+                            databaseRepository.getUserInfo(userId)
+                            databaseRepository.observeMyUserData(userId)
+                        } else {
+                            databaseRepository.stopAllObservers()
                         }
                     }
             }
