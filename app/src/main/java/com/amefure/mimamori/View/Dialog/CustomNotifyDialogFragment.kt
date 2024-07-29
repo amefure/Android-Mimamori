@@ -84,6 +84,11 @@ class CustomNotifyDialogFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
+        // ダイアログ以外のタッチを禁止
+        dialog?.setCanceledOnTouchOutside(false)
+        // ダイアログの外をタップしてもキャンセルされないようにする
+        isCancelable = false
+
         val builder = AlertDialog.Builder(this.requireContext())
         val inflater = this.requireActivity().layoutInflater
         val dialog = inflater.inflate(R.layout.fragment_custom_notify_dialog,null)
