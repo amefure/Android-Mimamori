@@ -15,7 +15,7 @@ class RootApplication : Application() {
     val authRepository: FirebaseAuthRepository by lazy { FirebaseAuthRepository(this) }
 
     /** [FirebaseAuthRepository]のインスタンス */
-    val databaseRepository: FBDatabaseRepository by lazy { FBDatabaseRepository() }
+    val databaseRepository: FBDatabaseRepository by lazy { FBDatabaseRepository.instance }
 
     /** [DataStoreRepository]のインスタンス */
     val dataStoreRepository: DataStoreRepository by lazy { DataStoreRepository(this) }

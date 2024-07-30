@@ -10,6 +10,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 /** シングルトン設計ではないのでプロパティに保持している値は呼び出している画面ごとに異なる */
@@ -37,12 +38,18 @@ class RootEnvironment(app: Application) : RootViewModel(app) {
                 Log.d("Mimamori", "USER：${user}")
                 // 全体参照できるユーザー情報を公開
                 AppEnvironmentStore.instance.myAppUser.onNext(user)
-
-                // 対象のマモラレIDが存在するならマモラレユーザー情報も観測
-                if (!user.isMamorare && !user.currentMamorareId.isEmpty() && AppEnvironmentStore.instance.observeMamorareId == null) {
+                if (user.isMamorare) {
+                    // マモラレならミマモリモード時のマモラレ観測を停止
+                    databaseRepository.stopMamorareObservers()
+                } else if (!user.currentMamorareId.isEmpty() && AppEnvironmentStore.instance.observeMamorareId == null) {
+                    // 対象のマモラレIDが存在するならマモラレユーザー情報を観測開始
                     Log.d("Mimamori","マモラレ観測ID：${user.currentMamorareId}")
                     AppEnvironmentStore.instance.observeMamorareId = user.currentMamorareId
                     databaseRepository.observeMamorareData(user.currentMamorareId)
+                } else if (user.currentMamorareId.isEmpty() && AppEnvironmentStore.instance.observeMamorareId != null) {
+                    // マモラレIDが空なのに観測中になっている場合は明示的に停止
+                    databaseRepository.stopMamorareObservers()
+                    AppEnvironmentStore.instance.observeMamorareId = null
                 }
             }.addTo(disposable)
 
@@ -54,6 +61,7 @@ class RootEnvironment(app: Application) : RootViewModel(app) {
             viewModelScope.launch {
                 dataStoreRepository
                     .observePreference(DataStoreRepository.SIGNIN_USER_ID)
+                    .distinctUntilChanged() // 重複した変化は流さない
                     .collect { userId ->
                         userId ?: run {
                             // 空かつログインしているならローカル情報を更新
@@ -97,9 +105,9 @@ class RootEnvironment(app: Application) : RootViewModel(app) {
         }
     }
 
-    /** ローカルに保存しているマモラレかどうかを取得 */
+    /** ローカルに保存しているマモラレかどうかフラグを取得 */
     public fun getIsMamorare(): Boolean = dataStoreRepository.getPreference(DataStoreRepository.IS_MAMORARE, true)
 
-    /** ローカルに保存しているマモラレかどうかを観測 */
+    /** ローカルに保存しているマモラレかどうかフラグを観測 */
     public fun observeIsMamorare(): Flow<Boolean?> = dataStoreRepository.observePreference(DataStoreRepository.IS_MAMORARE)
 }

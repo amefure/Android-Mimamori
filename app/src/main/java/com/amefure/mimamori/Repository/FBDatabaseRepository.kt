@@ -11,8 +11,13 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
+import java.util.concurrent.atomic.AtomicInteger
 
-class FBDatabaseRepository() {
+class FBDatabaseRepository {
+    companion object {
+        public val instance = FBDatabaseRepository()
+    }
+
     private val ref = Firebase.database.reference
 
     // 自分のユーザー情報
@@ -113,8 +118,8 @@ class FBDatabaseRepository() {
 
     /**
      * 通知送信対象の読み取れるFCM登録トークンとミマモリIDを削除
-     * 削除対象；自分のユーザー情報
-     * 削除値：相手のユーザーID
+     * 削除対象；相手のユーザー情報
+     * 削除値：自分のユーザーID
      */
     public fun deleteNotifyMimamoriList(
         userId: String,
@@ -135,6 +140,7 @@ class FBDatabaseRepository() {
                     )
                     userRef.updateChildren(value)
                 }
+                completion(true)
             }.addOnFailureListener {
                 Log.d("Realtime Database", "データ取得エラー${it}")
                 completion(false)
@@ -160,21 +166,16 @@ class FBDatabaseRepository() {
                 val result = it.value ?: run { completion(false); return@addOnSuccessListener }
                 val userDic = result as? Map <String, Any> ?: run { completion(false); return@addOnSuccessListener }
                 val ids = userDic[AppUser.MAMORARE_ID_LIST_KEY] as? MutableList<String>
+                val value = mutableMapOf<String, Any>()
                 ids?.let {
                     it.add(userId)
-                    val value = mapOf(
-                        // 重複したIDの場合は格納しないようにdistinct
-                        AppUser.MAMORARE_ID_LIST_KEY to it.distinct().toList()
-                    )
-                    userRef.updateChildren(value)
+                    value.put(AppUser.MAMORARE_ID_LIST_KEY, it.distinct().toList())
                 }?: run {
-                    Log.d("Realtime Database", "追加")
-                    val value = mapOf(
-                        AppUser.MAMORARE_ID_LIST_KEY to listOf(userId)
-                    )
-                    userRef.updateChildren(value)
+                    Log.d("Realtime Database", "新規追加")
+                    value.put(AppUser.MAMORARE_ID_LIST_KEY, listOf(userId))
                 }
-                userRef.child(AppUser.CURRENT_MAMORARE_ID).setValue(userId)
+                value.put(AppUser.CURRENT_MAMORARE_ID, userId)
+                userRef.updateChildren(value)
                 completion(true)
             }.addOnFailureListener {
                 Log.d("Realtime Database", "データ取得エラー${it}")
@@ -190,9 +191,13 @@ class FBDatabaseRepository() {
     }
 
     /**
-     * 通知送信対象の読み取れるFCM登録トークンとミマモリIDを削除
+     * ミマモリモード時に
+     * 通知受信対象のマモラレIDを削除
      * 更新対象；自分のユーザー情報
-     * 更新値：相手のユーザーIDとFCMトークン
+     * 更新値
+     *  1.カレントマモラレID
+     *  2.マモラレIDリスト
+     *  3.ミマモリIDリスト
      */
     public fun deleteMamorareList(
         userId: String,
@@ -205,22 +210,28 @@ class FBDatabaseRepository() {
                 val userDic = result as? Map <String, Any> ?: run { completion(false); return@addOnSuccessListener }
 
                 val ids = userDic[AppUser.MAMORARE_ID_LIST_KEY] as? MutableList<String>
+                val currentMamorareId = userDic[AppUser.CURRENT_MAMORARE_ID] as? String
                 ids?.let {
-                    it.removeAll { it == mamorareId }
-                    val value = mapOf(
-                        // 重複したIDの場合は格納しないようにdistinct
-                        AppUser.MAMORARE_ID_LIST_KEY to it.toList()
-                    )
-                    userRef.updateChildren(value)
+                    // マモラレIDリストから対象のIDを削除
+                    ids.removeAll { it == mamorareId }
 
-                    val first = it.firstOrNull()
-                    first?.let {
-                        // 一番先頭をセット
-                        userRef.child(AppUser.CURRENT_MAMORARE_ID).setValue(first)
-                    }?: run {
-                        // 存在しないなら削除
-                        userRef.child(AppUser.CURRENT_MAMORARE_ID).removeValue()
+                    val value = mutableMapOf<String, Any?>()
+                    // 現在設定済みのカレントマモラレIDが削除対象のマモラレIDと同じなら
+                    if (currentMamorareId != null && currentMamorareId == mamorareId) {
+                        // カレントマモラレIDを更新
+                        val first = ids.firstOrNull()
+                        first?.let {
+                            // 一番先頭をセット
+                            value.put(AppUser.CURRENT_MAMORARE_ID, first)
+                        }?: run {
+                            // 存在しないなら削除
+                            value.put(AppUser.CURRENT_MAMORARE_ID, null)
+                        }
                     }
+                    // マモラレIDリストから対象のIDを削除
+                    // 重複したIDの場合は格納しないようにdistinct
+                    value.put(AppUser.MAMORARE_ID_LIST_KEY, ids.distinct().toList())
+                    userRef.updateChildren(value)
                     completion(true)
                 }
 
@@ -296,10 +307,11 @@ class FBDatabaseRepository() {
         myUser.currentMamorareList.forEach { user ->
             val index = user.mimamoriIdList.indexOfFirst { it == myUser.id }
             val mimamoriIdList = user.mimamoriIdList.toMutableList()
-            mimamoriIdList.removeAt(index)
+            if (index != -1) {
+                mimamoriIdList.removeAt(index)
+            }
             // 自身のIDをリストから削除
             removeItems.put(user.id + "/" + AppUser.MIMAMORI_ID_LIST_KEY, mimamoriIdList)
-
         }
         userRef.updateChildren(removeItems)
     }
@@ -354,8 +366,11 @@ class FBDatabaseRepository() {
                 if (index > -1 && index in myUser.currentMamorareList.indices) {
                     myUser.currentMamorareList.toMutableList()[index] = mamorareUser
                 }
-                _myAppUser.onNext(myUser)
-                Log.d("Realtime Database", "観測Mamorare情報変化： $myUser")
+                // 自身のユーザーIDをマモラレとして観測対象にしている場合は更新しない
+                if (myUser.id != mamorareId) {
+                    _myAppUser.onNext(myUser)
+                    Log.d("Realtime Database", "観測Mamorare情報変化： $myUser")
+                }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -374,19 +389,18 @@ class FBDatabaseRepository() {
     private fun storeMamorareUser(user: AppUser) {
         val userRef = ref.child(AppUser.TABLE_NAME)
         val users = mutableListOf<AppUser>()
-        var index = 0
         if (user.isMamorare) {
             // マモラレならミマモリリストを取得してAppUserに反映
             if (user.mimamoriIdList.isEmpty()) { _myAppUser.onNext(user); return }
+            val count = AtomicInteger(user.mimamoriIdList.size)
             user.mimamoriIdList.forEach { mimamoriId ->
                 userRef.child(mimamoriId).get()
                     .addOnSuccessListener {
-                        index += 1
                         val result = it.value ?: run { _myAppUser.onNext(user); return@addOnSuccessListener }
                         val userDic = result as? Map <String, Any> ?: run { _myAppUser.onNext(user); return@addOnSuccessListener }
                         val addUser = createAppUser(userDic, mimamoriId)
                         users.add(addUser)
-                        if (index == user.mimamoriIdList.size) {
+                        if (count.decrementAndGet() == 0) {
                             user.currentMimamoriList = users
                             _myAppUser.onNext(user)
                         }
@@ -398,15 +412,15 @@ class FBDatabaseRepository() {
         } else {
             // ミマモリならマモラレリストを取得してAppUserに反映
             if (user.mamorareIdList.isEmpty()) { _myAppUser.onNext(user); return }
+            val count = AtomicInteger(user.mamorareIdList.size)
             user.mamorareIdList.forEach { mamorareId ->
                 userRef.child(mamorareId).get()
                     .addOnSuccessListener {
-                        index += 1
                         val result = it.value ?: run { _myAppUser.onNext(user); return@addOnSuccessListener }
                         val userDic = result as? Map <String, Any> ?: run { _myAppUser.onNext(user); return@addOnSuccessListener }
                         val addUser = createAppUser(userDic, mamorareId)
                         users.add(addUser)
-                        if (index == user.mamorareIdList.size) {
+                        if (count.decrementAndGet() == 0) {
                             user.currentMamorareList = users
                             _myAppUser.onNext(user)
                         }

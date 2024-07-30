@@ -18,10 +18,10 @@ class SettingViewModel(val app: Application) : RootViewModel(app) {
     public fun selectMamorare() {
         val isMamorare = true
         authRepository.getCurrentUser()?.uid?.let { userId ->
-            databaseRepository.updateUserInfo(userId, isMamorare = isMamorare)
             viewModelScope.launch {
                 dataStoreRepository.savePreference(DataStoreRepository.IS_MAMORARE, isMamorare)
             }
+            databaseRepository.updateUserInfo(userId, isMamorare = isMamorare)
         }
     }
 
@@ -29,10 +29,10 @@ class SettingViewModel(val app: Application) : RootViewModel(app) {
     public fun selectMimamori() {
         val isMamorare = false
         authRepository.getCurrentUser()?.uid?.let { userId ->
-            databaseRepository.updateUserInfo(userId, isMamorare = isMamorare)
             viewModelScope.launch {
                 dataStoreRepository.savePreference(DataStoreRepository.IS_MAMORARE, isMamorare)
             }
+            databaseRepository.updateUserInfo(userId, isMamorare = isMamorare)
         }
     }
 
@@ -47,10 +47,12 @@ class SettingViewModel(val app: Application) : RootViewModel(app) {
 
 
     /** マモラレ削除 */
-    public fun deleteMamorare(mamorareId: String, completion: (Boolean) -> Unit) {
+    public fun deleteMamorareUser(mamorareId: String) {
         authRepository.getCurrentUser()?.uid?.let { userId ->
-            databaseRepository.deleteMamorareList(userId, mamorareId) {
-                completion(it)
+            // マモラレ側のミマモリリストから自身のユーザーIDを削除
+            databaseRepository.deleteNotifyMimamoriList(mamorareId, userId) {
+                // 自身のマモラレリストから相手のユーザーIDを削除
+                databaseRepository.deleteMamorareList(userId, mamorareId) { }
             }
         }
     }

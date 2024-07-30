@@ -119,9 +119,12 @@ class AlignmentUserListFragment : Fragment() {
         dialog.setOnTappedListener(
             object : CustomNotifyDialogFragment.setOnTappedListener {
                 override fun onPositiveButtonTapped() {
-                    viewModel.deleteMamorare(user.id) {
-
+                    // 観測しているのが削除対象なら
+                    if (AppEnvironmentStore.instance.observeMamorareId == user.id) {
+                        // 現在のマモラレ観測を停止
+                        rootEnvironment.resetObserveMamorareId()
                     }
+                    viewModel.deleteMamorareUser(user.id)
                 }
                 override fun onNegativeButtonTapped() { }
             }

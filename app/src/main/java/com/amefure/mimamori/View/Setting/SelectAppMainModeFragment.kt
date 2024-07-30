@@ -87,19 +87,16 @@ class SelectAppMainModeFragment : Fragment() {
             showSuccessUpdateModeDialog()
         }
 
-        AppEnvironmentStore.instance.myAppUser.subscribeBy { user ->
-            isMamorare = user.isMamorare
-            if (isMamorare) {
-                selectMamorareButton.performClick()
-            } else {
-                selectMimamoriButton.performClick()
-            }
-        }.addTo(compositeDisposable)
+        if (isMamorare) {
+            selectMamorareButton.performClick()
+        } else {
+            selectMimamoriButton.performClick()
+        }
     }
 
     /** モード変更ダイアログ表示 */
     private fun showSuccessUpdateModeDialog() {
-        var mode = if (isMamorare) getString(R.string.mamorare) else getString(R.string.mimamori)
+        val mode = if (isMamorare) getString(R.string.mamorare) else getString(R.string.mimamori)
         val dialog = CustomNotifyDialogFragment.newInstance(
             title = getString(R.string.dialog_title_notice),
             msg = getString(R.string.dialog_success_mode, mode),
@@ -126,7 +123,7 @@ class SelectAppMainModeFragment : Fragment() {
     private fun setUpHeaderAction(view: View) {
         val headerView: ConstraintLayout = view.findViewById(R.id.include_header)
 
-        val isMamorare = rootEnvironment.getIsMamorare()
+        isMamorare = rootEnvironment.getIsMamorare()
         val headerTitle: TextView = view.findViewById(R.id.header_title)
         headerTitle.text = if (isMamorare) getString(R.string.mamorare) else getString(R.string.mimamori)
 

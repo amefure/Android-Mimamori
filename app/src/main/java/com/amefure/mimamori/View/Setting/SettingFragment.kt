@@ -237,6 +237,8 @@ class SettingFragment : Fragment() {
      */
     private fun setUpHeaderAction(view: View) {
         val headerView: ConstraintLayout = view.findViewById(R.id.include_header)
+        // アプリ設定の行に表示するモード名
+        val currentModeLabel: TextView = view.findViewById(R.id.current_mode_row_label)
 
         // 一瞬デフォルト値が表示されてしまうため
         // 明示的にここで更新しておく
@@ -248,6 +250,7 @@ class SettingFragment : Fragment() {
             rootEnvironment.observeIsMamorare().collect { isMamorare ->
                 isMamorare ?: return@collect
                 headerTitle.text = if (isMamorare) getString(R.string.mamorare) else getString(R.string.mimamori)
+                currentModeLabel.text =  if (isMamorare) getString(R.string.setting_app_current_mode_mamorare) else getString(R.string.setting_app_current_mode_mimamori)
             }
         }
 

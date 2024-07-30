@@ -19,7 +19,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amefure.mimamori.Model.AppUser
-import com.amefure.mimamori.Model.AuthProviderModel
 import com.amefure.mimamori.R
 import com.amefure.mimamori.Repository.AppEnvironmentStore
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
@@ -31,10 +30,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import org.w3c.dom.Text
-
 
 /**
  * マモラレ/ミマモリメイン画面
@@ -133,8 +129,7 @@ class MainRootFragment : Fragment() {
 
         AppEnvironmentStore.instance.myAppUser
             .subscribeBy { user ->
-                val isMamorare = rootEnvironment.getIsMamorare()
-                if (isMamorare) {
+                if (user.isMamorare) {
                     // マモラレ側を表示
                     mamorareLayout.visibility = View.VISIBLE
                     mimamoriLayout.visibility = View.GONE
@@ -153,7 +148,14 @@ class MainRootFragment : Fragment() {
 
                     val currentMamorareUser = user.currentMamorareList.firstOrNull {
                         it.id == user.currentMamorareId
-                    } ?: return@subscribeBy
+                    } ?: run {
+                        // マモラレIDが存在しない場合は明示的にViewをリセット
+                        mimamoriNameLabel.text = getString(R.string.main_root_mimamori_name, "未設定")
+                        notifyCountLabel_mima.text = "-"
+                        mimamoriCountLabel_mima.text = "-"
+                        recyclerView_mima.adapter = null
+                        return@subscribeBy
+                    }
 
                     mimamoriNameLabel.text = getString(R.string.main_root_mimamori_name, currentMamorareUser.name)
 
