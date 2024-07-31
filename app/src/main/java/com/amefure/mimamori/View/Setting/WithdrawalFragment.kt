@@ -22,6 +22,8 @@ import com.amefure.mimamori.Model.Key.AppArgKey
 import com.amefure.mimamori.R
 import com.amefure.mimamori.Repository.AppEnvironmentStore
 import com.amefure.mimamori.View.BaseFragment.BaseAuthFragment
+import com.amefure.mimamori.View.Dialog.CustomLoadingDialogFragment.Companion.dismissLoadingDialog
+import com.amefure.mimamori.View.Dialog.CustomLoadingDialogFragment.Companion.presentLoadingDialog
 import com.amefure.mimamori.View.FBAuthentication.AuthActivity
 import com.amefure.mimamori.ViewModel.AuthEnvironment
 import com.amefure.mimamori.ViewModel.RootEnvironment
@@ -104,6 +106,7 @@ class WithdrawalFragment : BaseAuthFragment() {
                 AuthProviderModel.EMAIL -> {
                     // メールアドレスユーザー
                     if (!inputPassword.text.isEmpty()) {
+                        parentFragmentManager.presentLoadingDialog()
                         authEnvironment.reAuthUser(inputPassword.text.toString())
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -114,6 +117,7 @@ class WithdrawalFragment : BaseAuthFragment() {
                                 },
                                 onError = { error ->
                                     Log.e("Auth", error.toString())
+                                    parentFragmentManager.dismissLoadingDialog()
                                     showFailedAuthDialog(getString(R.string.dialog_auth_failed_unknown))
                                 }
                             )
@@ -141,11 +145,13 @@ class WithdrawalFragment : BaseAuthFragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
                     onComplete = {
+                        parentFragmentManager.dismissLoadingDialog()
                         // アプリメイン画面起動
                         viewModel.deleteMyUser(it)
                         startAuthRootView()
                     },
                     onError = { error ->
+                        parentFragmentManager.dismissLoadingDialog()
                         Log.e("Auth", error.toString())
                         showFailedAuthDialog(getString(R.string.dialog_auth_failed_unknown))
                     }

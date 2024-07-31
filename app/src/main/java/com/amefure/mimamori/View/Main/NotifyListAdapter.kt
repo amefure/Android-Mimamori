@@ -31,14 +31,14 @@ class NotifyListAdapter(
         val notify = _notifications[position]
 
         if (notify is AppNotify) {
-            holder.baseLayout.maxHeight = 120
+            holder.baseLayout.maxHeight = 140
             holder.sectionLayout.visibility = View.GONE
             holder.itemLayout.visibility = View.VISIBLE
             holder.title.text = notify.title
             holder.msg.text = notify.msg
             holder.time.text = notify.getTimeString("HH:mm:ss")
         } else if (notify is AppNotifySection) {
-            holder.baseLayout.maxHeight = 30
+            holder.baseLayout.maxHeight = 60
             holder.sectionLayout.visibility = View.VISIBLE
             holder.itemLayout.visibility = View.GONE
             holder.sectionDate.text = notify.dayStr

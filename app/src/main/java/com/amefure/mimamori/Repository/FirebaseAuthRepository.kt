@@ -99,10 +99,10 @@ class FirebaseAuthRepository(context: Context) {
                     if (task.isSuccessful) {
                         Log.d("Auth", "再認証成功")
                         emitter.onComplete()
-                    } else {
-                        Log.e("Auth", "再認証失敗", task.exception)
-                        emitter.onError(Error(task.exception))
                     }
+                }.addOnFailureListener { exception ->
+                    Log.e("Auth", "再認証失敗" + exception)
+                    emitter.onError(Error(getErrorMsg(exception)))
                 }
         }
     }

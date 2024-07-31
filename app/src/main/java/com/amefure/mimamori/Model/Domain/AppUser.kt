@@ -49,7 +49,7 @@ data class AppUser(
         public const val MAMORARE_ID_LIST_KEY = "mamorare_id_list"
 
         public fun demoUser(): AppUser = AppUser(
-                id = UUID.randomUUID().toString(),
+                id = "DEMO_ID",
                 name =  "ミマモリデモユーザー",
                 fcmToken = "",
                 isMamorare = false,

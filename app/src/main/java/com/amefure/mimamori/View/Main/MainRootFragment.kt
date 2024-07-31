@@ -16,6 +16,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amefure.mimamori.Model.Domain.AppUser
@@ -127,8 +128,24 @@ class MainRootFragment : Fragment() {
         val mamorareLayout: LinearLayout = view.findViewById(R.id.mamorare_layout)
         val mimamoriLayout: LinearLayout = view.findViewById(R.id.mimamori_layout)
 
+        // 起動直後に画面表示を切り替える
+        val isMamorare = rootEnvironment.getIsMamorare()
+        if (isMamorare) {
+            // マモラレ側を表示
+            mamorareLayout.visibility = View.VISIBLE
+            mimamoriLayout.visibility = View.GONE
+        } else {
+            // ミマモリ側を表示
+            mamorareLayout.visibility = View.GONE
+            mimamoriLayout.visibility = View.VISIBLE
+        }
+
         AppEnvironmentStore.instance.myAppUser
             .subscribeBy { user ->
+                // デモユーザーならリターン
+                if (user.id == "DEMO_ID") {
+                    return@subscribeBy
+                }
                 if (user.isMamorare) {
                     // マモラレ側を表示
                     mamorareLayout.visibility = View.VISIBLE
