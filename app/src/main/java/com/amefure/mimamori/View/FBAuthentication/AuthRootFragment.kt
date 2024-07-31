@@ -127,8 +127,8 @@ class AuthRootFragment : BaseAuthFragment() {
                             },
                             onError = { error ->
                                 parentFragmentManager.dismissLoadingDialog()
-                                Log.e("Auth", error.toString())
-                                showFailedAuthDialog(error.toString())
+                                Log.e("Auth", "新規登録失敗" + error.toString())
+                                showFailedAuthDialog(error.message.toString())
                             }
                         )
                         .addTo(disposable)
@@ -151,8 +151,8 @@ class AuthRootFragment : BaseAuthFragment() {
                             },
                             onError = { error ->
                                 parentFragmentManager.dismissLoadingDialog()
-                                Log.e("Auth", error.toString())
-                                showFailedAuthDialog(error.toString())
+                                Log.e("Auth", "サインイン失敗" + error.toString())
+                                showFailedAuthDialog(error.message.toString())
                             }
                         )
                         .addTo(disposable)

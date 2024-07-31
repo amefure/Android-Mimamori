@@ -97,7 +97,7 @@ class AuthEnvironment(app: Application) : RootViewModel(app) {
                             .addTo(disposable)
                     },
                     onError = { error ->
-                        emitter.onError(Error("作成失敗"))
+                        emitter.onError(error)
                     }
                 )
                 .addTo(disposable)
@@ -120,7 +120,7 @@ class AuthEnvironment(app: Application) : RootViewModel(app) {
                         emitter.onComplete()
                     },
                     onError = { error ->
-                        emitter.onError(Error("サインイン失敗"))
+                        emitter.onError(error)
                     }
                 )
                 .addTo(disposable)

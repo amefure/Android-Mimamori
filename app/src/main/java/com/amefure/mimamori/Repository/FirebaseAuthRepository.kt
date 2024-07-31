@@ -8,13 +8,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.FirebaseException
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.auth.ktx.userProfileChangeRequest
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -123,7 +127,7 @@ class FirebaseAuthRepository(context: Context) {
                 }
                 .addOnFailureListener { exception ->
                     // アカウント作成失敗
-                    emitter.onError(exception)
+                    emitter.onError(Error(getErrorMsg(exception)))
                 }
         }
     }
@@ -140,7 +144,7 @@ class FirebaseAuthRepository(context: Context) {
                         emitter.onComplete()
                     }
                 }.addOnFailureListener { exception ->
-                    emitter.onError(exception)
+                    emitter.onError(Error(getErrorMsg(exception)))
                 }
         }
     }
@@ -278,5 +282,48 @@ class FirebaseAuthRepository(context: Context) {
                     }
                 }
         }
+    }
+
+    /**
+     *  Firebase Authエラーメッセージハンドリング
+     *
+     *  Emailサインイン
+     *      返却されるエラー型は[FirebaseException]
+     *      [FirebaseAuthException]でないのでメッセージを適切に表示できない。
+     *      ひとまず固定で認証エラーメッセージのみ伝える
+     */
+    private fun getErrorMsg(exception: Exception): String {
+        Log.d("AuthError", exception.toString())
+
+        val errorMsg = when(exception) {
+            // 新規登録時に発生
+            is FirebaseAuthUserCollisionException -> "このメールアドレスは別のユーザーが使用済みです。"
+            //
+            is FirebaseAuthInvalidUserException -> {
+                when (exception.errorCode) {
+                    "ERROR_USER_NOT_FOUND" -> "ユーザーが見つかりません。"
+                    "ERROR_USER_DISABLED" -> "ユーザーアカウントが無効です。"
+                    else -> "ユーザー認証エラーが発生しました。"
+                }
+            }
+            is FirebaseAuthInvalidCredentialsException -> {
+                when (exception.errorCode) {
+                    "ERROR_INVALID_EMAIL" -> "無効なメールアドレスです。"
+                    "ERROR_WRONG_PASSWORD" -> "パスワードが間違っています。"
+                    else -> "資格情報エラーが発生しました。"
+                }
+            }
+            is FirebaseAuthException -> {
+                when (exception.errorCode) {
+                    "ERROR_TOO_MANY_REQUESTS" -> "試行回数が多すぎます。後ほど再試行してください。"
+                    "ERROR_OPERATION_NOT_ALLOWED" -> "この操作は許可されていません。"
+                    else -> "認証エラーが発生しました。"
+                }
+            }
+            is FirebaseException -> "メールアドレスまたはパスワードが間違っています。\n何度も失敗する場合は時間をあけてから再試行してください。"
+            else -> "メールアドレスまたはパスワードが間違っています。\n何度も失敗する場合は時間をあけてから再試行してください。"
+        }
+
+        return errorMsg
     }
 }
