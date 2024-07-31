@@ -12,7 +12,7 @@
     <string name="onboarding2_msg">このアプリをどちらで使用しますか？\n(設定よりいつでも切り替えて利用することも可能です。)</string>
     <string name="onboarding2_mamorare_msg">マモラレは「通知を送信する側」です。\n登録しているミマモリユーザーにボタンを押すたびに通知が飛ばすことができます。</string>
     <string name="onboarding2_mimamori_msg">ミマモリは「通知を受信する側」です。\nマモラレ側にアクションがあった際に通知が届き、確認することができます。</string>
-    <string name="onboarding3_mamorare_msg"> 【登録方法】\nミマモリ側を選択している人からミマモリIDを教えてもらって登録してください。\n(ミマモリIDの登録も後から行うことが可能です。</string>
+    <string name="onboarding3_mamorare_msg"> 【登録方法】\nミマモリ側を選択している人からミマモリIDを教えてもらって登録してください。\n(ミマモリIDの登録も後から行うことが可能です。)</string>
     <string name="onboarding3_mamorare_input_placeholder">ミマモリID</string>
     <string name="onboarding3_mamorare_input_desc">↑ ここに「ミマモリID」を入力して、\n「はじめる」をタップしてください。</string>
     <string name="onboarding3_mimamori_msg">【登録方法】\n表示されているミマモリIDをマモラレ側に共有して、登録してもらってください。</string>

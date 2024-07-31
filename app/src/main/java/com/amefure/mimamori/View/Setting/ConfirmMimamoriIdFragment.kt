@@ -16,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import com.amefure.mimamori.R
 import com.amefure.mimamori.Repository.AppEnvironmentStore
+import com.amefure.mimamori.Utility.ShareTextUtility
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.ViewModel.RootEnvironment
 import io.reactivex.disposables.CompositeDisposable
@@ -26,7 +27,6 @@ import kotlinx.coroutines.launch
 class ConfirmMimamoriIdFragment : Fragment() {
 
     private val rootEnvironment: RootEnvironment by viewModels()
-    private var compositeDisposable = CompositeDisposable()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,37 +34,27 @@ class ConfirmMimamoriIdFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_confirm_mimamori_id, container, false)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        compositeDisposable.dispose()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpHeaderAction(view)
 
-        var id: TextView = view.findViewById(R.id.miamori_id_label)
-        var copyButton: Button = view.findViewById(R.id.copy_button)
-        var shareButton: Button = view.findViewById(R.id.share_button)
+        val id: TextView = view.findViewById(R.id.miamori_id_label)
+        val copyButton: Button = view.findViewById(R.id.copy_button)
+        val shareButton: Button = view.findViewById(R.id.share_button)
 
-        AppEnvironmentStore.instance.myAppUser.subscribeBy { user ->
-            id.text = user.id
-        }.addTo(compositeDisposable)
+        id.text = rootEnvironment.getSignInUserId()
 
         copyButton.setOnClickListener {
-            copyIdToClipboard(this.requireContext(), id.text.toString())
+            ShareTextUtility.copyIdToClipboard(this.requireContext(), id.text.toString())
             showSuccessCopyIdDialog()
         }
 
         shareButton.setOnClickListener {
-            shareUserId(id.text.toString())
+            ShareTextUtility.shareUserId(id.text.toString(), this.requireContext())
         }
     }
 
-
-    /**
-     *  IDコピー成功ダイアログ表示
-     */
+    /** IDコピー成功ダイアログ表示 */
     private fun showSuccessCopyIdDialog() {
         val dialog = CustomNotifyDialogFragment.newInstance(
             title = getString(R.string.dialog_title_notice),
@@ -74,7 +64,6 @@ class ConfirmMimamoriIdFragment : Fragment() {
         )
         dialog.showNow(parentFragmentManager, "SuccessCopyIdDialog")
     }
-
 
     /**
      * ヘッダーボタンセットアップ
@@ -97,24 +86,4 @@ class ConfirmMimamoriIdFragment : Fragment() {
         rightButton.visibility = View.GONE
     }
 
-
-    /** クリップボードにIDをコピーする */
-    private fun copyIdToClipboard(context: Context, id: String) {
-        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("Copied Mimamori ID", id)
-        clipboard.setPrimaryClip(clip)
-    }
-
-    /** 共有する */
-    private fun shareUserId(id: String) {
-        var msg = getString(R.string.onboarding3_mimamori_share_text, id)
-        val intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, msg)
-        }
-        if (intent.resolveActivity(requireContext().packageManager) != null) {
-            startActivity(intent)
-        }
-    }
 }

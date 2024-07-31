@@ -17,6 +17,8 @@ import java.io.IOException
 class DataStoreRepository(private val context: Context) {
 
     companion object {
+        public val APP_INITIAL_BOOT_FLAG = booleanPreferencesKey("APP_INITIAL_BOOT_FLAG")
+
         public val SIGNIN_USER_NAME = stringPreferencesKey("SIGNIN_USER_NAME")
         public val SIGNIN_USER_ID = stringPreferencesKey("SIGNIN_USER_ID")
         public val SIGNIN_USER_PROVIDER = stringPreferencesKey("SIGNIN_USER_PROVIDER")

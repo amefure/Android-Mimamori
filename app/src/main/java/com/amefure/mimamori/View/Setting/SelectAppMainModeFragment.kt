@@ -16,6 +16,7 @@ import com.amefure.mimamori.R
 import com.amefure.mimamori.Repository.AppEnvironmentStore
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.ViewModel.RootEnvironment
+import com.amefure.mimamori.ViewModel.SelectModeViewModel
 import com.amefure.mimamori.ViewModel.SettingViewModel
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -24,7 +25,7 @@ import io.reactivex.rxkotlin.subscribeBy
 class SelectAppMainModeFragment : Fragment() {
 
     private val rootEnvironment: RootEnvironment by viewModels()
-    private val viewModel: SettingViewModel by viewModels()
+    private val viewModel: SelectModeViewModel by viewModels()
     private var compositeDisposable = CompositeDisposable()
     private var isMamorare = true
 
@@ -79,11 +80,7 @@ class SelectAppMainModeFragment : Fragment() {
         val updateModeButton: Button = view.findViewById(R.id.update_mode_button)
 
         updateModeButton.setOnClickListener {
-            if (isMamorare) {
-                viewModel.selectMamorare()
-            } else {
-                viewModel.selectMimamori()
-            }
+            viewModel.selectIsMamorareMode(isMamorare)
             showSuccessUpdateModeDialog()
         }
 

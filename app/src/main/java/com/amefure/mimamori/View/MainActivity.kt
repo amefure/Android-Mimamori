@@ -8,9 +8,12 @@ import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import com.amefure.mimamori.Model.myFcmToken
 import com.amefure.mimamori.R
+import com.amefure.mimamori.Repository.DataStore.DataStoreRepository
 import com.amefure.mimamori.Repository.FirebaseAuthRepository
 import com.amefure.mimamori.View.FBAuthentication.AuthActivity
 import com.amefure.mimamori.View.Main.MainRootFragment
+import com.amefure.mimamori.View.Onboarding.Onboarding1Fragment
+import com.amefure.mimamori.ViewModel.RootApplication
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import io.reactivex.disposables.CompositeDisposable
@@ -28,15 +31,24 @@ class MainActivity : AppCompatActivity() {
         // 許可ダイアログを表示
         permissionRequestLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
 
-        //　サインイン済みなら
-        if (FirebaseAuthRepository(this).getCurrentUser() == null) {
+        if (RootApplication.instance.authRepository.getCurrentUser() == null) {
+            //　未サインインなら
             val intent = Intent(this, AuthActivity::class.java)
             startActivity(intent)
             finish()
         } else {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.main_frame, MainRootFragment())
-                commit()
+            //　サインイン済みなら
+            if (RootApplication.instance.dataStoreRepository.getPreference(DataStoreRepository.APP_INITIAL_BOOT_FLAG, false)) {
+                supportFragmentManager.beginTransaction().apply {
+                    replace(R.id.main_frame, MainRootFragment())
+                    commit()
+                }
+            } else {
+                // 初回起動されていないならオンボーディング開始
+                supportFragmentManager.beginTransaction().apply {
+                    replace(R.id.main_frame, Onboarding1Fragment())
+                    commit()
+                }
             }
         }
     }

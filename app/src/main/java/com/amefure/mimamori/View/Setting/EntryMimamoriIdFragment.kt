@@ -19,34 +19,26 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 
-class EntryMimamoreIdFragment : BaseInputFragment() {
+class EntryMimamoriIdFragment : BaseInputFragment() {
 
     private val rootEnvironment: RootEnvironment by viewModels()
-    private var compositeDisposable = CompositeDisposable()
     private var userId = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_entry_mimamore_id, container, false)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        compositeDisposable.dispose()
+        return inflater.inflate(R.layout.fragment_entry_mimamori_id, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpHeaderAction(view)
 
-        var inputMimamoriId: EditText = view.findViewById(R.id.input_mimamori_id)
-        var entryIdButton: Button = view.findViewById(R.id.entry_id_button)
+        val inputMimamoriId: EditText = view.findViewById(R.id.input_mimamori_id)
+        val entryIdButton: Button = view.findViewById(R.id.entry_id_button)
 
-        AppEnvironmentStore.instance.myAppUser.subscribeBy { user ->
-            userId = user.id
-        }.addTo(compositeDisposable)
+        userId = rootEnvironment.getSignInUserId()
 
         // ミマモリID登録
         entryIdButton.setOnClickListener {
@@ -67,9 +59,7 @@ class EntryMimamoreIdFragment : BaseInputFragment() {
         }
     }
 
-    /**
-     *  ミマモリID登録成功ダイアログ表示
-     */
+    /** ミマモリID登録成功ダイアログ表示 */
     private fun showSuccessEntryDialog() {
         val dialog = CustomNotifyDialogFragment.newInstance(
             title = getString(R.string.dialog_title_notice),
@@ -80,9 +70,7 @@ class EntryMimamoreIdFragment : BaseInputFragment() {
         dialog.show(parentFragmentManager, "SuccessEntryDialog")
     }
 
-    /**
-     *  ID入力バリデーションダイアログ表示
-     */
+    /** ID入力バリデーションダイアログ表示 */
     private fun showIdValidationDialog() {
         val dialog = CustomNotifyDialogFragment.newInstance(
             title = getString(R.string.dialog_title_notice),

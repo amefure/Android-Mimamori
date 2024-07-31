@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/ex_foundation"
     android:clickable="true"
-    tools:context=".View.Setting.EntryMimamoreIdFragment">
+    tools:context=".View.Setting.EntryMimamoriIdFragment">
 
     <include
         android:id="@+id/include_header"

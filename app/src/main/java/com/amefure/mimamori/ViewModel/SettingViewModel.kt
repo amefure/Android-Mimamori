@@ -14,29 +14,6 @@ import kotlinx.coroutines.withContext
 
 class SettingViewModel(val app: Application) : RootViewModel(app) {
 
-    /** マモラレに設定 */
-    public fun selectMamorare() {
-        val isMamorare = true
-        authRepository.getCurrentUser()?.uid?.let { userId ->
-            viewModelScope.launch {
-                dataStoreRepository.savePreference(DataStoreRepository.IS_MAMORARE, isMamorare)
-            }
-            databaseRepository.updateUserInfo(userId, isMamorare = isMamorare)
-        }
-    }
-
-    /** ミマモリに設定 */
-    public fun selectMimamori() {
-        val isMamorare = false
-        authRepository.getCurrentUser()?.uid?.let { userId ->
-            viewModelScope.launch {
-                dataStoreRepository.savePreference(DataStoreRepository.IS_MAMORARE, isMamorare)
-            }
-            databaseRepository.updateUserInfo(userId, isMamorare = isMamorare)
-        }
-    }
-
-
 
     /** マモラレ対象変更 */
     public fun changeMamorare(mamorareId: String) {

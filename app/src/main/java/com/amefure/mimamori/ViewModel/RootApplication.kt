@@ -22,10 +22,14 @@ class RootApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        instance = this
     }
 
     override fun onTerminate() {
         super.onTerminate()
     }
 
+    companion object {
+        lateinit var instance: RootApplication
+    }
 }

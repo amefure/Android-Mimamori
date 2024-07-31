@@ -32,7 +32,6 @@ import io.reactivex.schedulers.Schedulers
 class AuthRootFragment : BaseAuthFragment() {
 
     private val authEnvironment: AuthEnvironment by viewModels()
-    private val rootEnvironment: RootEnvironment by viewModels()
 
     private var disposable: CompositeDisposable = CompositeDisposable()
 
@@ -93,8 +92,6 @@ class AuthRootFragment : BaseAuthFragment() {
                 createButton.setText(signInStr)
             }
         }
-
-
 
         createButton.setOnClickListener {
             closedKeyBoard()

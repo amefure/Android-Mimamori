@@ -110,4 +110,16 @@ class RootEnvironment(app: Application) : RootViewModel(app) {
 
     /** ローカルに保存しているマモラレかどうかフラグを観測 */
     public fun observeIsMamorare(): Flow<Boolean?> = dataStoreRepository.observePreference(DataStoreRepository.IS_MAMORARE)
+
+    /** ローカルに保存しているサインインユーザーIDを取得 */
+    public fun getSignInUserId(): String {
+        return dataStoreRepository.getPreference(DataStoreRepository.SIGNIN_USER_ID, "")
+    }
+
+    /** オンボーディング終了フラグをON */
+    public fun setInitialBootFlag() {
+        viewModelScope.launch {
+            dataStoreRepository.savePreference(DataStoreRepository.APP_INITIAL_BOOT_FLAG, true)
+        }
+    }
 }
