@@ -2,7 +2,6 @@ package com.amefure.mimamori.View.Setting
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +11,9 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
-import com.amefure.mimamori.Model.AuthProviderModel
 import com.amefure.mimamori.Model.Key.AppArgKey
 import com.amefure.mimamori.R
 import com.amefure.mimamori.View.BaseFragment.BaseAuthFragment
-import com.amefure.mimamori.View.BaseFragment.BaseInputFragment
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.ViewModel.AuthEnvironment
 import com.amefure.mimamori.ViewModel.RootEnvironment

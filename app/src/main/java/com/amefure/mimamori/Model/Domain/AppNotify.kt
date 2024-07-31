@@ -1,4 +1,4 @@
-package com.amefure.mimamori.Model
+package com.amefure.mimamori.Model.Domain
 
 import com.amefure.mimamori.Utility.DateFormatUtility
 import java.util.Date

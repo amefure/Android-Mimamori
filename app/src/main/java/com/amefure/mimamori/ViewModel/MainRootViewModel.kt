@@ -3,8 +3,8 @@ package com.amefure.mimamori.ViewModel
 import android.app.Application
 import android.util.Log
 import com.amefure.mimamori.Managers.AppNotifyManager
-import com.amefure.mimamori.Model.AppNotify
-import com.amefure.mimamori.Model.AppUser
+import com.amefure.mimamori.Model.Domain.AppNotify
+import com.amefure.mimamori.Model.Domain.AppUser
 import com.amefure.mimamori.R
 import com.amefure.mimamori.Repository.AppEnvironmentStore
 import com.amefure.mimamori.Repository.DataStore.DataStoreRepository

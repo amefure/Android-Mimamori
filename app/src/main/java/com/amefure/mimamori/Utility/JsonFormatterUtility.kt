@@ -1,7 +1,7 @@
 package com.amefure.mimamori.Utility
 
 import android.util.Log
-import com.amefure.mimamori.Model.AppNotify
+import com.amefure.mimamori.Model.Domain.AppNotify
 import com.amefure.mimamori.Model.GSON.AppNotifyTypeAdapter
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

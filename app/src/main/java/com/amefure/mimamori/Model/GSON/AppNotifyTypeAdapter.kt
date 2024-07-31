@@ -3,11 +3,10 @@ package com.amefure.mimamori.Model.GSON
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonToken
 import com.google.gson.stream.JsonWriter
-import com.amefure.mimamori.Model.AppNotify
+import com.amefure.mimamori.Model.Domain.AppNotify
 import com.google.gson.TypeAdapter
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.TimeZone
 
 class AppNotifyTypeAdapter : TypeAdapter<AppNotify>() {
 

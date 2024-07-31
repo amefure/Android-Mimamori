@@ -3,6 +3,8 @@ package com.amefure.mimamori.View.FBAuthentication
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -18,6 +20,8 @@ import com.amefure.mimamori.R
 import com.amefure.mimamori.Utility.ValidationUtility
 import com.amefure.mimamori.View.BaseFragment.BaseAuthFragment
 import com.amefure.mimamori.View.BaseFragment.BaseInputFragment
+import com.amefure.mimamori.View.Dialog.CustomLoadingDialogFragment.Companion.dismissLoadingDialog
+import com.amefure.mimamori.View.Dialog.CustomLoadingDialogFragment.Companion.presentLoadingDialog
 import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.View.MainActivity
 import com.amefure.mimamori.ViewModel.AuthEnvironment
@@ -28,6 +32,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.delay
 
 class AuthRootFragment : BaseAuthFragment() {
 
@@ -95,51 +100,65 @@ class AuthRootFragment : BaseAuthFragment() {
 
         createButton.setOnClickListener {
             closedKeyBoard()
-            val name = inputName.text.toString()
-            val email = inputEmail.text.toString()
-            val pass = inputPass.text.toString()
+            parentFragmentManager.presentLoadingDialog()
+            val handler = Handler(Looper.getMainLooper())
+            // 擬似的に1秒遅延
+            handler.postDelayed({
+                val name = inputName.text.toString()
+                val email = inputEmail.text.toString()
+                val pass = inputPass.text.toString()
 
-            if (authEnvironment.isShowEntryViewFlag) {
-                // 新規作成
-                if (name.isEmpty() || !ValidationUtility.validateEmail(email) || pass.isEmpty()) {
-                    showFailedValidationDialog()
-                    return@setOnClickListener
+                if (authEnvironment.isShowEntryViewFlag) {
+                    // 新規作成
+                    if (name.isEmpty() || !ValidationUtility.validateEmail(email) || pass.isEmpty()) {
+                        parentFragmentManager.dismissLoadingDialog()
+                        showFailedValidationDialog()
+                        return@postDelayed
+                    }
+                    authEnvironment.createUserWithEmailAndPassword(name, email, pass)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeBy(
+                            onComplete = {
+                                Log.d("Auth", "新規登録成功")
+                                parentFragmentManager.dismissLoadingDialog()
+                                // アプリメイン画面起動
+                                startAppMainView()
+                            },
+                            onError = { error ->
+                                parentFragmentManager.dismissLoadingDialog()
+                                Log.e("Auth", error.toString())
+                                showFailedAuthDialog(error.toString())
+                            }
+                        )
+                        .addTo(disposable)
+                } else {
+                    // サインイン
+                    if (!ValidationUtility.validateEmail(email) || pass.isEmpty()) {
+                        parentFragmentManager.dismissLoadingDialog()
+                        showFailedValidationDialog()
+                        return@postDelayed
+                    }
+                    authEnvironment.signInWithEmailAndPassword(email,pass)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeBy(
+                            onComplete = {
+                                Log.d("Auth", "サインイン成功")
+                                parentFragmentManager.dismissLoadingDialog()
+                                // アプリメイン画面起動
+                                startAppMainView()
+                            },
+                            onError = { error ->
+                                parentFragmentManager.dismissLoadingDialog()
+                                Log.e("Auth", error.toString())
+                                showFailedAuthDialog(error.toString())
+                            }
+                        )
+                        .addTo(disposable)
                 }
-                authEnvironment.createUserWithEmailAndPassword(name, email, pass)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeBy(
-                        onComplete = {
-                            Log.d("Auth", "新規登録成功")
-                            // アプリメイン画面起動
-                            startAppMainView()
-                        },
-                        onError = { error ->
-                            Log.e("Auth", error.toString())
-                        }
-                    )
-                    .addTo(disposable)
-            } else {
-                // サインイン
-                if (!ValidationUtility.validateEmail(email) || pass.isEmpty()) {
-                    showFailedValidationDialog()
-                    return@setOnClickListener
-                }
-                authEnvironment.signInWithEmailAndPassword(email,pass)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeBy(
-                        onComplete = {
-                            Log.d("Auth", "サインイン成功")
-                            // アプリメイン画面起動
-                            startAppMainView()
-                        },
-                        onError = { error ->
-                            Log.e("Auth", error.toString())
-                        }
-                    )
-                    .addTo(disposable)
-            }
+            }, 1000)
+
         }
 
         val googleSignInButton: SignInButton = view.findViewById(R.id.google_sign_in_button)

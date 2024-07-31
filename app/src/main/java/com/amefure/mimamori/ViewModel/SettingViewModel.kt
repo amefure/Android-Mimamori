@@ -2,15 +2,13 @@ package com.amefure.mimamori.ViewModel
 
 import android.app.Application
 import androidx.lifecycle.viewModelScope
-import com.amefure.mimamori.Model.AppUser
-import com.amefure.mimamori.Model.AuthProviderModel
+import com.amefure.mimamori.Model.Domain.AppUser
+import com.amefure.mimamori.Model.Domain.AuthProviderModel
 import com.amefure.mimamori.R
 import com.amefure.mimamori.Repository.DataStore.DataStoreRepository
 import com.amefure.mimamori.Repository.DataStore.DataStoreRepository.Companion.NotifyMsgNumber
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SettingViewModel(val app: Application) : RootViewModel(app) {
 

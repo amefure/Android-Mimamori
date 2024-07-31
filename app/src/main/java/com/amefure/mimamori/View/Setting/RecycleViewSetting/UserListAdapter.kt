@@ -7,7 +7,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.amefure.mimamori.Model.AppUser
+import com.amefure.mimamori.Model.Domain.AppUser
 import com.amefure.mimamori.R
 import com.amefure.mimamori.View.Utility.OneTouchHelperCallback
 

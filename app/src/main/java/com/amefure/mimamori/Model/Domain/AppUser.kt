@@ -1,4 +1,4 @@
-package com.amefure.mimamori.Model
+package com.amefure.mimamori.Model.Domain
 
 import com.amefure.mimamori.Utility.DateFormatUtility
 import java.util.Calendar
@@ -33,7 +33,7 @@ data class AppUser(
 
 ) {
     companion object {
-        public const val TABLE_NAME = "tests"
+        public const val TABLE_NAME = "users"
         // 共通
         public const val ID_KEY = "id"
         public const val NAME_KEY = "name"

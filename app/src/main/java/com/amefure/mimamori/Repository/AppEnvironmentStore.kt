@@ -1,6 +1,6 @@
 package com.amefure.mimamori.Repository
 
-import com.amefure.mimamori.Model.AppUser
+import com.amefure.mimamori.Model.Domain.AppUser
 import io.reactivex.subjects.BehaviorSubject
 
 

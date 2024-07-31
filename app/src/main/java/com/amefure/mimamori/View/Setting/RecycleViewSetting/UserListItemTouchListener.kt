@@ -3,7 +3,7 @@ package com.amefure.mimamori.View.Setting.RecycleViewSetting
 import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.amefure.mimamori.Model.AppUser
+import com.amefure.mimamori.Model.Domain.AppUser
 
 class UserListItemTouchListener: RecyclerView.SimpleOnItemTouchListener() {
 

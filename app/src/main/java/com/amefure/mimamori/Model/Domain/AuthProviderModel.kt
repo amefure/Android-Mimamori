@@ -1,4 +1,4 @@
-package com.amefure.mimamori.Model
+package com.amefure.mimamori.Model.Domain
 
 enum class AuthProviderModel {
     EMAIL,

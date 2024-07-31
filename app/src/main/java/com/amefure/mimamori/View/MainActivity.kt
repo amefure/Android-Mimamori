@@ -10,6 +10,7 @@ import com.amefure.mimamori.Model.myFcmToken
 import com.amefure.mimamori.R
 import com.amefure.mimamori.Repository.DataStore.DataStoreRepository
 import com.amefure.mimamori.Repository.FirebaseAuthRepository
+import com.amefure.mimamori.View.Dialog.CustomLoadingDialogFragment.Companion.presentLoadingDialog
 import com.amefure.mimamori.View.FBAuthentication.AuthActivity
 import com.amefure.mimamori.View.Main.MainRootFragment
 import com.amefure.mimamori.View.Onboarding.Onboarding1Fragment

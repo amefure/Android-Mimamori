@@ -13,8 +13,8 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.amefure.mimamori.Model.AppUser
-import com.amefure.mimamori.Model.AuthProviderModel
+import com.amefure.mimamori.Model.Domain.AppUser
+import com.amefure.mimamori.Model.Domain.AuthProviderModel
 import com.amefure.mimamori.Model.Config.AppURL
 import com.amefure.mimamori.R
 import com.amefure.mimamori.Repository.AppEnvironmentStore

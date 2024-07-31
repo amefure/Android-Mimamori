@@ -7,9 +7,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.amefure.mimamori.Model.AppNotify
-import com.amefure.mimamori.Model.AppNotifyBase
-import com.amefure.mimamori.Model.AppNotifySection
+import com.amefure.mimamori.Model.Domain.AppNotify
+import com.amefure.mimamori.Model.Domain.AppNotifyBase
+import com.amefure.mimamori.Model.Domain.AppNotifySection
 import com.amefure.mimamori.R
 
 class NotifyListAdapter(

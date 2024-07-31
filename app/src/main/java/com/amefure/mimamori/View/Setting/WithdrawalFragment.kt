@@ -4,11 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewOutlineProvider
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -17,16 +15,13 @@ import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import com.amefure.mimamori.Model.AppUser
-import com.amefure.mimamori.Model.AuthProviderModel
+import com.amefure.mimamori.Model.Domain.AppUser
+import com.amefure.mimamori.Model.Domain.AuthProviderModel
 import com.amefure.mimamori.Model.Key.AppArgKey
 import com.amefure.mimamori.R
 import com.amefure.mimamori.Repository.AppEnvironmentStore
 import com.amefure.mimamori.View.BaseFragment.BaseAuthFragment
-import com.amefure.mimamori.View.Dialog.CustomNotifyDialogFragment
 import com.amefure.mimamori.View.FBAuthentication.AuthActivity
 import com.amefure.mimamori.ViewModel.AuthEnvironment
 import com.amefure.mimamori.ViewModel.RootEnvironment
@@ -38,9 +33,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.util.Date
 
 class WithdrawalFragment : BaseAuthFragment() {
 

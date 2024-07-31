@@ -1,8 +1,8 @@
 package com.amefure.mimamori.Repository
 
 import android.util.Log
-import com.amefure.mimamori.Model.AppNotify
-import com.amefure.mimamori.Model.AppUser
+import com.amefure.mimamori.Model.Domain.AppNotify
+import com.amefure.mimamori.Model.Domain.AppUser
 import com.amefure.mimamori.Utility.JsonFormatterUtility
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

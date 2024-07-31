@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.amefure.mimamori.Model.AuthProviderModel
+import com.amefure.mimamori.Model.Domain.AuthProviderModel
 import com.amefure.mimamori.Model.myFcmToken
 import com.amefure.mimamori.Repository.DataStore.DataStoreRepository
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
