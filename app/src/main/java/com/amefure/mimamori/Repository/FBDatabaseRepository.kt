@@ -80,7 +80,7 @@ class FBDatabaseRepository {
     }
 
     /**
-     * 通知送信対象の読み取れるFCM登録トークンとミマモリIDを更新
+     * 通知送信対象の読み取れるミマモリIDを更新
      * 更新対象；自分のユーザー情報
      * 更新値：相手のユーザーID
      */
@@ -94,17 +94,17 @@ class FBDatabaseRepository {
                 val result = it.value ?: run { completion(false); return@addOnSuccessListener }
                 val userDic = result as? Map <String, Any> ?: run {completion(false); return@addOnSuccessListener }
 
-                val ids = userDic[AppUser.MIMAMORI_ID_LIST_KEY] as? MutableList<String>
-                ids?.let {
-                    it.add(mimamoriId)
-                    val value = mapOf(
-                        // 重複したIDの場合は格納しないようにdistinct
-                        AppUser.MIMAMORI_ID_LIST_KEY to it.distinct().toList()
-                    )
-                    userRef.updateChildren(value)
-                }?: run {
+                val ids = userDic[AppUser.MIMAMORI_ID_LIST_KEY] as? MutableList<String> ?: mutableListOf()
+                if (ids.isEmpty()) {
                     val value = mapOf(
                         AppUser.MIMAMORI_ID_LIST_KEY to listOf(mimamoriId)
+                    )
+                    userRef.updateChildren(value)
+                } else {
+                    ids.add(mimamoriId)
+                    val value = mapOf(
+                        // 重複したIDの場合は格納しないようにdistinct
+                        AppUser.MIMAMORI_ID_LIST_KEY to ids.distinct().toList()
                     )
                     userRef.updateChildren(value)
                 }
@@ -165,14 +165,16 @@ class FBDatabaseRepository {
             .addOnSuccessListener {
                 val result = it.value ?: run { completion(false); return@addOnSuccessListener }
                 val userDic = result as? Map <String, Any> ?: run { completion(false); return@addOnSuccessListener }
-                val ids = userDic[AppUser.MAMORARE_ID_LIST_KEY] as? MutableList<String>
+                val ids = userDic[AppUser.MAMORARE_ID_LIST_KEY] as? MutableList<String> ?: mutableListOf()
                 val value = mutableMapOf<String, Any>()
-                ids?.let {
-                    it.add(userId)
-                    value.put(AppUser.MAMORARE_ID_LIST_KEY, it.distinct().toList())
-                }?: run {
+                // idsをnullにしてlet ?: runにするとなぜか両方実行されてしまうため↓のように実装
+                if (ids.isEmpty()) {
                     Log.d("Realtime Database", "新規追加")
                     value.put(AppUser.MAMORARE_ID_LIST_KEY, listOf(userId))
+                } else {
+                    Log.d("Realtime Database", "追加")
+                    ids.add(userId)
+                    value.put(AppUser.MAMORARE_ID_LIST_KEY, ids.distinct().toList())
                 }
                 value.put(AppUser.CURRENT_MAMORARE_ID, userId)
                 userRef.updateChildren(value)
