@@ -130,4 +130,14 @@
     <string name="notify_title">「%1$s」さんから通知が届きました。</string>
     <string name="notify_button_msg">ボタンを押して通知を送信しました。</string>
 
+
+    <!-- Dev  -->
+    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
+    <!-- Prd -->
+<!--    <string name="admob_app_id"></string>-->
+
+    <!-- Dev -->
+    <string name="admob_banner_id">ca-app-pub-3940256099942544/6300978111</string>
+    <!-- Prd -->
+<!--    <string name="admob_banner_id"></string>-->
 </resources>

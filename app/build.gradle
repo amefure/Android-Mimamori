@@ -77,6 +77,9 @@ dependencies {
     // Firebase Realtime Database
     implementation("com.google.firebase:firebase-database-ktx")
 
+    // AdMob
+    implementation("com.google.android.gms:play-services-ads:22.4.0")
+
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
 

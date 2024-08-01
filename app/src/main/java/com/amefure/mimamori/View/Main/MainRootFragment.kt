@@ -27,6 +27,9 @@ import com.amefure.mimamori.View.Setting.SettingFragment
 import com.amefure.mimamori.View.Utility.OneTouchHelperCallback
 import com.amefure.mimamori.ViewModel.MainRootViewModel
 import com.amefure.mimamori.ViewModel.RootEnvironment
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -71,6 +74,15 @@ class MainRootFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // 初期化
+        MobileAds.initialize(this.requireContext())
+        // 広告の読み込み
+        val adViewMamo: AdView = view.findViewById(R.id.adView_mamo)
+        val adViewMima: AdView = view.findViewById(R.id.adView_mima)
+        adViewMamo.loadAd(AdRequest.Builder().build())
+        adViewMima.loadAd(AdRequest.Builder().build())
+
         rootEnvironment.observeMyUserData()
 
         setUpHeaderAction(view)
