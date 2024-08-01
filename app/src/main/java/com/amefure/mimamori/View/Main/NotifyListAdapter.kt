@@ -31,7 +31,7 @@ class NotifyListAdapter(
         val notify = _notifications[position]
 
         if (notify is AppNotify) {
-            holder.baseLayout.maxHeight = 140
+            holder.baseLayout.maxHeight = 180
             holder.sectionLayout.visibility = View.GONE
             holder.itemLayout.visibility = View.VISIBLE
             holder.title.text = notify.title
